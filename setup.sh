@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # NewsBerri marketing-site setup — news-trader-v1 droplet (Ubuntu 24.04)
-# Run as root:  wget -qO- https://raw.githubusercontent.com/fortunatebusinessman-ops/newsberri-site/main/setup.sh | bash
+# Run as root:  wget -qO- https://raw.githubusercontent.com/willgmoody06-glitch/newsberri-site/main/setup.sh | bash
 # Safe to re-run (idempotent). Installs nginx, deploys the 4 public pages,
 # serves newsberri.com + www. Does NOT touch anything else on the box.
 set -euo pipefail
 
-RAW="https://raw.githubusercontent.com/fortunatebusinessman-ops/newsberri-site/main"
+RAW="https://raw.githubusercontent.com/willgmoody06-glitch/newsberri-site/main"
 DOCROOT="/var/www/newsberri.com"
 PAGES=(index.html how-it-works.html pricing.html demo.html)
 
