@@ -58,7 +58,7 @@ systemctl enable --now nginx
 systemctl reload nginx
 
 echo ""
-if curl -fsS -H "Host: newsberri.com" http://127.0.0.1/ | grep -q "NewsBerri"; then
+if curl -fsS -H "Host: newsberri.com" http://127.0.0.1/ -o /tmp/nb-test.html && grep -q "NewsBerri" /tmp/nb-test.html; then
   echo "=================================================="
   echo "  OK: SITE DEPLOYED AND SERVING ON THIS DROPLET"
   echo "  next: point DNS at this box, then run certbot"
