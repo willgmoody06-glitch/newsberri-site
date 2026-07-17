@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NewsBerri — How it works</title>
+<meta name="description" content="How NewsBerri works, start to finish: live news wires in, one read out. Headlines appear instantly, an AI reads and scores each story per contract, a second wire confirms it, and it all rolls up into one number per contract. Informational only — not trading advice.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Ccircle cx='26.1' cy='19.5' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='37.9' cy='19.5' r='6.5' fill='%2300e676'/%3E%3Ccircle cx='19.7' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='32' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='44.3' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='21.3' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='42.7' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='26.7' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='37.3' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='58.1' r='6' fill='%238f1029'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS — locked app tokens (verbatim) + site tints ============ */
+:root{
+  --mono:"Martian Mono",ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+  --grot:"Barlow Semi Condensed",system-ui,-apple-system,sans-serif;
+  --display:"Big Shoulders Display","Barlow Semi Condensed",system-ui,sans-serif;
+  --bull:#00e676; --bear:#ff1744; --amber:#ff9100; --neutral:#8a97a6;
+  --berry:#ff3b57; --berry-dk:#c2183a; --berry-deep:#8f1029;
+  --grad:linear-gradient(135deg,#E8336E 0%,#C74497 40%,#A64FC6 70%,#8B5CF6 100%);
+  --canvas:#000000; --panel:#0d1013; --panel-2:#101317; --raise:#14181d;
+  --hair:#1a1f25; --hair-strong:#262d35;
+  --ink:#f2f6f8; --ink-2:#b8c7d1; --ink-3:#8496a2; --ink-faint:#5d6d78;
+  --key:#ffffff; --key-ink:#04060a;
+  --key-glow:0 0 12px rgba(255,255,255,.25);
+  --bull-bg:rgba(0,210,122,.12); --bear-bg:rgba(255,65,81,.12);
+  /* site-only tints (never inside .snip) */
+  --vio:#8B5CF6; --vio-2:#A64FC6; --ras:#E8336E; --ras-2:#C74497;
+  --vio-ink:#c9b8fa; --ras-ink:#ff9dbd;
+  --well:#05080b; --well-line:#1f262e; --selrow:rgba(255,255,255,.06);
+  color-scheme:dark;
+}
+/* ============ BASE ============ */
+*,*::before,*::after{box-sizing:border-box;border-radius:0}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--grot);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(199,68,151,.35)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--key);outline-offset:2px}
+img,svg{max-width:100%}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--key);color:var(--key-ink);padding:8px 16px;font-family:var(--mono);font-size:12px;z-index:99}
+.skip:focus{left:12px;top:12px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.micro{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.rule{border:0;border-top:1px solid var(--hair);margin:0 auto}
+.rule-scotch{border:0;height:6px;border-top:4px solid var(--ink);border-bottom:0;margin:0 auto;position:relative}
+.rule-scotch::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,#E8336E 14%,#C74497 40%,#A64FC6 66%,#8B5CF6 86%,transparent)}
+.hair-grad{border:0;height:1px;margin:0 auto;background:linear-gradient(90deg,transparent,rgba(232,51,110,.6) 20%,rgba(139,92,246,.6) 80%,transparent)}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.c-bull{color:var(--bull)} .c-bear{color:var(--bear)} .c-amb{color:var(--amber)} .c-neu{color:var(--neutral)}
+/* buttons */
+.btn-key{display:inline-block;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:2px;padding:13px 24px;box-shadow:var(--key-glow);border:1px solid var(--key);transition:box-shadow .18s ease}
+.btn-key:hover{box-shadow:0 0 14px rgba(232,51,110,.4),0 0 26px rgba(139,92,246,.35)}
+.btn-brk{display:inline-block;color:var(--ink-2);font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:2px;padding:13px 10px}
+.btn-brk::before{content:"[ ";color:var(--ink-faint)}
+.btn-brk::after{content:" ]";color:var(--ink-faint)}
+.btn-brk:hover{color:var(--key)}
+.btn-brk:hover::before,.btn-brk:hover::after{color:var(--ras-2)}
+/* wordmark */
+.wordmark{font-family:var(--display);font-weight:800;letter-spacing:2px;color:var(--ink);text-transform:uppercase;line-height:1}
+.wordmark b{color:var(--berry);font-weight:800}
+/* ============ CHROME: topstrip / masthead / nav (verbatim from index.html) ============ */
+.topstrip{display:flex;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px}
+.masthead{text-align:center;padding-top:30px;padding-bottom:22px;position:relative}
+.masthead::before{content:"";position:absolute;left:50%;top:-10px;transform:translateX(-50%);width:min(920px,92%);height:230px;pointer-events:none;
+  background:radial-gradient(ellipse 60% 100% at 50% 0%,rgba(199,68,151,.10),transparent 72%)}
+.masthead .nameplate{display:inline-flex;align-items:center;gap:22px;position:relative}
+.masthead .nameplate .wordmark{font-size:clamp(56px,7.4vw,100px)}
+.masthead .mark-lg svg{width:clamp(52px,6.5vw,88px);height:auto;display:block;filter:drop-shadow(0 0 14px rgba(255,59,87,.35))}
+.dek{font-family:var(--grot);font-weight:600;font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);margin:12px 0 0}
+.dateline{font-family:var(--mono);font-size:11px;letter-spacing:2.5px;color:var(--ink-3);margin-top:10px;font-variant-numeric:tabular-nums}
+.newsnav{position:sticky;top:0;z-index:50;background:rgba(0,0,0,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--hair-strong)}
+.newsnav .wrap{display:flex;align-items:center;gap:22px;min-height:54px}
+.newsnav .brand{display:flex;align-items:center;gap:9px}
+.newsnav .brand svg{display:block}
+.newsnav .brand .wordmark{font-size:21px}
+.newsnav .links{display:flex;gap:26px;margin-left:8px}
+.newsnav .links a{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;color:var(--ink-2);padding:6px 0;border-bottom:2px solid transparent}
+.newsnav .links a:hover{color:var(--key)}
+.newsnav .links a[aria-current="page"]{color:var(--ink);border-image:var(--grad) 1;border-bottom:2px solid}
+.newsnav .actions{margin-left:auto;display:flex;align-items:center;gap:14px}
+.newsnav .signin{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;color:var(--ink-3)}
+.newsnav .signin:hover{color:var(--key)}
+.newsnav .btn-key{padding:9px 18px;font-size:11px}
+.newsnav .btn-brk{padding:9px 4px;font-size:11px}
+/* ============ SECTION FURNITURE (from index.html) ============ */
+.sec{position:relative;padding:76px 0 0}
+.sec .inner{position:relative}
+.eychip{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:2px;color:#fff;background:var(--grad);padding:5px 12px;margin-bottom:14px}
+.eychip.vio{background:rgba(139,92,246,.13);color:var(--vio-ink);border:1px solid rgba(139,92,246,.45)}
+.eychip.ras{background:rgba(232,51,110,.12);color:var(--ras-ink);border:1px solid rgba(232,51,110,.45)}
+.sectitle{font-family:var(--display);font-weight:800;font-size:clamp(32px,3.6vw,48px);letter-spacing:1px;text-transform:uppercase;line-height:1.02;margin:0 0 14px}
+.secsub{color:var(--ink-2);font-size:17.5px;max-width:720px;margin:0 0 30px}
+.secsub b{color:var(--ink);font-weight:600}
+.wash-hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 720px 460px at 12% 8%,rgba(232,51,110,.09),transparent 68%),
+             radial-gradient(ellipse 760px 500px at 88% 20%,rgba(139,92,246,.09),transparent 70%)}
+.wash-vio::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 900px 460px at 10% 0%,rgba(139,92,246,.07),transparent 70%)}
+.wash-ras::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 900px 460px at 90% 0%,rgba(232,51,110,.07),transparent 70%)}
+.snipcap{font-size:14.5px;color:var(--ink-3);line-height:1.55;margin:12px 2px 0}
+.snipcap b{color:var(--ink-2);font-weight:600}
+/* ============ UI SNIPPETS — the app's true skin (tokens only, no gradients) ============ */
+.snip{background:var(--panel);border:1px solid var(--hair-strong);position:relative;font-size:13px}
+.snip .ph{display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;border-bottom:1px solid var(--hair-strong);
+  font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:2.4px;color:var(--ink-2)}
+.snip .led{width:7px;height:7px;background:var(--key);box-shadow:0 0 8px rgba(255,255,255,.55);flex:none}
+.snip .led.live{background:var(--bull);box-shadow:0 0 7px 1px rgba(0,230,118,.6)}
+.snip .led.amb{background:var(--amber);box-shadow:0 0 7px 1px rgba(255,145,0,.6)}
+.snip .ph-r{margin-left:auto;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:1px;font-weight:400;color:var(--ink-faint);text-transform:uppercase}
+.snip .bd{padding:10px 12px}
+/* tape rows */
+.wrow{display:grid;grid-template-columns:4px 30px 1fr;gap:9px;padding:8px 2px;border-bottom:1px solid var(--hair)}
+.wrow:last-child{border-bottom:0}
+.wsig{width:4px}
+.wimp{height:20px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700;border:1px solid var(--hair-strong);color:var(--ink-2)}
+.wimp.dash{border-style:dashed;color:var(--ink-faint)}
+.whl{font-weight:600;font-size:13px;line-height:1.32;color:var(--ink)}
+.wmeta{display:flex;align-items:center;gap:7px;margin-top:3px;font-family:var(--mono);font-size:8px;color:var(--ink-faint);letter-spacing:.5px;text-transform:uppercase;flex-wrap:wrap}
+.iimp{font-family:var(--mono);font-size:8.5px;font-weight:700;padding:2px 5px;display:inline-flex;gap:4px;
+  background:color-mix(in srgb,currentColor,transparent 89%);border:1px solid color-mix(in srgb,currentColor,transparent 78%)}
+.iimp .s{color:var(--ink-3);font-weight:400}
+.provtag{color:var(--amber);border:1px solid color-mix(in srgb,var(--amber),transparent 55%);padding:0 4px;font-size:7.5px;letter-spacing:1px;animation:pp 1.2s ease-in-out infinite}
+@keyframes pp{0%,100%{opacity:.5}50%{opacity:1}}
+.timeflag{font-family:var(--mono);font-size:7.5px;letter-spacing:1px;color:var(--amber);border:1px solid color-mix(in srgb,var(--amber),transparent 50%);padding:1px 4px;background:color-mix(in srgb,var(--amber),transparent 88%)}
+/* ============ LEAD (this page) ============ */
+.lead{display:grid;grid-template-columns:1.5fr 1fr;padding:54px 0 6px}
+.l-copy{min-width:0;padding-right:44px}
+.l-side{min-width:0;border-left:1px solid var(--hair);padding-left:36px}
+.lead h1{font-family:var(--display);font-weight:800;font-size:clamp(44px,4.9vw,70px);line-height:.98;letter-spacing:.5px;text-transform:uppercase;margin:0 0 18px}
+.lead .lede{font-size:18.5px;color:var(--ink-2);margin:0 0 16px;max-width:62ch}
+.lead .lede b{color:var(--ink);font-weight:600}
+.pullline{border-top:1px solid var(--hair-strong);border-bottom:1px solid var(--hair-strong);padding:14px 4px;margin:24px 0 0;font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:1px;text-transform:uppercase;line-height:1.2}
+.pullline small{display:block;margin-top:7px;font-family:var(--mono);font-size:9.5px;letter-spacing:2px;color:var(--ink-faint)}
+.l-side h2{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 4px}
+.mindex{list-style:none;margin:12px 0 0;padding:0}
+.mindex li{border-top:1px solid var(--hair)}
+.mindex a{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--ink-2);padding:11px 0}
+.mindex a:hover{color:var(--key)}
+.mindex .pg{color:var(--ink-faint);white-space:nowrap}
+.l-note{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-3);border-top:1px solid var(--hair);margin-top:14px;padding-top:12px;line-height:1.9}
+.l-note a{color:var(--ink);border-bottom:1px solid var(--hair-strong)}
+.l-note a:hover{color:var(--key);border-color:var(--ras-2)}
+/* ============ STAGES ============ */
+.stage{display:grid;grid-template-columns:1.15fr 1fr;padding:24px 0 8px}
+.st-copy{min-width:0;padding-right:44px}
+.st-copy p{margin:0 0 14px;color:var(--ink-2)}
+.st-copy p b{color:var(--ink);font-weight:600}
+.st-fig{min-width:0;border-left:1px solid var(--hair);padding-left:36px;display:flex;flex-direction:column;gap:26px}
+.fig{margin:0}
+/* ============ FIGURES ============ */
+.bigfig{margin:28px 0 0;border:1px solid var(--hair-strong);background:var(--panel);padding:22px 22px 16px}
+.bigfig svg,.panelfig svg{width:100%;height:auto;display:block}
+.panelfig{margin:0;border:1px solid var(--hair-strong);background:var(--panel);padding:18px}
+.sec.vio .panelfig{border-top:3px solid rgba(139,92,246,.45)}
+.sec.ras .panelfig{border-top:3px solid rgba(232,51,110,.42)}
+.figtag{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:2px;color:var(--ink-3);margin-bottom:5px}
+/* annotation key */
+.keylist{list-style:none;margin:10px 0 0;padding:0;border-top:1px solid var(--hair-strong)}
+.keylist li{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--ink-3);padding:7px 0;border-bottom:1px solid var(--hair);line-height:1.7}
+.keylist b{color:var(--ink);font-weight:500}
+.mk{font-family:var(--mono);font-size:8.5px;color:var(--berry);font-weight:700;vertical-align:super;letter-spacing:0}
+/* guardrail chip mock */
+.grchip{border:1px solid var(--hair-strong);background:var(--well);padding:16px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.grchip .gr-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+.grchip .gr-ev{font-size:12px;font-weight:700;letter-spacing:2px;color:var(--ink)}
+.grchip .gr-hist{font-size:10.5px;letter-spacing:1px;color:var(--ink-2);border-top:1px solid var(--well-line);margin-top:12px;padding-top:10px}
+.grchip .gr-firm{font-size:9.5px;letter-spacing:1.5px;color:var(--ink-faint);margin-top:8px}
+/* the squawk's spoken line */
+.spokenq{border-left:3px solid var(--hair-strong);padding:4px 0 4px 16px;margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.6px;line-height:1.9;color:var(--ink-2)}
+.spokenq b{color:var(--ink);font-weight:500}
+/* ledger table */
+.ledtable{width:100%;border-collapse:collapse;margin:0}
+.ledtable caption{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--ink-faint);padding-bottom:9px}
+.ledtable th{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;font-weight:500;color:var(--ink-3);text-transform:uppercase;text-align:left;border-top:1px solid var(--hair-strong);border-bottom:1px solid var(--hair-strong);padding:8px 10px}
+.ledtable td{border-bottom:1px solid var(--hair);padding:11px 10px;font-size:14.5px;color:var(--ink-2);vertical-align:top}
+.ledtable td.num{font-family:var(--mono);font-size:11px;letter-spacing:.5px;white-space:nowrap;color:var(--ink);font-variant-numeric:tabular-nums}
+.ledtable td b{color:var(--ink);font-weight:600}
+/* two honest boxes */
+.twobox{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:8px}
+.stdbox{border:1px solid var(--hair-strong);background:var(--panel);padding:26px 26px 20px;min-width:0}
+.stdbox h3{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:1px;text-transform:uppercase;margin:0 0 10px;text-align:center}
+.stdbox .std-rule{border:0;height:2px;width:64px;margin:0 auto 14px;background:var(--grad)}
+.stdbox ul{list-style:none;margin:0;padding:0}
+.stdbox li{border-top:1px solid var(--hair);padding:10px 0;font-size:15px;color:var(--ink-2)}
+.stdbox li:first-child{border-top:0}
+.stdbox li b{color:var(--ink)}
+.stdbox .micro{display:block;text-align:center;margin-top:14px}
+/* ============ CTA BAND (tryband, from index.html) ============ */
+.tryband{margin-top:84px;position:relative;border-top:1px solid var(--hair-strong);border-bottom:1px solid var(--hair-strong);background:var(--panel);text-align:center;padding:64px 0 68px;overflow:hidden}
+.tryband::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 640px 380px at 22% 100%,rgba(232,51,110,.10),transparent 70%),
+             radial-gradient(ellipse 640px 380px at 78% 0%,rgba(139,92,246,.10),transparent 70%)}
+.tryband h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,4vw,54px);line-height:1;letter-spacing:1px;text-transform:uppercase;margin:0 0 14px}
+.tryband p{color:var(--ink-2);max-width:600px;margin:0 auto 28px;position:relative}
+.tryband .cta-row{justify-content:center;margin-bottom:0}
+.cta-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.trust{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--ink-3);padding:26px 0 0;font-variant-numeric:tabular-nums;position:relative}
+.tryband .trust{max-width:none;margin:0 auto}
+/* ============ FOOTER (copy verbatim on every page) ============ */
+.colophon{border-top:1px solid var(--hair-strong);margin-top:80px;padding:40px 0 34px;position:relative}
+.colophon::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(232,51,110,.55) 25%,rgba(139,92,246,.55) 75%,transparent)}
+.colo-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;padding-bottom:22px}
+.colo-brand{display:flex;align-items:center;gap:10px}
+.colo-brand .wordmark{font-size:26px}
+.colo-comp{font-family:var(--display);font-weight:700;font-size:clamp(20px,2.4vw,30px);letter-spacing:1px;text-transform:uppercase;margin:0}
+.colo-mid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;border-top:1px solid var(--hair);padding:14px 0}
+.colo-mid a{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-3);margin-right:22px}
+.colo-mid a:hover{color:var(--key)}
+.colo-bot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;border-top:1px solid var(--hair);padding-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--ink-faint)}
+.roundtag{color:var(--ink-3)}
+/* ============ RESPONSIVE ============ */
+@media (max-width:1024px){
+  .lead{grid-template-columns:1.3fr 1fr}
+  .l-copy{padding-right:30px}
+  .l-side{padding-left:26px}
+  .stage{grid-template-columns:1.05fr 1fr}
+  .st-copy{padding-right:30px}
+  .st-fig{padding-left:26px}
+  .newsnav .links{gap:18px}
+}
+@media (max-width:900px){
+  .newsnav .wrap{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+  .newsnav .links{order:3;width:100%;gap:16px;margin-left:0}
+  .newsnav .actions{gap:10px;flex-wrap:wrap;justify-content:flex-end}
+  .twobox{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  body{font-size:16px}
+  .wrap{padding:0 18px}
+  .masthead{padding-top:22px;padding-bottom:16px}
+  .masthead .nameplate{gap:12px}
+  .masthead .nameplate .wordmark{font-size:clamp(38px,12vw,56px)}
+  .masthead .mark-lg svg{width:clamp(34px,10vw,52px)}
+  .topstrip{flex-direction:column;gap:2px}
+  .lead,.stage{display:block}
+  .l-copy,.st-copy{padding-right:0}
+  .l-side,.st-fig{border-left:0;padding-left:0;margin-top:26px;padding-top:22px;border-top:1px solid var(--hair)}
+  .st-fig{display:flex}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<!-- =====================================================================
+HOW IT WORKS — SITE V1, PAGE 2. Chrome (topstrip → rule → masthead →
+rule-scotch → newsnav → … → colophon) copied verbatim from index.html;
+only <title>, meta description, and aria-current differ. See the DESIGN
+SYSTEM NOTES on index.html for the gradient recipe, tints, and voice.
+All backend/mechanics content for the site lives on THIS page only.
+====================================================================== -->
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ======== CHROME: topstrip + masthead ======== -->
+<div class="topstrip wrap micro" role="doc-pageheader">
+  <span>LIVE WIRES, ONE READ</span>
+  <span>INFORMATIONAL ONLY — NOT TRADING ADVICE</span>
+</div>
+<hr class="rule wrap">
+<header class="masthead wrap">
+  <a class="nameplate" href="index.html" aria-label="NewsBerri — home">
+    <span class="mark-lg" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <circle cx="26.1" cy="19.5" r="6.5" fill="#ff3b57"/><circle cx="37.9" cy="19.5" r="6.5" fill="#00e676"/>
+        <circle cx="19.7" cy="30.3" r="6.5" fill="#ff3b57"/><circle cx="32" cy="30.3" r="6.5" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="6.5" fill="#ff3b57"/>
+        <circle cx="21.3" cy="41.1" r="6.5" fill="#c2183a"/><circle cx="32" cy="41.1" r="6.5" fill="#c2183a"/><circle cx="42.7" cy="41.1" r="6.5" fill="#c2183a"/>
+        <circle cx="26.7" cy="50.9" r="6.5" fill="#c2183a"/><circle cx="37.3" cy="50.9" r="6.5" fill="#c2183a"/>
+        <circle cx="32" cy="58.1" r="6" fill="#8f1029"/>
+      </svg>
+    </span>
+    <span class="wordmark">News<b>Berri</b></span>
+  </a>
+  <p class="dek">News, read for your trade</p>
+  <p class="dateline">EDITION 2026-07-14 · MOCK DATA THROUGHOUT</p>
+</header>
+<hr class="rule-scotch wrap">
+
+<!-- ======== CHROME: sticky page-selector nav ======== -->
+<nav class="newsnav" aria-label="Site">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 64 64" width="22" height="22" fill="none" aria-hidden="true">
+        <path fill="#00e676" d="M30 15 C27.5 8 21.5 5.5 16 8.5 C18.5 14.5 25 17 30 15 Z"/>
+        <circle cx="26.1" cy="21.5" r="5.4" fill="#ff3b57"/><circle cx="37.9" cy="21.5" r="5.4" fill="#00e676"/>
+        <circle cx="19.7" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="32" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="5.4" fill="#ff3b57"/>
+        <circle cx="21.3" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="32" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="42.7" cy="39.1" r="5.4" fill="#c2183a"/>
+        <circle cx="26.7" cy="47.9" r="5.4" fill="#c2183a"/><circle cx="37.3" cy="47.9" r="5.4" fill="#c2183a"/>
+        <circle cx="32" cy="55.1" r="5.1" fill="#8f1029"/>
+      </svg>
+      <span class="wordmark">News<b>Berri</b></span>
+    </a>
+    <div class="links">
+      <a href="index.html">HOME</a>
+      <a href="how-it-works.html" aria-current="page">HOW IT WORKS</a>
+      <a href="pricing.html">PRICING</a>
+    </div>
+    <div class="actions">
+      <a class="signin" href="https://app.newsberri.com">SIGN IN</a>
+      <a class="btn-brk" href="pricing.html">COMPARE TIERS</a>
+      <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
+      <a class="btn-key" href="https://app.newsberri.com">START 7-DAY TRIAL</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<!-- ==================== LEAD ==================== -->
+<section class="sec wash-hero" aria-labelledby="lead-h" style="padding-top:0">
+  <div class="wrap inner">
+    <div class="lead">
+      <div class="l-copy">
+        <span class="eychip">THE FULL STORY — NOTHING HELD BACK</span>
+        <h1 id="lead-h">Here's exactly <span class="grad-text">how the read is made</span>.</h1>
+        <p class="lede">The wires go in. One read comes out. This page walks everything in between — how a headline becomes a score, how the score firms up, how it turns into the number beside your chart, and how the calendar makes sure a scheduled release never sneaks up on you.</p>
+        <p class="lede">If you only take away two things, make it these: <b>every score is made once, on our servers</b>, so everyone sees the same read at the same moment. And <b>we never sit on a headline</b> — you can read a story the second it crosses the wire, before we've scored it.</p>
+        <blockquote class="pullline">The method is the product. So here it is — all of it.<small>MOCK DATA IN EVERY FIGURE BELOW · NEVER A MARKET PRICE</small></blockquote>
+      </div>
+      <aside class="l-side" aria-label="What's on this page">
+        <h2>What's on this page</h2>
+        <p class="micro">EIGHT STOPS, TOP TO BOTTOM</p>
+        <ol class="mindex">
+          <li><a href="#wires"><span>THE WIRES</span><span class="pg">01</span></a></li>
+          <li><a href="#scoring"><span>THE SCORING STEP</span><span class="pg">02</span></a></li>
+          <li><a href="#second"><span>A SECOND SOURCE</span><span class="pg">03</span></a></li>
+          <li><a href="#index"><span>ONE NUMBER PER CONTRACT</span><span class="pg">04</span></a></li>
+          <li><a href="#calendar"><span>THE CALENDAR &amp; GUARDRAIL</span><span class="pg">05</span></a></li>
+          <li><a href="#squawk"><span>THE SQUAWK</span><span class="pg">06</span></a></li>
+          <li><a href="#record"><span>THE TRACK RECORD</span><span class="pg">07</span></a></li>
+          <li><a href="#standards"><span>WHAT WE DON'T DO</span><span class="pg">08</span></a></li>
+        </ol>
+        <p class="l-note">Wondering what it costs? Every tier gets the same wire, the same speed, all 42 contracts. <a href="pricing.html">Compare tiers →</a></p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== THE MAP — one picture, the whole thing ==================== -->
+<section class="sec" aria-labelledby="map-h" style="padding-top:30px">
+  <div class="wrap inner">
+    <span class="eychip">THE MAP</span>
+    <h2 class="sectitle" id="map-h">Live wires in, one read out</h2>
+    <figure class="bigfig">
+      <svg viewBox="0 0 960 290" role="img" aria-label="Diagram of the whole pipeline: live news wires feed the scoring step, where an AI reads each story once on our servers; a second wire confirms the story and the score firms up; everything rolls into one index number per contract; the result goes to every subscriber at the same moment. A dashed path above shows that headlines reach you provisionally the instant they cross, before any scoring.">
+        <defs>
+          <linearGradient id="mapgrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#E8336E"/><stop offset=".4" stop-color="#C74497"/>
+            <stop offset=".7" stop-color="#A64FC6"/><stop offset="1" stop-color="#8B5CF6"/>
+          </linearGradient>
+        </defs>
+        <!-- news wires -->
+        <circle cx="38" cy="60" r="5" fill="none" stroke="var(--ink-3)"/>
+        <circle cx="38" cy="102" r="5" fill="none" stroke="var(--ink-3)"/>
+        <circle cx="38" cy="144" r="5" fill="none" stroke="var(--ink-3)"/>
+        <circle cx="38" cy="186" r="5" fill="none" stroke="var(--ink-3)"/>
+        <circle cx="38" cy="228" r="5" fill="none" stroke="var(--ink-3)"/>
+        <circle cx="30" cy="262" r="3" fill="var(--bull)"/>
+        <text x="40" y="266" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-faint)">LIVE WIRES · ALWAYS ON · 24/5</text>
+        <!-- provisional bypass (dashed, above the steps) -->
+        <path d="M44 58 C120 30 150 22 210 22 H846" fill="none" stroke="var(--amber)" opacity=".55" stroke-dasharray="4 5"/>
+        <path d="M840 17 L850 22 L840 27" fill="none" stroke="var(--amber)" opacity=".55"/>
+        <text x="220" y="14" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-3)">PROVISIONAL — YOU SEE THE HEADLINE RIGHT AWAY, BEFORE ANY SCORING</text>
+        <!-- scored path: wires converge -->
+        <path d="M44 62 C110 80 130 144 176 144 M44 102 C105 112 125 144 176 144 M44 144 H176 M44 186 C105 176 125 144 176 144 M44 228 C110 208 130 144 176 144" fill="none" stroke="var(--hair-strong)"/>
+        <!-- the scoring step -->
+        <rect x="182" y="108" width="178" height="72" fill="var(--well)" stroke="var(--hair-strong)"/>
+        <text x="196" y="132" font-family="Martian Mono,monospace" font-size="10" letter-spacing="1.5" fill="var(--ink)">THE SCORING STEP</text>
+        <text x="196" y="150" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-3)">AN LLM READS EACH STORY</text>
+        <text x="196" y="166" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-3)">ONCE · ON OUR SERVERS</text>
+        <path d="M360 144 H398 M392 139 L400 144 L392 149" fill="none" stroke="url(#mapgrad)" opacity=".85"/>
+        <!-- second source -->
+        <rect x="402" y="108" width="160" height="72" fill="var(--well)" stroke="var(--hair-strong)"/>
+        <text x="416" y="132" font-family="Martian Mono,monospace" font-size="10" letter-spacing="1.5" fill="var(--ink)">A SECOND SOURCE</text>
+        <text x="416" y="150" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-3)">ANOTHER WIRE CONFIRMS</text>
+        <text x="416" y="166" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-3)">SCORE FIRMS UP IN PLACE</text>
+        <path d="M562 144 H600 M594 139 L602 144 L594 149" fill="none" stroke="url(#mapgrad)" opacity=".85"/>
+        <!-- the index -->
+        <rect x="604" y="108" width="160" height="72" fill="var(--well)" stroke="var(--hair-strong)"/>
+        <text x="618" y="132" font-family="Martian Mono,monospace" font-size="10" letter-spacing="1.5" fill="var(--ink)">THE INDEX</text>
+        <text x="618" y="150" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-3)">ONE NUMBER PER CONTRACT</text>
+        <text x="618" y="166" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-3)">FRESHER STORIES COUNT MORE</text>
+        <!-- fan out to subscribers -->
+        <path d="M764 144 C810 144 820 62 856 62 M764 144 C810 144 820 103 856 103 M764 144 H856 M764 144 C810 144 820 185 856 185 M764 144 C810 144 820 226 856 226" fill="none" stroke="var(--hair-strong)"/>
+        <rect x="858" y="55" width="64" height="14" fill="none" stroke="var(--ink-3)"/>
+        <rect x="858" y="96" width="64" height="14" fill="none" stroke="var(--ink-3)"/>
+        <rect x="858" y="137" width="64" height="14" fill="none" stroke="var(--ink-3)"/>
+        <rect x="858" y="178" width="64" height="14" fill="none" stroke="var(--ink-3)"/>
+        <rect x="858" y="219" width="64" height="14" fill="none" stroke="var(--ink-3)"/>
+        <text x="596" y="266" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-faint)">EVERYONE GETS THE SAME READ, AT THE SAME MOMENT</text>
+      </svg>
+      <figcaption class="snipcap"><span class="figtag">THE WHOLE PIPELINE, ONE PICTURE</span>The dashed path on top is the headline coming straight to you — you see it the instant it crosses, before we've read it. The solid path is the meaning being made: read once on our servers, confirmed by a second wire, rolled into one number per contract, and sent to everyone at the same moment. The calendar (step 5) and the squawk (step 6) sit beside this pipeline, not inside it.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ==================== STEP 1 · THE WIRES ==================== -->
+<section class="sec vio wash-vio" id="wires" aria-labelledby="wires-h">
+  <div class="wrap inner">
+    <span class="eychip vio">STEP 1 · THE WIRES</span>
+    <h2 class="sectitle" id="wires-h">It starts with the wires</h2>
+    <div class="stage">
+      <div class="st-copy">
+        <p><b>NewsBerri listens to live news wires around the clock</b> — 24 hours a day, five days a week. The moment a headline crosses any of them, it shows up on your tape marked <b>provisional</b>. There's no queue and no hold while the AI thinks; you can read the story before we have.</p>
+        <p>Provisional isn't an apology — it's just an honest label. It means <b>“we see it, we haven't read it yet.”</b> The row already carries its timestamp and its source, with a small PROV chip sitting exactly where the score is about to land. Most headlines wear the label for well under a minute.</p>
+        <p>Why several wires instead of one big one? Mostly coverage — stories break in different places. But there's a second reason that pays off in step 3: <b>you can't confirm a story with only one wire</b>, and confirmation is a big part of how the read earns your trust.</p>
+      </div>
+      <div class="st-fig">
+        <figure class="fig">
+          <div class="snip" role="img" aria-label="Two tape rows, seconds old, both marked provisional and awaiting their score">
+            <div class="ph"><span class="led live"></span>LIVE WIRE<span class="ph-r">SIMULATED</span></div>
+            <div class="bd" style="padding-top:4px">
+              <div class="wrow">
+                <span class="wsig" style="background:var(--hair-strong)"></span>
+                <span class="wimp dash">—</span>
+                <div>
+                  <p class="whl" style="margin:0">Export corridor talks break off early — delegation heads home</p>
+                  <div class="wmeta"><span>08:31:04 ET</span><span>WIRE 3</span><span class="provtag">PROV · AWAITING SCORE</span></div>
+                </div>
+              </div>
+              <div class="wrow">
+                <span class="wsig" style="background:var(--hair-strong)"></span>
+                <span class="wimp dash">—</span>
+                <div>
+                  <p class="whl" style="margin:0">Finance ministers call an unscheduled meeting on bank rules</p>
+                  <div class="wmeta"><span>08:31:02 ET</span><span>WIRE 1</span><span class="provtag">PROV · AWAITING SCORE</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption class="snipcap"><span class="figtag">SECONDS OLD, READABLE ALREADY</span>Two headlines that just crossed. The PROV chip is us saying <b>“it's on the wire — the read is on its way.”</b> Mock data, like every figure on this page.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STEP 2 · THE SCORING STEP ==================== -->
+<section class="sec vio" id="scoring" aria-labelledby="scoring-h">
+  <div class="wrap inner">
+    <span class="eychip vio">STEP 2 · THE SCORING STEP</span>
+    <h2 class="sectitle" id="scoring-h">An AI actually reads the story</h2>
+    <div class="stage">
+      <div class="st-copy">
+        <p>Next, <b>an LLM reads the story</b> — the whole story, not a keyword match — and scores it for each contract it touches. Three judgments, every time: <b>direction</b>, on a −100 to +100 sentiment scale; <b>impact</b>, how much this kind of story tends to matter; and <b>confidence</b>, how sure the read is. The same headline can be bad news for the Nasdaq and fine news for gold, so every contract gets its own line.</p>
+        <p>Each score is made <b>once, on our servers</b>, and then sent to everyone at the same time. It's not recomputed per person, not tilted toward your positions, not softened to keep you comfortable. Everyone looking at NQ sees the same read at the same moment — which is exactly what makes it worth looking at.</p>
+        <p>And because a number is a summary, not an argument, the reasoning stays attached. Tap <b>✦ Explain</b> on any scored story and you get the why, in plain language: what the story says, why it scored the way it did, and what that means for the contract you're looking at.</p>
+      </div>
+      <div class="st-fig">
+        <figure class="fig">
+          <div class="snip" role="img" aria-label="One scored tape row with its six parts numbered: timestamp, contract, direction, impact, confidence, and stage">
+            <div class="ph"><span class="led"></span>A SCORED ROW, LABELED<span class="ph-r">SIMULATED</span></div>
+            <div class="bd" style="padding-top:4px">
+              <div class="wrow">
+                <span class="wsig" style="background:var(--bear)"></span>
+                <span class="wimp">74</span>
+                <div>
+                  <p class="whl" style="margin:0">Export corridor talks break off early — delegation heads home</p>
+                  <div class="wmeta"><span>08:31:41 ET<span class="mk">1</span></span><span>ZW<span class="mk">2</span></span><span class="iimp c-bear">SENT −52<span class="mk">3</span></span><span>IMP 74<span class="mk">4</span></span><span>CONF 71<span class="mk">5</span></span><span>SCORED<span class="mk">6</span></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul class="keylist" aria-label="Key to the numbered parts of the row">
+            <li><b>1 — WHEN.</b> THE MOMENT THE SCORE LANDED ON THE ROW.</li>
+            <li><b>2 — THE CONTRACT.</b> SCORED PER CONTRACT, NOT PER STORY.</li>
+            <li><b>3 — DIRECTION.</b> SENTIMENT, −100 TO +100. NEVER A PRICE.</li>
+            <li><b>4 — IMPACT.</b> HOW MUCH THIS KIND OF STORY TENDS TO MATTER.</li>
+            <li><b>5 — CONFIDENCE.</b> HOW SURE THE READ IS OF ITSELF.</li>
+            <li><b>6 — STAGE.</b> PROVISIONAL → SCORED → CORROBORATED.</li>
+          </ul>
+          <figcaption class="snipcap"><span class="figtag">THE SAME WHEAT STORY, 37 SECONDS LATER</span>The row from step 1, with its score caught up in place. Every part of the read is on the row — nothing hides in a tooltip.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STEP 3 · A SECOND SOURCE ==================== -->
+<section class="sec vio wash-vio" id="second" aria-labelledby="second-h">
+  <div class="wrap inner">
+    <span class="eychip vio">STEP 3 · A SECOND SOURCE</span>
+    <h2 class="sectitle" id="second-h">A second wire makes it solid</h2>
+    <div class="stage">
+      <div class="st-copy">
+        <p>One wire carrying a story is a report. Two wires carrying it is about as close to a fact as a fast tape gets. So when <b>a second wire confirms a headline</b>, we don't print it again — the row you already have firms up in place, and its label changes to <b>corroborated</b>.</p>
+        <p>That means every headline on the tape sits at one of three stages, and the label always tells you which: <b>provisional</b> (“it just crossed — we see it, we haven't read it yet”), <b>scored</b> (“we've read it, and here's what we think it means”), and <b>corroborated</b> (“a second source agrees it actually happened”). No row ever pretends to more certainty than it has.</p>
+        <p>And when a story never finds a second wire? It stays visibly single-sourced, and its confidence stays modest. That's the tape's polite way of saying <b>“maybe.”</b></p>
+      </div>
+      <div class="st-fig">
+        <figure class="fig">
+          <div class="snip" role="img" aria-label="The same headline shown at three moments: provisional, then scored, then corroborated when a second wire confirms it">
+            <div class="ph"><span class="led"></span>ONE STORY, THREE STAGES<span class="ph-r">SIMULATED</span></div>
+            <div class="bd" style="padding-top:4px">
+              <div class="wrow">
+                <span class="wsig" style="background:var(--hair-strong)"></span>
+                <span class="wimp dash">—</span>
+                <div>
+                  <p class="whl" style="margin:0">Export corridor talks break off early — delegation heads home</p>
+                  <div class="wmeta"><span>08:31:04 ET</span><span>WIRE 3</span><span class="provtag">PROV · AWAITING SCORE</span></div>
+                </div>
+              </div>
+              <div class="wrow">
+                <span class="wsig" style="background:var(--bear)"></span>
+                <span class="wimp">74</span>
+                <div>
+                  <p class="whl" style="margin:0">Export corridor talks break off early — delegation heads home</p>
+                  <div class="wmeta"><span>08:31:41 ET</span><span>SCORED</span><span class="iimp c-bear">ZW −52</span></div>
+                </div>
+              </div>
+              <div class="wrow">
+                <span class="wsig" style="background:var(--bear)"></span>
+                <span class="wimp">74</span>
+                <div>
+                  <p class="whl" style="margin:0">Export corridor talks break off early — delegation heads home</p>
+                  <div class="wmeta"><span>08:33:12 ET</span><span>CORROB ×2 · WIRE 1 CONFIRMS</span><span class="iimp c-bear">ZW −57</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption class="snipcap"><span class="figtag">SHOWN AS THREE ROWS SO YOU CAN SEE THE LABELS</span>On your actual tape this is <b>one row that firms up in place</b> — provisional, then scored, then corroborated. Nothing duplicates, nothing gets rewritten.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STEP 4 · ONE NUMBER PER CONTRACT ==================== -->
+<section class="sec vio" id="index" aria-labelledby="index-h">
+  <div class="wrap inner">
+    <span class="eychip vio">STEP 4 · ONE NUMBER PER CONTRACT</span>
+    <h2 class="sectitle" id="index-h">Everything rolls up into one number</h2>
+    <div class="stage">
+      <div class="st-copy">
+        <p>Individual stories come and go; the index is the running mood. For every contract, <b>the recent scored stories roll up into a single number</b>, weighted by freshness — a story from five minutes ago counts a lot, one from fifty minutes ago barely registers. The result answers a simple question: <b>what does the news look like for this contract, right now?</b></p>
+        <p>That happens for <b>42 contracts across 7 asset classes</b> — equity index, rates, energy, metals, agriculture, FX and crypto — with sector and asset-class rollups above them, and every plan gets all of it. When a contract's number turns genuinely decisive, it gets a plain-words label like STRONG BEAR — and from that moment the call sits on the public track record (step 7), where it'll be resolved against whatever actually happens next.</p>
+        <p>One thing worth repeating, because it governs everything here: every number on this page is <b>sentiment, on a −100 to +100 scale</b>. None of it is ever a market price, and none of it ever tells you what to do.</p>
+      </div>
+      <div class="st-fig">
+        <figure class="panelfig">
+          <svg viewBox="0 0 560 130" role="img" aria-label="A sentiment scale from minus 100 to plus 100 with plain-words zones: strong bear, bear, neutral, bull, strong bull. An example marker sits in the strong-bear zone at minus 57 for wheat.">
+            <text x="30" y="20" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-3)">THE MOOD SCALE — SENTIMENT, NEVER A PRICE</text>
+            <line x1="30" y1="72" x2="530" y2="72" stroke="var(--hair-strong)"/>
+            <line x1="30" y1="66" x2="30" y2="78" stroke="var(--ink-3)"/>
+            <line x1="280" y1="66" x2="280" y2="78" stroke="var(--ink-3)"/>
+            <line x1="530" y1="66" x2="530" y2="78" stroke="var(--ink-3)"/>
+            <text x="18" y="94" font-family="Martian Mono,monospace" font-size="9" fill="var(--ink-faint)">−100</text>
+            <text x="274" y="94" font-family="Martian Mono,monospace" font-size="9" fill="var(--ink-faint)">0</text>
+            <text x="512" y="94" font-family="Martian Mono,monospace" font-size="9" fill="var(--ink-faint)">+100</text>
+            <text x="34" y="52" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--bear)">STRONG BEAR</text>
+            <text x="152" y="52" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-3)">BEAR</text>
+            <text x="252" y="52" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--neutral)">NEUTRAL</text>
+            <text x="360" y="52" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-3)">BULL</text>
+            <text x="428" y="52" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--bull)">STRONG BULL</text>
+            <path d="M96 72 L91 60 L101 60 Z" fill="var(--ink)"/>
+            <text x="60" y="116" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1" fill="var(--ink-2)">ZW −57 · READS “STRONG BEAR” (MOCK)</text>
+          </svg>
+          <figcaption class="snipcap"><span class="figtag">WHEN A NUMBER EARNS A LABEL</span>Labels only appear at genuinely decisive levels. In between, the number speaks for itself and we keep the adjectives to ourselves.</figcaption>
+        </figure>
+        <figure class="panelfig">
+          <svg viewBox="0 0 560 120" role="img" aria-label="Bars of decreasing height showing that newer stories carry more weight in the index, and stories older than about an hour carry almost none.">
+            <text x="30" y="18" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-3)">HOW MUCH EACH STORY COUNTS — FRESHER IS LOUDER</text>
+            <rect x="40"  y="34" width="26" height="56" fill="#8B5CF6" opacity=".85"/>
+            <rect x="86"  y="42" width="26" height="48" fill="#8B5CF6" opacity=".68"/>
+            <rect x="132" y="50" width="26" height="40" fill="#8B5CF6" opacity=".54"/>
+            <rect x="178" y="58" width="26" height="32" fill="#8B5CF6" opacity=".42"/>
+            <rect x="224" y="66" width="26" height="24" fill="#8B5CF6" opacity=".32"/>
+            <rect x="270" y="74" width="26" height="16" fill="#8B5CF6" opacity=".23"/>
+            <rect x="316" y="80" width="26" height="10" fill="#8B5CF6" opacity=".16"/>
+            <rect x="362" y="85" width="26" height="5"  fill="#8B5CF6" opacity=".1"/>
+            <rect x="408" y="88" width="26" height="2"  fill="#8B5CF6" opacity=".07"/>
+            <line x1="30" y1="90" x2="530" y2="90" stroke="var(--hair-strong)"/>
+            <text x="40" y="108" font-family="Martian Mono,monospace" font-size="9" fill="var(--ink-faint)">NOW</text>
+            <text x="396" y="108" font-family="Martian Mono,monospace" font-size="9" fill="var(--ink-faint)">~1H AGO</text>
+            <text x="470" y="108" font-family="Martian Mono,monospace" font-size="9" fill="var(--ink-faint)">STORY AGE →</text>
+          </svg>
+          <figcaption class="snipcap"><span class="figtag">A ROUGHLY ONE-HOUR MEMORY</span>Fresh stories dominate; old ones fade out. The index describes the tape as it stands, not as it stood an hour ago.</figcaption>
+        </figure>
+        <p class="micro" style="border-top:1px solid var(--hair-strong);padding-top:10px;margin:0">EQUITY INDEX · RATES · ENERGY · METALS · AGRICULTURE · FX · CRYPTO — 42 CONTRACTS, ON EVERY TIER</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hair-grad wrap" style="margin-top:72px">
+
+<!-- ==================== STEP 5 · THE CALENDAR & GUARDRAIL ==================== -->
+<section class="sec ras wash-ras" id="calendar" aria-labelledby="calendar-h">
+  <div class="wrap inner">
+    <span class="eychip ras">STEP 5 · THE CALENDAR &amp; GUARDRAIL</span>
+    <h2 class="sectitle" id="calendar-h">The calendar sees releases coming</h2>
+    <div class="stage">
+      <div class="st-copy">
+        <p>Everything so far reacts to news that already happened. The calendar works ahead of it. <b>Every scheduled release that touches your contracts is on it</b> — CPI, auctions, jobless claims — and for each one, the what-ifs are written in advance: what a stronger-than-expected number would likely mean for your contract, what a weaker one would. When the release lands, the meaning is already waiting for it.</p>
+        <p>Then the <b>Guardrail</b> gives you a heads-up three times on the way in. <b>ARMED means the release is 30 minutes out</b> — the terminal is already watching it for you. HOT at ten means it's getting close. LIVE at two means it's about to happen. Each step brings a message on screen, a notification, and a spoken callout, so a release shouldn't arrive unannounced no matter where you're looking. And if your prop firm has rules about trading through releases, <b>Topstep's and Apex's are on screen next to the countdown</b>, so following them on time is straightforward.</p>
+        <p>The chip carries one small piece of history too, always in the same plain format — <b>HIST ±0.1% TYP 15M (N=15)</b>: how this release has typically behaved, for how long, across how many past occurrences. It's the only backward-looking number we allow ourselves, and it's there so you can decide how much to care before the countdown runs out.</p>
+      </div>
+      <div class="st-fig">
+        <figure class="panelfig">
+          <svg viewBox="0 0 560 120" role="img" aria-label="The Guardrail countdown: armed at 30 minutes before a release, hot at 10, live at 2, then the release itself. Each step brings an on-screen message, a notification, and a spoken heads-up.">
+            <line x1="30" y1="58" x2="530" y2="58" stroke="var(--hair-strong)"/>
+            <circle cx="80" cy="58" r="5" fill="none" stroke="var(--neutral)"/>
+            <circle cx="240" cy="58" r="5" fill="none" stroke="var(--amber)"/>
+            <circle cx="400" cy="58" r="5" fill="var(--amber)"/>
+            <line x1="500" y1="40" x2="500" y2="76" stroke="var(--ink)" stroke-width="2"/>
+            <text x="58" y="36" font-family="Martian Mono,monospace" font-size="9.5" letter-spacing="1" fill="var(--neutral)">T−30 ARMED</text>
+            <text x="222" y="36" font-family="Martian Mono,monospace" font-size="9.5" letter-spacing="1" fill="var(--amber)">T−10 HOT</text>
+            <text x="382" y="36" font-family="Martian Mono,monospace" font-size="9.5" letter-spacing="1" fill="var(--amber)">T−2 LIVE</text>
+            <text x="462" y="30" font-family="Martian Mono,monospace" font-size="9.5" letter-spacing="1" fill="var(--ink)">THE RELEASE</text>
+            <text x="62" y="86" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-faint)">MESSAGE</text>
+            <text x="204" y="86" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-faint)">NOTIFICATION</text>
+            <text x="352" y="86" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-faint)">SPOKEN HEADS-UP</text>
+            <text x="30" y="110" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-3)">THREE HEADS-UPS BEFORE EVERY MAPPED RELEASE</text>
+          </svg>
+          <figcaption class="snipcap"><span class="figtag">THIRTY, TEN, AND TWO MINUTES OUT</span>Each step is a little louder than the last, and the last one is spoken — so a scheduled release is never the first you hear of it.</figcaption>
+        </figure>
+        <figure class="panelfig">
+          <svg viewBox="0 0 560 150" role="img" aria-label="A what-if tree: a scheduled release branches into beat, in-line, and miss outcomes, each with a plain-language read written before the number exists.">
+            <rect x="24" y="56" width="120" height="38" fill="var(--well)" stroke="var(--hair-strong)"/>
+            <text x="38" y="73" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1" fill="var(--ink)">THE RELEASE</text>
+            <text x="38" y="87" font-family="Martian Mono,monospace" font-size="8" letter-spacing="1" fill="var(--ink-3)">MAPPED PER CONTRACT</text>
+            <path d="M144 75 C210 75 220 28 280 28 M144 75 H280 M144 75 C210 75 220 122 280 122" fill="none" stroke="var(--hair-strong)"/>
+            <rect x="282" y="12" width="90" height="30" fill="none" stroke="var(--ink-3)"/>
+            <rect x="282" y="60" width="90" height="30" fill="none" stroke="var(--ink-3)"/>
+            <rect x="282" y="108" width="90" height="30" fill="none" stroke="var(--ink-3)"/>
+            <text x="296" y="31" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-2)">BEAT</text>
+            <text x="296" y="79" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-2)">IN LINE</text>
+            <text x="296" y="127" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-2)">MISS</text>
+            <text x="388" y="31" font-family="Martian Mono,monospace" font-size="8" letter-spacing="1" fill="var(--ink-faint)">→ READ ALREADY WRITTEN</text>
+            <text x="388" y="79" font-family="Martian Mono,monospace" font-size="8" letter-spacing="1" fill="var(--ink-faint)">→ READ ALREADY WRITTEN</text>
+            <text x="388" y="127" font-family="Martian Mono,monospace" font-size="8" letter-spacing="1" fill="var(--ink-faint)">→ READ ALREADY WRITTEN</text>
+          </svg>
+          <figcaption class="snipcap"><span class="figtag">THE WHAT-IFS, WRITTEN AHEAD</span>Each branch's read is drafted before the number exists — so you're deciding what to do, not decoding what just happened.</figcaption>
+        </figure>
+        <div class="grchip" role="img" aria-label="Mock Guardrail chip: CPI at 8:30 ET, hot, nine minutes forty-two seconds to the release; the historical note reads HIST plus or minus 0.1 percent, typical 15 minutes, N equals 15; Topstep and Apex event rules shown on screen.">
+          <div class="gr-row"><span class="gr-ev">CPI · 08:30 ET</span><span class="timeflag">HOT · T−09:42</span></div>
+          <p class="gr-hist">HIST ±0.1% TYP 15M (N=15) — HOW THIS RELEASE HAS TYPICALLY BEHAVED</p>
+          <p class="gr-firm">TOPSTEP &amp; APEX EVENT RULES · ON SCREEN, NEXT TO THE COUNTDOWN</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STEP 6 · THE SQUAWK ==================== -->
+<section class="sec ras" id="squawk" aria-labelledby="squawk-h">
+  <div class="wrap inner">
+    <span class="eychip ras">STEP 6 · THE SQUAWK</span>
+    <h2 class="sectitle" id="squawk-h">The squawk says it out loud</h2>
+    <div class="stage">
+      <div class="st-copy">
+        <p>Trading floors have kept a squawk box on for decades — a voice reading the news out loud so nobody has to stare at the tape. NewsBerri builds that voice into the terminal: <b>headlines above your chosen importance level are read aloud</b> as they land and as they firm up, in one calm sentence that includes the read — what happened, and what it means for the contract.</p>
+        <p>The bar is yours to set. Keep it high and the squawk only speaks when something genuinely matters; open it up and it quietly narrates the working day. Either way, <b>you'll hear the headline even when you're not looking</b> — eyes on your platform, ears on the wire.</p>
+        <p>The Guardrail borrows the same voice for its two-minute callout. Between the two of them, nothing on the calendar or the tape should land on you cold.</p>
+      </div>
+      <div class="st-fig">
+        <figure class="panelfig">
+          <svg viewBox="0 0 560 140" role="img" aria-label="A speaker beside an importance scale from low to high, with a marker showing your own bar; only stories above the bar are spoken.">
+            <rect x="40" y="52" width="18" height="30" fill="none" stroke="var(--ink-3)"/>
+            <path d="M58 52 L84 34 V100 L58 82 Z" fill="none" stroke="var(--ink-3)"/>
+            <path d="M98 52 A22 22 0 0 1 98 82" fill="none" stroke="var(--ink-2)"/>
+            <path d="M110 42 A34 34 0 0 1 110 92" fill="none" stroke="var(--ink-3)"/>
+            <path d="M122 32 A46 46 0 0 1 122 102" fill="none" stroke="var(--ink-faint)"/>
+            <line x1="200" y1="67" x2="520" y2="67" stroke="var(--hair-strong)"/>
+            <line x1="200" y1="61" x2="200" y2="73" stroke="var(--ink-3)"/>
+            <line x1="520" y1="61" x2="520" y2="73" stroke="var(--ink-3)"/>
+            <path d="M388 67 L383 55 L393 55 Z" fill="var(--berry)"/>
+            <text x="200" y="90" font-family="Martian Mono,monospace" font-size="9" fill="var(--ink-faint)">LOW</text>
+            <text x="490" y="90" font-family="Martian Mono,monospace" font-size="9" fill="var(--ink-faint)">HIGH</text>
+            <text x="352" y="44" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1" fill="var(--ink-2)">YOUR BAR</text>
+            <text x="200" y="118" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-3)">ONLY WHAT CLEARS YOUR BAR GETS SPOKEN</text>
+          </svg>
+          <figcaption class="snipcap"><span class="figtag">YOU SET THE BAR</span>Above it, the terminal speaks. Below it, the tape stays text. You decide how chatty your desk is.</figcaption>
+        </figure>
+        <p class="spokenq" aria-label="Example of a spoken squawk line"><b>“Gold — central-bank reserve buying picks up. Read on GC: sentiment plus forty-seven, corroborated, two wires.”</b><br>— THE SQUAWK, READING A SCORED ROW ALOUD (MOCK)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STEP 7 · THE TRACK RECORD ==================== -->
+<section class="sec ras wash-ras" id="record" aria-labelledby="record-h">
+  <div class="wrap inner">
+    <span class="eychip ras">STEP 7 · THE TRACK RECORD</span>
+    <h2 class="sectitle" id="record-h">We keep score in public</h2>
+    <div class="stage">
+      <div class="st-copy">
+        <p>A tool that grades its own homework in private isn't worth much, so we don't. <b>Whenever the read turns decisive enough to earn a label, that call is logged publicly the moment it's made</b> — contract, label, timestamp — and later resolved against what actually happened next.</p>
+        <p>Misses stay on the record next to the hits. Nothing gets quietly deleted, reworded, or resolved generously after the fact. And the record stays <b>qualitative on purpose</b> — we don't compute an accuracy percentage about ourselves, because a number you calculate about yourself is really just an advertisement. Read the ledger and make up your own mind; that's the whole idea.</p>
+        <p><b>And the ledger is public from the first call</b> — nothing curated, nothing held back. Open it whenever you like and check the calls against what actually happened. It's a record you can verify for yourself, not a number you have to trust.</p>
+      </div>
+      <div class="st-fig">
+        <figure class="panelfig">
+          <table class="ledtable">
+            <caption>FROM THE PUBLIC LEDGER — RECENT CALLS (MOCK DATA)</caption>
+            <thead><tr><th scope="col">Logged</th><th scope="col">Call</th><th scope="col">How it resolved</th></tr></thead>
+            <tbody>
+              <tr><td class="num">JUL 11 · 09:12</td><td class="num">6E · STRONG BULL</td><td><b>Matched</b> what followed</td></tr>
+              <tr><td class="num">JUL 10 · 14:47</td><td class="num">ZN · STRONG BEAR</td><td><b>Missed</b> — kept on the record anyway</td></tr>
+              <tr><td class="num">JUL 10 · 08:34</td><td class="num">CL · STRONG BEAR</td><td><b>Matched</b> what followed</td></tr>
+              <tr><td class="num">JUL 09 · 10:03</td><td class="num">GC · BULL</td><td><b>Matched</b> what followed</td></tr>
+            </tbody>
+          </table>
+          <figcaption class="snipcap"><span class="figtag">THE RECORD, AS ANYONE CAN READ IT</span>Illustrative rows, not the live ledger. No percentages, no pruning. The second row is the honest part — and the reason the other rows mean anything.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STEP 8 · WHAT WE DON'T DO / IF SOMETHING BREAKS ==================== -->
+<section class="sec" id="standards" aria-labelledby="standards-h">
+  <div class="wrap inner">
+    <span class="eychip">STEP 8 · THE FINE PRINT, UP FRONT</span>
+    <h2 class="sectitle" id="standards-h">What we deliberately don't do</h2>
+    <p class="secsub">Two lists that matter as much as anything above: the things we've chosen to leave out on purpose, and what happens on the bad days.</p>
+    <div class="twobox">
+      <article class="stdbox" aria-labelledby="dont-h">
+        <h3 id="dont-h">You won't find here</h3>
+        <hr class="std-rule">
+        <ul>
+          <li><b>No market prices, no charts, no candlesticks.</b> Your trading platform already does price, beautifully. We sit beside it and handle the meaning — we never repeat its job.</li>
+          <li><b>No buy or sell calls.</b> We tell you what a story means for a contract. What you do about it is entirely, permanently yours.</li>
+          <li><b>No promised outcomes.</b> The Guardrail gives you a heads-up before every scheduled release and puts your firm's rules on screen. It helps you decide on time — that's the honest limit of what any tool can do.</li>
+          <li><b>No manufactured applause.</b> No invented testimonials, no decorative percentages. The public track record above is the only scoreboard we keep.</li>
+        </ul>
+        <span class="micro">LEFT OUT ON PURPOSE — NOT BY OVERSIGHT</span>
+      </article>
+      <article class="stdbox" aria-labelledby="breaks-h">
+        <h3 id="breaks-h">If something breaks</h3>
+        <hr class="std-rule">
+        <ul>
+          <li><b>Headlines keep flowing.</b> If one wire stalls, the others keep going. If the scoring itself has a bad moment, stories still arrive — marked provisional, exactly like step 1.</li>
+          <li><b>You'll see the problem honestly.</b> A stretch with more PROV chips than usual is the system telling you the truth about what it knows, not hiding a fault.</li>
+          <li><b>Nothing is back-filled.</b> When scoring catches up, labels advance in place — provisional to scored to corroborated. They're never quietly rewritten to look like we knew all along.</li>
+        </ul>
+        <span class="micro">HOW THE BAD DAYS WORK — WORTH KNOWING BEFORE ONE</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CTA BAND ==================== -->
+<section class="tryband" aria-labelledby="final-h">
+  <div class="wrap" style="position:relative">
+    <span class="eychip">THAT'S THE WHOLE MACHINE</span>
+    <h2 id="final-h">Now watch it <span class="grad-text">run</span></h2>
+    <p>The demo is the full terminal on simulated data — click around, open the explanations, hear the squawk speak. Or take the real thing for seven days and judge the method by what it shows you.</p>
+    <div class="cta-row">
+      <a class="btn-key" href="https://app.newsberri.com">START YOUR 7-DAY TRIAL</a>
+      <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
+    </div>
+    <p style="position:relative;font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--ink-3);margin:-14px 0 26px">7-day trial · cancel anytime, self-serve · we email you before it renews</p>
+    <p class="trust">42 CONTRACTS · 7 ASSET CLASSES · LIVE NEWS WIRES · PUBLIC TRACK RECORD FROM DAY ONE</p>
+    <p style="position:relative;max-width:600px;margin:20px auto 0;padding-top:18px;border-top:1px solid var(--hair);font-size:13px;line-height:1.6;color:var(--ink-2)">Futures trading carries a substantial risk of loss and isn't right for everyone. NewsBerri is informational only — no advice, no recommendations, no profit claims.</p>
+  </div>
+</section>
+</main>
+
+<!-- ======== CHROME: footer (copy verbatim on every page) ======== -->
+<footer class="colophon">
+  <div class="wrap">
+    <div class="colo-top">
+      <a class="colo-brand" href="index.html" aria-label="NewsBerri — home">
+        <svg viewBox="0 0 64 64" width="26" height="26" fill="none" aria-hidden="true">
+          <path fill="#00e676" d="M30 15 C27.5 8 21.5 5.5 16 8.5 C18.5 14.5 25 17 30 15 Z"/>
+          <circle cx="26.1" cy="21.5" r="5.4" fill="#ff3b57"/><circle cx="37.9" cy="21.5" r="5.4" fill="#00e676"/>
+          <circle cx="19.7" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="32" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="5.4" fill="#ff3b57"/>
+          <circle cx="21.3" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="32" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="42.7" cy="39.1" r="5.4" fill="#c2183a"/>
+          <circle cx="26.7" cy="47.9" r="5.4" fill="#c2183a"/><circle cx="37.3" cy="47.9" r="5.4" fill="#c2183a"/>
+          <circle cx="32" cy="55.1" r="5.1" fill="#8f1029"/>
+        </svg>
+        <span class="wordmark">News<b>Berri</b></span>
+      </a>
+      <p class="colo-comp">Informational only — not trading advice.</p>
+    </div>
+    <div class="colo-mid">
+      <span>
+        <a href="how-it-works.html">HOW IT WORKS</a>
+        <a href="pricing.html">PRICING</a>
+        <a href="demo.html">DEMO</a>
+        <a href="#">TERMS</a>
+        <a href="#">PRIVACY</a>
+        <a href="#">REFUNDS</a>
+        <a href="#">MARKET-DATA DISCLAIMER</a>
+      </span>
+      <a href="mailto:support@newsberri.com">SUPPORT@NEWSBERRI.COM</a>
+    </div>
+    <div class="colo-bot">
+      <span>© 2026 NEWSBERRI · ALL PAGES MOCK DATA</span>
+      <span class="roundtag">V1 DRAFT · MOCKUP — NOT LIVE</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

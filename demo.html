@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NewsBerri — Try the demo</title>
+<meta name="description" content="Click around a simulated NewsBerri terminal — scored headlines, per-contract reads, calendar scenarios and the squawk, all mock data. No sign-up, no live data, no prices. Informational only — not trading advice." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Ccircle cx='26.1' cy='19.5' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='37.9' cy='19.5' r='6.5' fill='%2300e676'/%3E%3Ccircle cx='19.7' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='32' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='44.3' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='21.3' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='42.7' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='26.7' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='37.3' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='58.1' r='6' fill='%238f1029'/%3E%3C/svg%3E" />
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================================
+   NEWSBERRI — SITE V1 · DEMO PAGE (public, no sign-in)
+   Adapted from the round-2 shared demo: the board and its JS are untouched;
+   only the demo bar, back link, round tag and tour captions changed for V1.
+   Chassis: KEYS round · concept 3 "WASH" (the skin that shipped) — OLED black,
+   flat hairline plates, monochrome white keys, EDGE direction vocabulary,
+   faint ambient washes. Adapted for the marketing site: slim demo bar on top,
+   one-tick berry cluster mark, six clickable mock contracts, ✦ EXPLAIN drawer,
+   beat/miss scenario trees, SpeechSynthesis squawk key, first-load tour.
+   SIMULATED DATA THROUGHOUT · NO MARKET PRICES ANYWHERE.
+   ============================================================================ */
+/* —— locked brand tokens (verbatim) —— */
+:root{
+  --mono:"Martian Mono",ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+  --grot:"Barlow Semi Condensed",system-ui,-apple-system,sans-serif;
+  --display:"Big Shoulders Display","Barlow Semi Condensed",system-ui,sans-serif;
+  --bull:#00e676; --bear:#ff1744; --amber:#ff9100; --orange:#ff3d00; --neutral:#8a97a6;
+  --accent:var(--key); --cyan:var(--accent);
+  --berry:#ff3b57; --berry-dk:#c2183a; --berry-deep:#8f1029;
+}
+:root[data-theme="dark"]{
+  --canvas:#000000; --panel:#0d1013; --panel-2:#101317; --raise:#14181d;
+  --hair:#1a1f25; --hair-strong:#262d35;
+  --ink:#f2f6f8; --ink-2:#b8c7d1; --ink-3:#8496a2; --ink-faint:#5d6d78;
+  --key:#ffffff; --key-ink:#04060a;
+  --key-glow:0 0 12px rgba(255,255,255,.25); --key-glow-hi:0 0 16px rgba(255,255,255,.38);
+  --call-neutral:#8a97a6; --well:#05080b; --well-line:#1f262e;
+  --bull-bg:rgba(0,210,122,.12); --bear-bg:rgba(255,65,81,.12); --neutral-bg:rgba(138,151,166,.12);
+  --selrow:rgba(255,255,255,.06); color-scheme:dark;
+}
+/* —— WASH-skin extras —— */
+:root{
+  --key-line:#3a4444; --key-mute:#87928d;
+  --bull-wash:rgba(0,210,122,.055); --bear-wash:rgba(255,65,81,.055);
+  --neutral-wash:rgba(138,151,166,.04);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--grot);font-size:13.5px;
+  -webkit-font-smoothing:antialiased;letter-spacing:.15px;overflow:hidden;display:flex;flex-direction:column}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.up{color:var(--bull)} .down{color:var(--bear)} .flat{color:var(--neutral)}
+a{color:inherit} button{font-family:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--key);outline-offset:1px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.plate{background:var(--panel);border:1px solid var(--hair-strong);position:relative}
+.ph{display:flex;align-items:center;gap:8px;height:30px;flex:0 0 auto;padding:0 10px;
+  border-bottom:1px solid var(--hair-strong);
+  font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:2.6px;color:var(--ink-2)}
+.ph .led{width:7px;height:7px;background:var(--key);box-shadow:0 0 8px rgba(255,255,255,.55)}
+.ph .ph-r{margin-left:auto;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:1px;font-weight:400;color:var(--ink-faint);text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:transparent;
+  border:1px solid var(--key-line);border-radius:0;
+  font-family:var(--grot);font-weight:600;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--key-mute)}
+.btn:hover{color:var(--key);border-color:var(--key)}
+.btn:active{transform:translateY(1px)}
+.btn.pressed,.btn.on{background:var(--key);color:var(--key-ink);border-color:var(--key);font-weight:700;box-shadow:var(--key-glow)}
+.btn.pressed:hover,.btn.on:hover{color:var(--key-ink);border-color:var(--key);box-shadow:var(--key-glow-hi)}
+.btn.sm{padding:3px 8px;font-size:9.5px;letter-spacing:1.2px}
+.btn .glyph{font-size:12px}
+a.btn{text-decoration:none}
+.dot{width:8px;height:8px;background:currentColor;box-shadow:0 0 6px 1px currentColor}
+.wm{font-family:var(--display);font-weight:800;letter-spacing:2px;color:var(--ink);line-height:1}
+.wm b{color:var(--berry);font-weight:800}
+
+/* ===== demo bar (fixed above the board) ===== */
+#demobar{flex:0 0 47px;display:flex;align-items:center;gap:13px;padding:0 14px;position:relative;z-index:70;
+  background:var(--panel);border-bottom:1px solid var(--hair-strong)}
+#demobar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(232,51,110,.55) 20%,rgba(139,92,246,.55) 80%,transparent)}
+#demobar .wm{font-size:20px}
+.db-mode{font-family:var(--mono);font-size:9px;letter-spacing:2.2px;color:var(--ink-3);text-transform:uppercase}
+.db-chip{font-family:var(--mono);font-size:8.5px;letter-spacing:1.2px;border:1px solid var(--hair-strong);
+  color:var(--ink-2);padding:4px 8px;background:var(--panel-2);white-space:nowrap}
+#demobar .sp{flex:1}
+.db-back{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-2);text-decoration:none;white-space:nowrap;padding:8px 2px}
+.db-back::before{content:"[ ";color:var(--ink-faint)}
+.db-back::after{content:" ]";color:var(--ink-faint)}
+.db-back:hover{color:var(--key)}
+.db-back:hover::before,.db-back:hover::after{color:#C74497}
+.db-key{display:inline-flex;align-items:center;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:2px;padding:8px 16px;border:1px solid var(--key);box-shadow:var(--key-glow);text-decoration:none;white-space:nowrap;transition:box-shadow .18s ease}
+.db-key:hover{box-shadow:0 0 14px rgba(232,51,110,.4),0 0 26px rgba(139,92,246,.35)}
+
+/* ===== board frame: horizontal-scrolls inside itself under 1024 ===== */
+#boardwrap{flex:1;min-height:0;overflow:auto;background:var(--canvas)}
+#app{display:grid;grid-template-rows:86px 1fr 34px;grid-template-columns:196px 1fr;height:100%;min-height:620px;min-width:1024px;gap:5px;padding:5px;background:var(--canvas)}
+
+/* --- top band --- */
+#band{grid-column:1/3;display:flex;align-items:stretch;gap:5px}
+.brandplate{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:0 18px 0 14px}
+.brandrow{display:flex;align-items:center;gap:9px}
+.brandmark{width:27px;height:27px;filter:drop-shadow(0 0 3px rgba(255,59,87,.3))}
+.brandsub{font-family:var(--mono);font-size:7.5px;letter-spacing:2.6px;color:var(--ink-3);text-transform:uppercase}
+.lcd{flex:1;display:flex;align-items:center;gap:20px;padding:0 20px;position:relative;border:1px solid var(--hair-strong);background:var(--canvas)}
+.lcd .sym{display:flex;flex-direction:column;gap:2px;min-width:120px}
+.lcd .sym b{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:2px;line-height:1}
+.lcd .sym span{font-family:var(--mono);font-size:8px;letter-spacing:1px;color:var(--ink-faint);text-transform:uppercase}
+.lcd .big{font-family:var(--mono);font-weight:700;font-size:44px;letter-spacing:-1px;line-height:1;
+  text-shadow:0 0 9px color-mix(in srgb,currentColor,transparent 45%),0 0 22px color-mix(in srgb,currentColor,transparent 70%)}
+.lcd .lab{font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:3px;padding:5px 13px;color:var(--key-ink);background:var(--call-neutral);white-space:nowrap}
+.groove{flex:1;max-width:400px;position:relative;height:46px}
+.groove .tr{position:absolute;top:20px;left:0;right:0;height:8px;background:var(--well);border:1px solid var(--hair-strong)}
+.groove .fill{position:absolute;top:22px;height:4px;box-shadow:0 0 4px color-mix(in srgb,currentColor,transparent 35%)}
+.groove .mid{position:absolute;top:16px;left:50%;width:2px;height:16px;background:#3a434d}
+.groove .pin{position:absolute;top:12px;width:10px;height:24px;transform:translateX(-50%);background:var(--key);box-shadow:0 0 5px rgba(255,255,255,.3)}
+.groove .ticks{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;font-family:var(--mono);font-size:7.5px;color:var(--ink-faint)}
+.groove .glab{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;font-family:var(--mono);font-size:7.5px;letter-spacing:1.6px;color:var(--ink-faint)}
+.bandmeters{display:flex;flex-direction:column;justify-content:center;gap:7px;padding:0 14px;min-width:180px}
+.meter{display:flex;align-items:center;gap:8px}
+.meter .k{width:36px;font-family:var(--mono);font-size:7.5px;letter-spacing:1.2px;color:var(--ink-faint);text-transform:uppercase}
+.meter .track{flex:1;height:6px;background:var(--well);border:1px solid var(--well-line);position:relative}
+.meter .track i{position:absolute;left:1px;top:1px;bottom:1px;box-shadow:0 0 3px currentColor}
+.meter b{font-family:var(--mono);font-size:10px;width:26px;text-align:right}
+#band .dot{box-shadow:0 0 3px 1px currentColor}
+.statclu{display:flex;flex-direction:column;justify-content:center;gap:5px;padding:0 14px;font-family:var(--mono);font-size:9px;color:var(--ink-3)}
+.statclu .row{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.statclu .k{font-size:7.5px;letter-spacing:1.4px;color:var(--ink-faint);text-transform:uppercase;width:52px}
+.bandkeys{display:flex;flex-direction:column;justify-content:center;gap:6px;padding:0 12px}
+#band .btn.pressed{box-shadow:0 0 6px rgba(255,255,255,.14)}
+
+/* --- left rail: contracts --- */
+#rail{display:flex;flex-direction:column;overflow:hidden}
+#rail .list{flex:1;overflow-y:auto;padding:3px}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#1c232b;border:2px solid #000}
+.crow{display:grid;grid-template-columns:34px 1fr 34px 8px;align-items:center;gap:6px;height:34px;padding:0 7px;margin-bottom:3px;
+  background:transparent;border:1px solid var(--hair);cursor:pointer;position:relative}
+.crow:hover{border-color:var(--key-line)}
+.crow .csig{position:absolute;left:0;top:0;bottom:0;width:3px}
+.crow.sel{background:var(--key);border-color:var(--key);box-shadow:0 0 14px rgba(255,255,255,.28)}
+.crow.sel .sym,.crow.sel .idx{color:var(--key-ink) !important}
+.crow.sel .bar{background:rgba(0,0,0,.14);border-color:rgba(0,0,0,.3)}
+.crow.sel .bar i{background:var(--key-ink) !important;box-shadow:none}
+.crow .sym{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px}
+.crow .bar{height:5px;background:var(--well);border:1px solid #171d23;position:relative}
+.crow .bar i{position:absolute;top:1px;bottom:1px;box-shadow:0 0 5px currentColor}
+.crow .idx{font-family:var(--mono);font-weight:700;font-size:10.5px;text-align:right}
+.crow .led{width:6px;height:6px}
+.rail-note{padding:8px 9px;border-top:1px solid var(--hair);font-family:var(--mono);font-size:7.5px;letter-spacing:1px;color:var(--ink-faint);text-transform:uppercase;line-height:1.7}
+
+/* --- main grid --- */
+#main{display:grid;grid-template-columns:1.25fr .95fr 1fr;grid-template-rows:1fr 1fr;gap:5px;min-height:0}
+.panel{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden}
+.pbody{flex:1;overflow-y:auto;min-height:0;padding:9px 11px;display:flex;flex-direction:column;gap:8px}
+#p-risk .pbody,#p-ai .pbody{justify-content:space-evenly}
+#p-trend{grid-column:1/3}
+/* tape */
+.wire-row{display:grid;grid-template-columns:4px 30px 1fr;gap:9px;padding:8px 2px;border-bottom:1px solid var(--hair);cursor:pointer}
+.wire-row:hover{background:var(--selrow)}
+.wire-row:last-child{border-bottom:0}
+.wire-row.dim{opacity:.4}
+.wsig{width:4px}
+.wimp{height:20px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700;background:transparent;border:1px solid var(--hair-strong);color:var(--ink-2)}
+.wire-row.loud .wimp{background:var(--key);color:var(--key-ink);border-color:var(--key);box-shadow:0 0 10px rgba(255,255,255,.3)}
+.whl{font-weight:600;font-size:13px;line-height:1.32}
+.wmeta{display:flex;align-items:center;gap:7px;margin-top:3px;font-family:var(--mono);font-size:8px;color:var(--ink-faint);letter-spacing:.5px;text-transform:uppercase;flex-wrap:wrap}
+.wmeta .exp{margin-left:auto;border:1px solid var(--hair-strong);color:var(--ink-3);padding:1px 5px;letter-spacing:1px}
+.wire-row:hover .exp{border-color:var(--key);color:var(--key)}
+.iimp{font-family:var(--mono);font-size:8.5px;font-weight:700;padding:2px 5px;
+  background:color-mix(in srgb,currentColor,transparent 89%);
+  border:1px solid color-mix(in srgb,currentColor,transparent 78%);display:inline-flex;gap:4px}
+.iimp .s{color:var(--ink-3);font-weight:400}
+.iimp.more{background:transparent;border-color:#1d242b}
+.prov{color:var(--amber);border:1px solid color-mix(in srgb,var(--amber),transparent 55%);padding:0 4px;font-size:7.5px;letter-spacing:1px;animation:pp 1.2s ease-in-out infinite}
+@keyframes pp{0%,100%{opacity:.5}50%{opacity:1}}
+.wdiv{font-family:var(--mono);font-size:7.5px;letter-spacing:2px;color:var(--ink-faint);text-transform:uppercase;padding:8px 2px 2px;border-bottom:1px solid var(--hair)}
+/* gauges + risk */
+.gaugebay{display:flex;gap:10px;justify-content:space-around}
+.gauge{display:flex;flex-direction:column;align-items:center;gap:3px}
+.gauge svg{width:118px;height:auto}
+.gauge .gv{font-family:var(--mono);font-weight:700;font-size:21px;text-shadow:0 0 10px currentColor}
+.gauge .gl{font-family:var(--display);font-weight:600;font-size:11px;letter-spacing:2.4px;color:var(--ink-3)}
+.gauge .gd{font-family:var(--mono);font-size:8px;color:var(--ink-faint)}
+.gauge .gd b{font-weight:700}
+.chip{font-family:var(--mono);font-size:8.5px;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;
+  background:transparent;border:1px solid var(--hair-strong);color:var(--ink-2);display:inline-flex;gap:5px;align-items:center}
+.chip b{font-weight:700;color:var(--ink)}
+.chip.alert{color:var(--amber);border-color:color-mix(in srgb,var(--amber),transparent 55%);background:color-mix(in srgb,var(--amber),transparent 88%)}
+.chip.alert b{color:var(--amber)}
+.chip.bull{color:var(--bull);border-color:color-mix(in srgb,var(--bull),transparent 60%);background:var(--bull-bg)}
+.chip.bull b{color:var(--bull)}
+.chip.bear{color:var(--bear);border-color:color-mix(in srgb,var(--bear),transparent 60%);background:var(--bear-bg)}
+.chip.bear b{color:var(--bear)}
+.chiprow{display:flex;flex-wrap:wrap;gap:5px}
+/* ai */
+.ai-text{font-size:13.5px;line-height:1.5;margin:0}
+.drv{display:flex;flex-direction:column;gap:5px}
+.drv .d{display:flex;gap:8px;font-size:12.5px;color:var(--ink-2);line-height:1.35}
+.drv .d::before{content:"▪";color:var(--key);font-size:10px;padding-top:1px;text-shadow:0 0 6px rgba(255,255,255,.5)}
+.klab{font-family:var(--mono);font-size:7.5px;letter-spacing:1.8px;color:var(--ink-faint);text-transform:uppercase}
+.tr-line{font-family:var(--mono);font-size:8.5px;letter-spacing:.6px;color:var(--ink-faint);text-transform:uppercase}
+.tr-line b{color:var(--ink-2)}
+.ticks-tl{display:flex;gap:2px;flex-wrap:wrap;margin-top:4px}
+.ticks-tl span{width:7px;height:12px}
+.ticks-tl .hit{background:var(--bull);box-shadow:0 0 4px color-mix(in srgb,var(--bull),transparent 55%)}
+.ticks-tl .miss{background:var(--bear);box-shadow:0 0 4px color-mix(in srgb,var(--bear),transparent 55%)}
+.ticks-tl .fl{background:var(--neutral);opacity:.55}
+.ticks-tl .open{background:transparent;border:1px dashed #2b333c}
+/* calendar + scenario trees */
+.cal-item{border-bottom:1px solid var(--hair)}
+.cal-item:last-child{border-bottom:0}
+.cal-row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:8px 2px;align-items:center;cursor:pointer}
+.cal-row:hover{background:var(--selrow)}
+.cal-t{font-weight:600;font-size:13px;display:flex;align-items:center;gap:7px}
+.cal-t .car{font-family:var(--mono);font-size:9px;color:var(--ink-faint)}
+.cal-item.open .cal-t .car{color:var(--key)}
+.cal-sub{font-family:var(--mono);font-size:8px;color:var(--ink-faint);letter-spacing:.5px;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cal-sub b{color:var(--ink-2)}
+.cdn{font-family:var(--mono);font-weight:700;font-size:15px;text-align:right;color:var(--key);text-shadow:0 0 10px rgba(255,255,255,.4)}
+.cdn.soon{color:var(--amber);text-shadow:0 0 10px color-mix(in srgb,var(--amber),transparent 35%)}
+.cd-l{font-family:var(--mono);font-size:7px;letter-spacing:1.4px;color:var(--ink-faint);text-transform:uppercase;text-align:right;display:block}
+.time-flag{font-family:var(--mono);font-size:7.5px;letter-spacing:1px;color:var(--amber);border:1px solid color-mix(in srgb,var(--amber),transparent 50%);padding:1px 4px;
+  background:color-mix(in srgb,var(--amber),transparent 88%)}
+.symtag{font-family:var(--mono);font-size:7.5px;padding:1px 4px;background:transparent;border:1px solid #1d242b;color:var(--ink-3)}
+.symtag.hit{background:var(--key);color:var(--key-ink);border-color:var(--key);font-weight:700;box-shadow:0 0 8px rgba(255,255,255,.25)}
+.scen{display:none;flex-direction:column;gap:6px;margin:0 2px 8px 12px;padding:8px 10px;border-left:2px solid var(--hair-strong);background:var(--panel-2)}
+.cal-item.open .scen{display:flex}
+.sc{display:flex;gap:9px;align-items:flex-start}
+.sctag{flex:0 0 auto;font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:1px;padding:2px 6px;margin-top:1px;
+  background:color-mix(in srgb,currentColor,transparent 88%);border:1px solid color-mix(in srgb,currentColor,transparent 60%)}
+.sctxt{font-size:12px;color:var(--ink-2);line-height:1.4}
+.scen-note{font-family:var(--mono);font-size:7px;letter-spacing:1.6px;color:var(--ink-faint);text-transform:uppercase;margin-top:2px}
+/* trend */
+.spark-wrap{position:relative;flex:1 1 0;min-height:80px}
+#spark{position:absolute;inset:0;width:100%;height:100%}
+.spark-meta{display:flex;gap:18px;font-family:var(--mono);font-size:8.5px;color:var(--ink-3);letter-spacing:.6px;text-transform:uppercase}
+.spark-meta b{font-size:10px}
+/* footer */
+#foot{grid-column:1/3;display:flex;align-items:center;gap:10px;padding:0 12px;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.6px;color:var(--ink-faint)}
+#foot .comp{color:var(--ink-2);font-weight:700;letter-spacing:.8px}
+#foot .tag{margin-left:auto;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+#foot .tag b{color:var(--key);letter-spacing:1.5px;text-shadow:0 0 8px rgba(255,255,255,.5)}
+
+/* ===== explain drawer ===== */
+#drawer{position:fixed;top:47px;right:0;bottom:0;width:400px;max-width:92vw;z-index:60;display:flex;flex-direction:column;
+  background:var(--panel);border-left:1px solid var(--hair-strong);transform:translateX(103%);transition:transform .22s ease;visibility:hidden}
+#drawer.open{transform:none;visibility:visible;box-shadow:-18px 0 44px rgba(0,0,0,.6)}
+#drawer .body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+#dHl{font-weight:600;font-size:15px;line-height:1.35;margin:0}
+#dMeta{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:8px;letter-spacing:.5px;color:var(--ink-faint);text-transform:uppercase}
+#dEx{font-size:13.5px;line-height:1.55;color:var(--ink-2);margin:0}
+#dChips{display:flex;gap:5px;flex-wrap:wrap}
+.d-note{font-family:var(--mono);font-size:7.5px;letter-spacing:1.2px;line-height:1.8;color:var(--ink-faint);text-transform:uppercase;border-top:1px solid var(--hair);padding-top:10px}
+
+/* ===== toast ===== */
+#toast{position:fixed;left:50%;bottom:52px;transform:translate(-50%,8px);z-index:90;opacity:0;pointer-events:none;
+  transition:opacity .18s ease,transform .18s ease;font-family:var(--mono);font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;
+  background:var(--raise);border:1px solid var(--hair-strong);color:var(--ink-2);padding:9px 14px;box-shadow:0 8px 28px rgba(0,0,0,.6)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ===== tour ===== */
+#tour{position:fixed;inset:0;z-index:80}
+#tour[hidden]{display:none}
+.tour-scrim{position:absolute;inset:0;background:rgba(0,0,0,.68)}
+.hs{position:absolute;display:flex;align-items:flex-start;gap:8px}
+.hs .hs-n{flex:0 0 auto;width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  background:var(--key);color:var(--key-ink);font-family:var(--mono);font-weight:700;font-size:12px;box-shadow:var(--key-glow-hi)}
+.hs .hs-l{max-width:240px;background:var(--panel);border:1px solid var(--hair-strong);padding:6px 9px;
+  font-size:11.5px;line-height:1.4;color:var(--ink-2);box-shadow:0 6px 24px rgba(0,0,0,.55)}
+.hs.flip{flex-direction:row-reverse}
+.tour-card{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:16px;padding:12px 16px;
+  box-shadow:0 10px 40px rgba(0,0,0,.7)}
+.tour-card .t{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:2.5px;white-space:nowrap}
+.tour-card .s{font-size:12px;color:var(--ink-3);max-width:300px;line-height:1.4}
+
+/* squeezed board (≤1150 viewport → board sits at its 1024 min-width): drop the
+   groove, keep readout + call + meters. Below 1024 the board scrolls inside itself. */
+@media(max-width:1150px){.groove{display:none}.lcd{gap:14px;padding:0 14px}.bandmeters{min-width:150px;padding:0 10px}
+  .brandsub{display:none}.brandplate{padding:0 12px}.brandplate .wm{font-size:20px !important}
+  .lcd .sym{min-width:0}.lcd .big{font-size:36px}.lcd .lab{font-size:13px;letter-spacing:2px;padding:4px 9px}
+  .statclu{padding:0 10px}.statclu .row:first-child{display:none}.bandkeys{padding:0 8px}}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<h1 class="sr">NewsBerri interactive demo — a simulated news terminal. No live data, no market prices.</h1>
+
+<!-- ===== FIXED DEMO BAR ===== -->
+<header id="demobar">
+  <svg viewBox="0 0 64 64" width="22" height="22" fill="none" aria-hidden="true">
+    <path fill="#00e676" d="M30 15 C27.5 8 21.5 5.5 16 8.5 C18.5 14.5 25 17 30 15 Z"/>
+    <circle cx="26.1" cy="21.5" r="5.4" fill="#ff3b57"/><circle cx="37.9" cy="21.5" r="5.4" fill="#00e676"/>
+    <circle cx="19.7" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="32" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="5.4" fill="#ff3b57"/>
+    <circle cx="21.3" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="32" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="42.7" cy="39.1" r="5.4" fill="#c2183a"/>
+    <circle cx="26.7" cy="47.9" r="5.4" fill="#c2183a"/><circle cx="37.3" cy="47.9" r="5.4" fill="#c2183a"/>
+    <circle cx="32" cy="55.1" r="5.1" fill="#8f1029"/>
+  </svg>
+  <span class="wm">News<b>Berri</b></span>
+  <span class="db-mode">— No sign-up needed · the real thing</span>
+  <span class="db-chip">SIMULATED DATA · NOT LIVE</span>
+  <span class="sp"></span>
+  <a class="db-back" href="index.html">← BACK TO THE SITE</a>
+  <a class="db-key" href="https://app.newsberri.com">START 7-DAY TRIAL</a>
+</header>
+
+<!-- ===== BOARD (min-width 1024, scrolls inside itself below that) ===== -->
+<div id="boardwrap">
+<div id="app">
+
+  <div id="band">
+    <div class="plate brandplate">
+      <div class="brandrow">
+        <svg class="brandmark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <path fill="#00e676" d="M30 15 C27.5 8 21.5 5.5 16 8.5 C18.5 14.5 25 17 30 15 Z"/>
+          <circle cx="26.1" cy="21.5" r="5.4" fill="#ff3b57"/><circle cx="37.9" cy="21.5" r="5.4" fill="#00e676"/>
+          <circle cx="19.7" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="32" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="5.4" fill="#ff3b57"/>
+          <circle cx="21.3" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="32" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="42.7" cy="39.1" r="5.4" fill="#c2183a"/>
+          <circle cx="26.7" cy="47.9" r="5.4" fill="#c2183a"/><circle cx="37.3" cy="47.9" r="5.4" fill="#c2183a"/>
+          <circle cx="32" cy="55.1" r="5.1" fill="#8f1029"/>
+        </svg>
+        <span class="wm" style="font-size:24px">News<b>Berri</b></span>
+      </div>
+      <span class="brandsub">NEWS TERMINAL · PUBLIC DEMO</span>
+    </div>
+    <div class="lcd" id="lcd" role="img" aria-label="">
+      <div class="sym"><b id="lcdSym">NQ</b><span id="lcdName"></span></div>
+      <div class="big" id="lcdIdx">−34</div>
+      <div class="lab" id="lcdLab">STRONG BEAR</div>
+      <div class="groove" id="groove"></div>
+      <div class="bandmeters">
+        <div class="meter"><span class="k">CONF</span><div class="track"><i id="mConf" style="background:var(--bull);color:var(--bull)"></i></div><b class="mono" id="mConfV">58%</b></div>
+        <div class="meter"><span class="k">FRESH</span><div class="track"><i id="mFresh" style="background:var(--key);color:var(--key)"></i></div><b class="mono" id="mFreshV">84</b></div>
+        <div class="meter"><span class="k">FLOW</span><div class="track"><i id="mFlow" style="background:var(--key);color:var(--key)"></i></div><b class="mono" id="mFlowV">82</b></div>
+      </div>
+    </div>
+    <div class="plate statclu">
+      <div class="row"><span class="k">SESSION</span><span style="color:var(--ink-2)">US·REGULAR</span></div>
+      <div class="row"><span class="k">CLOCK</span><span style="color:var(--ink-2)">13:42:07 ET · SIM</span></div>
+      <div class="row"><span class="k">WIRE</span><span class="dot up" style="width:7px;height:7px"></span><span class="up">LIVE·SIM</span></div>
+      <div class="row"><span class="k">EVENT</span><span id="evtStat" style="color:var(--amber)">10-YR AUCTION 18M</span></div>
+    </div>
+    <div class="plate bandkeys">
+      <button class="btn sm" id="sqBtn" aria-label="Squawk demo — speak the top scored headline aloud"><span class="glyph">▶</span>SQUAWK</button>
+      <button class="btn sm" id="tourBtn">TOUR</button>
+    </div>
+  </div>
+
+  <aside id="rail" class="plate" aria-label="Contracts">
+    <div class="ph"><span class="led"></span>CONTRACTS<span class="ph-r">6 OF 42 · DEMO</span></div>
+    <div class="list" id="railList"></div>
+    <div class="rail-note">DEMO SLICE — THE PRODUCT TRACKS 42 CONTRACTS ACROSS 7 ASSET CLASSES. CLICK A ROW.</div>
+  </aside>
+
+  <div id="main">
+    <section class="panel plate" id="p-wire" aria-label="Live wire">
+      <div class="ph"><span class="led" style="background:var(--bull);box-shadow:0 0 7px 1px color-mix(in srgb,var(--bull),transparent 30%)"></span>LIVE WIRE<span class="ph-r" id="wireNote"></span></div>
+      <div class="pbody" style="gap:0" id="wireBody"></div>
+    </section>
+
+    <section class="panel plate" id="p-risk" aria-label="Risk and volatility">
+      <div class="ph"><span class="led"></span>RISK &amp; VOLATILITY</div>
+      <div class="pbody">
+        <div class="gaugebay">
+          <div class="gauge"><svg id="riskGauge" viewBox="0 0 120 70" aria-hidden="true"></svg><span class="gv" id="riskVal">68</span><span class="gl">RISK</span><span class="gd" id="riskD"></span></div>
+          <div class="gauge"><svg id="volGauge" viewBox="0 0 120 70" aria-hidden="true"></svg><span class="gv" id="volVal">74</span><span class="gl">VOLATILITY</span><span class="gd" id="volD"></span></div>
+        </div>
+        <div class="chiprow" id="chipRow"></div>
+        <div class="meter"><span class="k" style="width:56px">SWING</span><div class="track"><i id="mSwing" style="background:var(--key);color:var(--key)"></i></div><b class="mono" style="font-size:10px" id="mSwingV"></b></div>
+        <div class="meter"><span class="k" style="width:56px">EVT RISK</span><div class="track"><i id="mEvt" style="background:var(--key);color:var(--key)"></i></div><b class="mono" style="font-size:10px" id="mEvtV"></b></div>
+      </div>
+    </section>
+
+    <section class="panel plate" id="p-ai" aria-label="AI overview">
+      <div class="ph"><span class="led"></span>AI OVERVIEW<span class="ph-r"><button class="btn sm on" id="aiExplain"><span class="glyph">✦</span>EXPLAIN</button></span></div>
+      <div class="pbody">
+        <p class="ai-text" id="aiText"></p>
+        <div><div class="klab" style="margin-bottom:5px">KEY DRIVERS</div><div class="drv" id="aiDrv"></div></div>
+        <div>
+          <div class="tr-line">TRACK RECORD — SIMULATED LEDGER · <b>28</b> RESOLVED CALLS · MISSES SHOWN</div>
+          <div class="ticks-tl" id="trTimeline"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel plate" id="p-trend" aria-label="Sentiment trend">
+      <div class="ph"><span class="led"></span>SENTIMENT TREND — <span id="trendSym">NQ</span>
+        <span class="ph-r" id="tfKeys"><button class="btn sm" data-tf="1H" aria-pressed="false">1H</button><button class="btn sm pressed" data-tf="4H" aria-pressed="true">4H</button><button class="btn sm" data-tf="24H" aria-pressed="false">24H</button></span></div>
+      <div class="pbody"><div class="spark-wrap"><svg id="spark" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+        <div class="spark-meta"><span>START <b class="mono" id="tOpen"></b></span><span>TROUGH <b class="mono" id="tLow"></b></span><span>PEAK <b class="mono" id="tHigh"></b></span><span style="margin-left:auto">NOW <b class="mono" id="tNow"></b></span></div></div>
+    </section>
+
+    <section class="panel plate" id="p-cal" aria-label="Economic calendar">
+      <div class="ph"><span class="led" style="background:var(--amber);box-shadow:0 0 7px 1px color-mix(in srgb,var(--amber),transparent 30%)"></span>ECON CALENDAR<span class="ph-r">CLICK A ROW FOR SCENARIOS</span></div>
+      <div class="pbody" style="gap:0" id="calBody"></div>
+    </section>
+  </div>
+
+  <div id="foot" class="plate">
+    <span class="comp">Informational only — not trading advice.</span>
+    <span>No market prices are shown — sentiment and headlines only. Simulated dataset.</span>
+    <span class="tag">V1 DRAFT · <b>DEMO</b> · MOCKUP — NOT LIVE</span>
+  </div>
+
+</div>
+</div>
+
+<!-- ===== EXPLAIN DRAWER ===== -->
+<aside id="drawer" role="dialog" aria-modal="false" aria-label="Explain headline">
+  <div class="ph"><span class="glyph" style="text-shadow:0 0 8px rgba(255,255,255,.5)">✦</span>EXPLAIN<span class="ph-r">SIMULATED<button class="btn sm" id="dClose">CLOSE</button></span></div>
+  <div class="body">
+    <p id="dHl"></p>
+    <div id="dMeta"></div>
+    <div class="klab">WHAT IT MEANS</div>
+    <p id="dEx"></p>
+    <div class="klab">SCORED IMPACT — SENTIMENT, NOT PRICE</div>
+    <div id="dChips"></div>
+    <p class="d-note">CANNED DEMO EXPLANATION. IN THE PRODUCT, ✦ EXPLAIN GROUNDS EVERY ANSWER IN THE SCORED STORIES ON YOUR TAPE. INFORMATIONAL ONLY — NEVER A BUY OR SELL CALL.</p>
+  </div>
+</aside>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- ===== FIRST-LOAD TOUR ===== -->
+<div id="tour" hidden>
+  <div class="tour-scrim" id="tourScrim"></div>
+  <div class="tour-card plate">
+    <span class="t">FIVE THINGS TO TRY</span>
+    <span class="s">Everything here is simulated — click around freely. Reopen anytime with the TOUR key in the top band.</span>
+    <button class="btn pressed" id="tourGo">Got it</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+(function(){
+  const $=s=>document.querySelector(s);
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const sgn=n=>(n>0?"+":n<0?"−":"")+Math.abs(Math.round(n));
+  function magColor(base,mag,lo,hi){const t=Math.round(clamp((Math.abs(mag)-lo)/(hi-lo),0,1)*55)+45;
+    return`color-mix(in srgb,${base} ${t}%,var(--neutral))`;}
+  function idxColor(idx){const a=Math.abs(idx||0);return a<8?"var(--neutral)":magColor(idx>0?"var(--bull)":"var(--bear)",a,8,70);}
+  function gaugeColor(v){return v>=70?"var(--bear)":v>=50?"var(--amber)":"var(--bull)";}
+  function callLabel(idx){const a=Math.abs(idx);const d=idx>0?"BULL":"BEAR";
+    return a>=30?"STRONG "+d:a>=15?d:a>=8?"LEAN "+d:"NEUTRAL";}
+  function smoothPath(p){if(p.length<3)return p.map((q,i)=>(i?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1)).join(" ");
+    let d="M"+p[0][0].toFixed(1)+" "+p[0][1].toFixed(1);
+    for(let i=0;i<p.length-1;i++){const a=p[Math.max(0,i-1)],b=p[i],c=p[i+1],e=p[Math.min(p.length-1,i+2)];
+      d+=`C${(b[0]+(c[0]-a[0])/4).toFixed(1)} ${(b[1]+(c[1]-a[1])/4).toFixed(1)} ${(c[0]-(e[0]-b[0])/4).toFixed(1)} ${(c[1]-(e[1]-b[1])/4).toFixed(1)} ${c[0].toFixed(1)} ${c[1].toFixed(1)}`;}
+    return d;}
+
+  /* ================= MOCK DATASET — hot-June-CPI afternoon (SIMULATED) ================ */
+  const CONTRACTS={
+    NQ:{name:"NASDAQ-100 E-MINI",idx:-34,conf:58,fresh:84,flow:82,stories:14,
+      risk:68,vol:74,riskD:"Δ1H <b style='color:var(--bear)'>+9</b> · PK <b>74</b>",volD:"Δ1H <b style='color:var(--bear)'>+6</b> · PK <b>78</b>",
+      swing:61,evtRisk:77,trend30:["UPTREND","bull"],evt:{txt:"10-YR AUCTION 18M",hot:1},guard:1,
+      ai:"Hot June core CPI re-prices the front end and knocks duration-heavy tech; Waller's “bump, not a trend” pushback is capping the downside for now.",
+      drv:["Core CPI +0.35% m/m — shelter and services re-accelerate","Waller: June print “a bump, not a trend” — still sees two cuts","1:00 PM 10-yr auction is the next duration test after the hot print"],
+      tp:{open:6,pre:1,shock:-41,now:-34,ph:0},
+      squawk:"NewsBerri squawk demo. Impact 92. CPI hotter than forecast — core re-accelerating, shelter firm. Read on N Q: strong bear. Sentiment minus 34, confidence 58 percent. Ten year auction in 18 minutes."},
+    ES:{name:"S&P 500 E-MINI",idx:-28,conf:55,fresh:80,flow:74,stories:11,
+      risk:61,vol:66,riskD:"Δ1H <b style='color:var(--bear)'>+7</b> · PK <b>66</b>",volD:"Δ1H <b style='color:var(--bear)'>+4</b> · PK <b>70</b>",
+      swing:54,evtRisk:70,trend30:["UPTREND","bull"],evt:{txt:"10-YR AUCTION 18M",hot:1},guard:1,
+      ai:"Same CPI story, less concentration: the broad index carries the front-end repricing while defensive sectors cushion the read. Waller's pushback caps the bear case here too.",
+      drv:["Core CPI +0.35% m/m — services re-accelerate","Breadth negative on the day's scored flow; defensives resilient","10-yr auction is the next catalyst for the index read"],
+      tp:{open:5,pre:1,shock:-35,now:-28,ph:1.2},
+      squawk:"NewsBerri squawk demo. Impact 92. CPI hotter than forecast. Read on E S: bear. Sentiment minus 28, confidence 55 percent."},
+    CL:{name:"WTI CRUDE OIL",idx:21,conf:47,fresh:66,flow:48,stories:7,
+      risk:52,vol:58,riskD:"Δ1H <b>+2</b> · PK <b>58</b>",volD:"Δ1H <b>+3</b> · PK <b>61</b>",
+      swing:48,evtRisk:34,trend30:["RANGE","flat"],evt:{txt:"NONE MAPPED <24H",hot:0},guard:0,
+      ai:"Crude runs its own tape today: a bigger-than-expected inventory draw plus OPEC+ compliance chatter keeps the read constructive while the CPI story dominates elsewhere.",
+      drv:["EIA: crude inventories draw 2.1M bbl vs 1.4M consensus","OPEC+ compliance letter signaled ahead of the August meeting","CPI spillover is second-order for the crude read this afternoon"],
+      tp:{open:4,pre:6,shock:14,now:21,ph:2.1},
+      squawk:"NewsBerri squawk demo. Impact 34. E I A reports a larger than expected crude draw. Read on C L: bull. Sentiment plus 21, confidence 47 percent."},
+    GC:{name:"GOLD",idx:24,conf:51,fresh:71,flow:52,stories:6,
+      risk:41,vol:44,riskD:"Δ1H <b>−2</b> · PK <b>49</b>",volD:"Δ1H <b>+1</b> · PK <b>50</b>",
+      swing:39,evtRisk:41,trend30:["UPTREND","bull"],evt:{txt:"CORE PPI 1D 18H",hot:0},guard:0,
+      ai:"A hot print usually fights gold, but the hedging bid is winning today: ETF inflows extend a five-session run and Waller's two-cut path keeps the read constructive.",
+      drv:["Fifth straight session of gold ETF net inflows — fund-flow trackers","Waller keeps two cuts on the table despite the hot print","Sticky-inflation hedge demand offsets the real-rate impulse"],
+      tp:{open:2,pre:4,shock:18,now:24,ph:3.4},
+      squawk:"NewsBerri squawk demo. Impact 41. Gold E T F inflows extend to a fifth straight session. Read on G C: bull. Sentiment plus 24, confidence 51 percent."},
+    ZN:{name:"10-YR T-NOTE",idx:-22,conf:60,fresh:78,flow:69,stories:9,
+      risk:66,vol:69,riskD:"Δ1H <b style='color:var(--bear)'>+8</b> · PK <b>71</b>",volD:"Δ1H <b style='color:var(--bear)'>+5</b> · PK <b>72</b>",
+      swing:57,evtRisk:81,trend30:["DOWNTREND","bear"],evt:{txt:"10-YR AUCTION 18M",hot:1},guard:1,
+      ai:"The front end is doing the work: supercore re-acceleration keeps pressure on notes into the 1:00 PM auction — the cleanest event risk of the afternoon.",
+      drv:["Core services ex-shelter +0.42% m/m — the sticky detail","10-yr auction 18 minutes out — Guardrail armed","Logan: balance-sheet runoff “well calibrated” — no surprise there"],
+      tp:{open:3,pre:0,shock:-30,now:-22,ph:4.6},
+      squawk:"NewsBerri squawk demo. Impact 81. Core services inflation re-accelerates. Read on Z N: bear. Sentiment minus 22, confidence 60 percent. Ten year auction in 18 minutes — Guardrail armed."},
+    ZW:{name:"CHICAGO WHEAT",idx:6,conf:33,fresh:42,flow:18,stories:2,
+      risk:33,vol:36,riskD:"Δ1H <b>0</b> · PK <b>40</b>",volD:"Δ1H <b>−1</b> · PK <b>41</b>",
+      swing:28,evtRisk:22,trend30:["RANGE","flat"],evt:{txt:"NONE MAPPED <24H",hot:0},guard:0,
+      ai:"Wheat is quiet and idiosyncratic today: Black Sea corridor insurance friction is the only live driver — the CPI tape barely touches this read.",
+      drv:["Insurers re-quote coverage on Odesa grain routes","Weather models mixed across the winter-wheat belt","Two scored stories in the last hour — thin flow, low confidence"],
+      tp:{open:1,pre:2,shock:3,now:6,ph:5.8},
+      squawk:"NewsBerri squawk demo. Impact 38. Insurers re-quote Odesa grain route coverage. Read on Z W: neutral, leaning bull. Sentiment plus 6, confidence 33 percent."}
+  };
+  const ORDER=["NQ","ES","ZN","GC","CL","ZW"];
+
+  const FEED=[
+    {imp:52,hl:"Nvidia server-rack supplier lead times stretch to 40 weeks — trade press",src:"web",t:"40s",prov:1,imps:[],rel:["NQ"],
+     ex:"A supply-chain trade outlet reports lead times for AI server racks stretching to 40 weeks. The story is on the tape as provisional — one source, not yet scored — so it carries no read. If a second wire corroborates, a scored per-contract impact on NQ would follow and upgrade in place."},
+    {imp:81,hl:"BLS detail: core services ex-shelter +0.42% m/m — 3-month annualized 3.9%",src:"wire",t:"9m",cor:2,loud:1,imps:[["NQ",-34],["ES",-28],["ZN",-22]],more:3,
+     ex:"The supercore detail is the sticky part of the June print: services inflation ex-shelter re-accelerated on the month. That keeps the rate impulse alive beyond the headline number, which is why the bear read extends across rate-sensitive equity index and treasury contracts. Corroborated by two wires — confidence is high."},
+    {imp:47,hl:"Dallas Fed's Logan: balance-sheet runoff “well calibrated”",src:"official",t:"1h",imps:[["ZN",6],["ZB",5]],rel:["ZN"],
+     ex:"Logan signaled no change to the pace of balance-sheet runoff, removing one tail scenario for the treasury market ahead of the afternoon auction. The read is mildly supportive for duration but small — this is calibration language, not new policy."},
+    {imp:74,hl:"Fed's Waller: June print “a bump, not a trend” — still sees two cuts this year",src:"official",t:"2h",imps:[["NQ",18],["ES",15],["GC",12]],
+     ex:"Waller pushed back on the hot print within two hours, framing it as noise rather than a trend change and keeping two cuts on his path. That is the main force capping the bear read in equity index contracts this afternoon. Scored modestly bullish — one governor's view set against a hot print."},
+    {imp:34,hl:"EIA: crude inventories draw 2.1M bbl vs 1.4M consensus",src:"official",t:"3h",imps:[["CL",21],["RB",14]],
+     ex:"The weekly EIA report showed a larger-than-expected crude draw with product demand holding firm. The bullish read on CL reflects the supply-side surprise — it runs independent of the CPI story dominating the rest of the tape."},
+    {imp:41,hl:"Gold ETF flows: fifth straight session of net inflows — fund-flow trackers",src:"web",t:"3h",imps:[["GC",16],["SI",9]],
+     ex:"Fund-flow trackers logged a fifth consecutive session of net inflows into gold ETFs, extending the hedging bid that has built all week. Set against a hot CPI print, the flow keeps GC's read constructive even as the real-rate math tightens. Single-source flow data — moderate confidence."},
+    {imp:44,hl:"OPEC+ delegates signal compliance letter ahead of August meeting — wire",src:"wire",t:"4h",imps:[["CL",9]],
+     ex:"Delegates flagged a forthcoming compliance letter pressing over-producers ahead of the August meeting. It is a mild supply-discipline signal for crude — scored bullish but low impact until the letter itself is confirmed on a second wire."},
+    {imp:38,hl:"Black Sea corridor: insurers re-quote coverage on Odesa grain routes",src:"wire",t:"4h",imps:[["ZW",11],["ZC",6]],
+     ex:"Marine insurers re-quoting Odesa coverage signals rising friction on the Black Sea grain corridor. Export-logistics risk is the main lever in the wheat read this week; the score is bullish ZW but tentative until a shipper confirms route changes."},
+    {imp:92,hl:"CPI m/m +0.4% vs +0.3% est — core +0.35%, shelter re-accelerates",src:"official",t:"5h",cor:3,loud:1,imps:[["NQ",-62],["ES",-55],["ZN",-44]],more:4,
+     ex:"June CPI printed a tenth hot at both headline and core, with shelter re-accelerating after two soft months. This is the story that set the afternoon's read: rate-sensitive contracts carry the pressure, duration-heavy tech most of all. Triple-corroborated within minutes — confidence is high."}
+  ];
+
+  const CAL=[
+    {t:"10-Yr Note Auction",flag:"IMMINENT",tags:["NQ","ZN","ZB"],extra:"+5",cd:"18m",soon:1,
+     meta:"GUARDRAIL ARMED · HIST ±0.1% TYP 15M (N=15)",
+     scen:[["STRONG DEMAND","var(--bull)","Duration relief — the CPI repricing loses its second engine; bear reads on NQ and ZN likely ease toward neutral within the hour."],
+           ["IN LINE","var(--neutral)","Little new information — the CPI story keeps the wheel; the Guardrail returns to standby after the release window."],
+           ["WEAK DEMAND","var(--bear)","Second leg of the repricing — bear reads extend across duration-heavy contracts; Guardrail stays hot through the reaction window."]]},
+    {t:"Fed Beige Book",tags:["NQ","ES","ZN"],extra:"+4",cd:"1h 18m",
+     scen:[["SOFTER ANECDOTES","var(--bull)","Cooling-demand anecdotes lean against the hot print — a mild relief read for index contracts."],
+           ["FIRM PRICING","var(--bear)","Districts corroborate sticky services pricing — the bear read deepens into the close."]]},
+    {t:"Initial Jobless Claims",tags:["NQ","ES","ZB"],cd:"18h 48m",meta:"FCST <b>232K</b> · PREV <b>228K</b>",
+     scen:[["TIGHT <225K","var(--bear)","Labor still tight — a hawkish read; pressure stays on rate-sensitive contracts."],
+           ["IN LINE 225–240K","var(--neutral)","Read unchanged — CPI remains the dominant driver on the tape."],
+           ["SOFT >240K","var(--bull)","Softening labor blunts the rate impulse — bear reads ease across the index complex."]]},
+    {t:"Core PPI m/m",tags:["NQ","GC"],cd:"1d 18h",meta:"FCST <b>+0.2%</b> · PREV <b>+0.1%</b>",
+     scen:[["HOT ≥+0.3%","var(--bear)","Pipeline pressure corroborates CPI — bear reads extend; the GC hedging bid firms."],
+           ["IN LINE +0.2%","var(--neutral)","As expected — little read change either way."],
+           ["COOL ≤+0.1%","var(--bull)","Pipeline disinflation resumes — a relief read across index contracts."]]}
+  ];
+  const TRACK="HHMHHFHMHHHMHFHHHMHHFMHHHHMH";
+
+  let SEL="NQ";
+  const cur=()=>CONTRACTS[SEL];
+  const relevant=f=>(f.imps&&f.imps.some(i=>i[0]===SEL))||(f.rel&&f.rel.includes(SEL));
+
+  /* ---------- band ---------- */
+  function renderBand(){
+    const c=cur(),col=idxColor(c.idx),lab=callLabel(c.idx);
+    $("#lcdSym").textContent=SEL;
+    $("#lcdName").textContent=c.name+" · "+c.stories+" STORIES/1H";
+    const big=$("#lcdIdx");big.textContent=sgn(c.idx);big.style.color=col;
+    const lb=$("#lcdLab");lb.textContent=lab;
+    lb.style.background=Math.abs(c.idx)<8?"var(--call-neutral)":col;
+    lb.style.boxShadow=`0 0 8px color-mix(in srgb,${col},transparent 50%)`;
+    const wash=c.idx<=-8?"rgba(255,65,81,.07)":c.idx>=8?"rgba(0,210,122,.06)":"rgba(138,151,166,.05)";
+    $("#lcd").style.background=`radial-gradient(ellipse 460px 150px at 19% 52%,${wash},transparent 70%) var(--canvas)`;
+    $("#lcd").setAttribute("aria-label",`${SEL} sentiment ${sgn(c.idx)} — ${lab.toLowerCase()}`);
+    const pct=((clamp(c.idx,-100,100)+100)/200*100);
+    $("#groove").innerHTML=
+      `<div class="glab"><span>BEAR</span><span>BULL</span></div>`+
+      `<span class="tr"></span><span class="mid"></span>`+
+      `<span class="fill" style="left:${Math.min(50,pct)}%;width:${Math.abs(pct-50)}%;background:${col};color:${col}"></span>`+
+      `<span class="pin" style="left:${pct}%"></span>`+
+      `<span class="ticks"><span>-100</span><span>-50</span><span>0</span><span>+50</span><span>+100</span></span>`;
+    $("#mConf").style.width=c.conf+"%";$("#mConfV").textContent=c.conf+"%";
+    $("#mFresh").style.width=c.fresh+"%";$("#mFreshV").textContent=c.fresh;
+    $("#mFlow").style.width=c.flow+"%";$("#mFlowV").textContent=c.flow;
+    const ev=$("#evtStat");ev.textContent=c.evt.txt;
+    ev.style.color=c.evt.hot?"var(--amber)":"var(--ink-faint)";
+  }
+
+  /* ---------- rail ---------- */
+  function renderRail(){
+    $("#railList").innerHTML=ORDER.map(sym=>{
+      const c=CONTRACTS[sym],sel=sym===SEL,idx=c.idx,col=idxColor(idx),w=Math.abs(idx)/100*50,mag=Math.abs(idx);
+      const sig=mag>=8?`<span class="csig" style="background:${col}"></span>`:"";
+      const wash=(!sel&&mag>=8)?` style="background:${idx>0?"var(--bull-wash)":"var(--bear-wash)"}"`:"";
+      return `<div class="crow${sel?" sel":""}" data-sym="${sym}" role="button" tabindex="0" aria-pressed="${sel}" aria-label="Select ${sym}, sentiment ${sgn(idx)}"${wash}>${sig}`+
+        `<span class="sym" style="color:${col}">${sym}</span>`+
+        `<span class="bar"><i style="${idx<0?"right:50%":"left:50%"};width:${w}%;background:${col};color:${col}"></i></span>`+
+        `<span class="idx" style="color:${col}">${sgn(idx)}</span>`+
+        `<span class="led" style="${c.risk>=50?`background:${gaugeColor(c.risk)};box-shadow:0 0 5px ${c.risk>=70?"var(--bear)":"var(--amber)"}`:""}"></span></div>`;
+    }).join("");
+  }
+
+  /* ---------- tape (filter / reorder by selected contract) ---------- */
+  function wireRow(f,i,dim){
+    const dom=(f.imps&&f.imps.length)?f.imps[0]:null;
+    const sigCol=dom?(dom[1]>0?"var(--bull)":"var(--bear)"):"transparent";
+    const wash=(f.loud&&dom&&!dim)?` background:${dom[1]<0?"var(--bear-wash)":"var(--bull-wash)"};`:"";
+    const imps=(f.imps||[]).slice(0,3).map(([s,v])=>`<span class="iimp" style="color:${magColor(v>0?"var(--bull)":"var(--bear)",Math.abs(v),10,80)}"><span class="s">${s}</span>${sgn(v)}</span>`).join("")+
+      (f.more?`<span class="iimp more" style="color:var(--ink-faint)">+${f.more}</span>`:"");
+    return `<div class="wire-row${f.loud?" loud":""}${dim?" dim":""}" data-i="${i}" role="button" tabindex="0" aria-label="Explain this headline" style="${wash}">`+
+      `<span class="wsig" style="background:${sigCol}"></span><span class="wimp">${f.imp}</span><div>`+
+      `<div class="whl">${f.hl}</div>`+
+      `<div class="wmeta"><span>${f.src}</span><span>·</span><span>${f.t}</span>${f.prov?'<span class="prov">SCORING…</span>':""}${f.cor?`<span>✓ ${f.cor}×</span>`:""}<span class="exp">✦ EXPLAIN</span></div>`+
+      `</div></div>`;
+  }
+  function renderWire(){
+    const rel=[],rest=[];
+    FEED.forEach((f,i)=>{(relevant(f)?rel:rest).push([f,i]);});
+    $("#wireNote").textContent=`${SEL} FLOW FIRST · ${rel.length} OF ${FEED.length} STORIES`;
+    $("#wireBody").innerHTML=
+      rel.map(([f,i])=>wireRow(f,i,false)).join("")+
+      (rest.length?`<div class="wdiv">OTHER CONTRACTS — DIMMED</div>`+rest.map(([f,i])=>wireRow(f,i,true)).join(""):"");
+  }
+
+  /* ---------- risk panel ---------- */
+  function gauge(svg,val,peak){const cx=60,cy=64,segs=28,gap=2.2,v=clamp(val,0,100);
+    const ramp=f=>f>=0.7?"var(--bear)":f>=0.5?"var(--amber)":"var(--bull)";
+    const seg=(i,st,ex)=>{const a0=Math.PI-(i/segs)*Math.PI+gap*Math.PI/180,a1=Math.PI-((i+1)/segs)*Math.PI-gap*Math.PI/180,am=(a0+a1)/2;
+      const f=(i+0.5)/segs,ri=37,ro=39+7*f;
+      return `<line x1="${(cx+ri*Math.cos(am)).toFixed(1)}" y1="${(cy-ri*Math.sin(am)).toFixed(1)}" x2="${(cx+ro*Math.cos(am)).toFixed(1)}" y2="${(cy-ro*Math.sin(am)).toFixed(1)}" stroke="${st}" stroke-width="4"${ex||""}/>`;};
+    let out="";for(let i=0;i<segs;i++){const on=(i/segs)*100<v;out+=seg(i,on?ramp((i+0.5)/segs):"#1c232b",on?"":' opacity=".6"');}
+    if(peak>v){const pi=Math.min(segs-1,Math.floor(peak/100*segs));out+=seg(pi,ramp((pi+0.5)/segs),' opacity=".45"');}
+    svg.innerHTML=out;}
+  function renderRisk(){
+    const c=cur();
+    gauge($("#riskGauge"),c.risk,c.risk+6);gauge($("#volGauge"),c.vol,c.vol+4);
+    $("#riskVal").textContent=c.risk;$("#riskVal").style.color=gaugeColor(c.risk);
+    $("#volVal").textContent=c.vol;$("#volVal").style.color=gaugeColor(c.vol);
+    $("#riskD").innerHTML=c.riskD;$("#volD").innerHTML=c.volD;
+    const tCls=c.trend30[1]==="bull"?"bull":c.trend30[1]==="bear"?"bear":"";
+    $("#chipRow").innerHTML=
+      `<span class="chip ${tCls}">30D <b>${c.trend30[0]}</b></span>`+
+      (c.evt.hot?`<span class="chip alert">EVENT <b>${c.evt.txt}</b></span>`:`<span class="chip">EVENT <b style="color:var(--ink-3)">${c.evt.txt}</b></span>`)+
+      (c.guard?`<span class="chip alert" id="chipGuard">GUARDRAIL <b>ARMED</b> · HIST ±0.1% TYP 15M (N=15)</span>`
+              :`<span class="chip" id="chipGuard">GUARDRAIL <b style="color:var(--ink-3)">STANDBY</b></span>`);
+    $("#mSwing").style.width=c.swing+"%";$("#mSwingV").textContent=c.swing;
+    $("#mEvt").style.width=c.evtRisk+"%";$("#mEvtV").textContent=c.evtRisk;
+  }
+
+  /* ---------- AI overview ---------- */
+  function renderAI(){
+    const c=cur();
+    $("#aiText").textContent=c.ai;
+    $("#aiDrv").innerHTML=c.drv.map(d=>`<span class="d">${d}</span>`).join("");
+  }
+  $("#trTimeline").innerHTML=TRACK.split("").map(ch=>`<span class="${ch==="H"?"hit":ch==="M"?"miss":"fl"}"></span>`).join("")+
+    '<span class="open"></span><span class="open"></span><span class="open"></span>';
+
+  /* ---------- sentiment trend ---------- */
+  let TF="4H";
+  function genTrend(p){const a=[];for(let i=0;i<64;i++){const t=i/63;let v;
+    if(t<.45)v=p.open+(p.pre-p.open)*(t/.45)+2.6*Math.sin(t*19+p.ph)+1.6*Math.sin(t*47);
+    else if(t<.58)v=p.pre+((t-.45)/.13)*(p.shock-p.pre)+2*Math.sin(t*33+p.ph);
+    else v=p.shock+((t-.58)/.42)*(p.now-p.shock)+2.2*Math.sin(t*24+p.ph)+1.2*Math.sin(t*61);
+    a.push(v);}return a;}
+  function trendData(c){
+    const base=genTrend(c.tp);
+    if(TF==="1H")return base.slice(38); /* zoom: post-shock fade into now */
+    if(TF==="24H"){ /* longer horizon: quiet drift into the session */
+      const pre=[];for(let i=0;i<40;i++){const t=i/39;
+        pre.push(c.tp.open*t+2.2*Math.sin(t*13+c.tp.ph)+1.4*Math.sin(t*31));}
+      return pre.concat(base);}
+    return base;}
+  function renderSpark(){
+    const c=cur(),data=trendData(c);
+    const svg=$("#spark"),W=svg.clientWidth||600,H=svg.clientHeight||120,pad=8;
+    svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+    const lo=Math.min(...data,0)-4,hi=Math.max(...data,0)+4,span=(hi-lo)||1;
+    const x=i=>pad+i*(W-2*pad)/(data.length-1),y=v=>pad+(1-(v-lo)/span)*(H-2*pad);
+    let g="";for(let i=0;i<=3;i++){const yy=pad+i*(H-2*pad)/3;
+      g+=`<line x1="0" y1="${yy.toFixed(1)}" x2="${W}" y2="${yy.toFixed(1)}" stroke="#12161b" stroke-width="1"/>`;}
+    const zy=y(0);g+=`<line x1="0" y1="${zy.toFixed(1)}" x2="${W}" y2="${zy.toFixed(1)}" stroke="#39434d" stroke-width="1.2"/>`;
+    const d=smoothPath(data.map((v,i)=>[x(i),y(v)]));
+    const gt=clamp(zy/H,0,1).toFixed(4);
+    const defs=`<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="${H}" gradientUnits="userSpaceOnUse"><stop offset="${gt}" stop-color="var(--bull)"/><stop offset="${gt}" stop-color="var(--bear)"/></linearGradient></defs>`;
+    const area=d+`L${x(data.length-1).toFixed(1)} ${H-pad} L${x(0).toFixed(1)} ${H-pad} Z`;
+    const last=data[data.length-1];
+    svg.innerHTML=defs+g+`<path d="${area}" fill="url(#sg)" opacity="0.14"/><path d="${d}" fill="none" stroke="url(#sg)" stroke-width="2" stroke-linejoin="round"/>`+
+      `<circle cx="${x(data.length-1).toFixed(1)}" cy="${y(last).toFixed(1)}" r="5" fill="none" stroke="var(--key)" stroke-width="1.1" opacity=".8"/>`+
+      `<circle cx="${x(data.length-1).toFixed(1)}" cy="${y(last).toFixed(1)}" r="2.6" fill="${idxColor(last)}"/>`;
+    $("#trendSym").textContent=SEL;
+    const set=(id,v)=>{const el=$(id);el.textContent=sgn(v);el.style.color=idxColor(v);};
+    set("#tOpen",data[0]);set("#tLow",Math.min(...data));set("#tHigh",Math.max(...data));set("#tNow",c.idx);
+  }
+
+  /* ---------- calendar + scenario trees ---------- */
+  function renderCal(){
+    $("#calBody").innerHTML=CAL.map((e,i)=>{
+      const tags=e.tags.map(s=>`<span class="symtag${s===SEL?" hit":""}">${s}</span>`).join("")+(e.extra?`<span style="color:var(--ink-faint)">${e.extra}</span>`:"");
+      const scen=e.scen.map(([tag,col,txt])=>`<div class="sc"><span class="sctag" style="color:${col}">${tag}</span><span class="sctxt">${txt}</span></div>`).join("");
+      return `<div class="cal-item" data-e="${i}">`+
+        `<div class="cal-row" role="button" tabindex="0" aria-expanded="false" aria-label="Toggle beat and miss scenarios for ${e.t}">`+
+        `<div><div class="cal-t"><span class="car">▸</span>${e.flag?`<span class="time-flag">${e.flag}</span>`:""}${e.t}</div>`+
+        `<div class="cal-sub">${tags}${e.meta?`<span>${e.meta}</span>`:""}<span style="color:var(--ink-faint)">✦ SCENARIOS</span></div></div>`+
+        `<div><div class="cdn${e.soon?" soon":""}">${e.cd}</div><span class="cd-l">TO EVENT</span></div></div>`+
+        `<div class="scen">${scen}<span class="scen-note">BEAT/MISS TREE PREPARED AHEAD OF RELEASE · SIMULATED · INFORMATIONAL ONLY</span></div></div>`;
+    }).join("");
+  }
+
+  /* ---------- explain drawer ---------- */
+  const drawer=$("#drawer");
+  function openExplain(f){
+    $("#dHl").textContent=f.hl;
+    $("#dMeta").innerHTML=[`IMPACT ${f.imp}`,f.src,f.t,f.prov?"PROVISIONAL — UNSCORED":"",f.cor?`CORROBORATED ✓ ${f.cor}×`:""].filter(Boolean).map(s=>`<span>${s}</span>`).join("<span>·</span>");
+    $("#dEx").textContent=f.ex;
+    $("#dChips").innerHTML=(f.imps&&f.imps.length)?f.imps.map(([s,v])=>`<span class="iimp" style="color:${magColor(v>0?"var(--bull)":"var(--bear)",Math.abs(v),10,80)}"><span class="s">${s}</span>${sgn(v)}</span>`).join(""):'<span class="iimp more" style="color:var(--ink-faint)">NO SCORED IMPACTS YET</span>';
+    drawer.classList.add("open");
+    $("#dClose").focus();
+  }
+  const closeDrawer=()=>drawer.classList.remove("open");
+  $("#dClose").addEventListener("click",closeDrawer);
+  $("#aiExplain").addEventListener("click",()=>{const f=FEED.find(relevant)||FEED[0];openExplain(f);});
+
+  /* ---------- toast ---------- */
+  let toastT;
+  function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");
+    clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove("show"),2600);}
+
+  /* ---------- squawk (SpeechSynthesis, click-only, graceful) ---------- */
+  const sqBtn=$("#sqBtn"),SQ_IDLE='<span class="glyph">▶</span>SQUAWK',SQ_ON='<span class="glyph">■</span>STOP';
+  const sqReset=()=>{sqBtn.classList.remove("pressed");sqBtn.innerHTML=SQ_IDLE;};
+  sqBtn.addEventListener("click",()=>{
+    if(!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined"){
+      toast("SQUAWK NOT SUPPORTED IN THIS BROWSER — DEMO ONLY");return;}
+    if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();sqReset();return;}
+    try{
+      const u=new SpeechSynthesisUtterance(cur().squawk);
+      u.rate=1.02;u.pitch=.95;
+      u.onstart=()=>{sqBtn.classList.add("pressed");sqBtn.innerHTML=SQ_ON;};
+      u.onend=sqReset;u.onerror=()=>{sqReset();toast("SQUAWK UNAVAILABLE RIGHT NOW");};
+      window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+    }catch(e){toast("SQUAWK NOT SUPPORTED IN THIS BROWSER — DEMO ONLY");}
+  });
+
+  /* ---------- select contract ---------- */
+  function select(sym){
+    if(!CONTRACTS[sym])return;
+    SEL=sym;closeDrawer();
+    renderBand();renderRail();renderWire();renderRisk();renderAI();renderSpark();renderCal();
+  }
+
+  /* ---------- delegation (click + keyboard) ---------- */
+  function delegate(root,sel,fn){
+    const h=e=>{const el=e.target.closest(sel);if(!el||!root.contains(el))return;
+      if(e.type==="keydown"){if(e.key!=="Enter"&&e.key!==" ")return;e.preventDefault();}
+      fn(el);};
+    root.addEventListener("click",h);root.addEventListener("keydown",h);
+  }
+  delegate($("#railList"),".crow",el=>select(el.dataset.sym));
+  delegate($("#wireBody"),".wire-row",el=>openExplain(FEED[+el.dataset.i]));
+  delegate($("#calBody"),".cal-row",el=>{
+    const item=el.closest(".cal-item"),open=item.classList.toggle("open");
+    el.setAttribute("aria-expanded",open);
+    item.querySelector(".cal-t .car").textContent=open?"▾":"▸";});
+  delegate($("#tfKeys"),"[data-tf]",el=>{
+    if(el.dataset.tf===TF)return;
+    TF=el.dataset.tf;
+    $("#tfKeys").querySelectorAll(".btn").forEach(b=>{const on=b===el;
+      b.classList.toggle("pressed",on);b.setAttribute("aria-pressed",on);});
+    renderSpark();});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawer();hideTour();}});
+
+  /* ---------- tour ---------- */
+  const tour=$("#tour");
+  const HOTS=[
+    {n:1,t:"#p-wire .ph",l:"The live tape. Every headline gets a score for each contract it touches — click any story and ✦ EXPLAIN tells you why, in plain language."},
+    {n:2,t:"#lcdIdx",l:"The big number is sentiment for this contract, −100 to +100, with a plain-language call beside it. It’s never a price."},
+    {n:3,t:"#chipGuard",l:"The Guardrail. ARMED means a release is 30 minutes out — you get a heads-up at 30, 10 and 2 minutes, so nothing lands on you cold."},
+    {n:4,t:"#calBody .cal-row",l:"The calendar. Click a release and you’ll see the beat, in-line and miss outcomes — already written before it happens."},
+    {n:5,t:"#sqBtn",l:"The squawk. Press it and you’ll hear the top headline read out loud — eyes on your platform, ears on the wire."}
+  ];
+  function placeHots(){
+    tour.querySelectorAll(".hs").forEach(el=>el.remove());
+    HOTS.forEach(h=>{
+      const tgt=document.querySelector(h.t);if(!tgt)return;
+      const r=tgt.getBoundingClientRect();
+      const el=document.createElement("div");el.className="hs"+(r.left>innerWidth*.55?" flip":"");
+      el.innerHTML=`<span class="hs-n">${h.n}</span><span class="hs-l">${h.l}</span>`;
+      el.style.left=Math.max(6,Math.min(innerWidth-280,r.left-13+(el.classList.contains("flip")?-230:0)))+"px";
+      el.style.top=Math.max(6,r.top-13)+"px";
+      tour.appendChild(el);
+    });
+  }
+  function showTour(){tour.hidden=false;placeHots();$("#tourGo").focus();}
+  function hideTour(){if(tour.hidden)return;tour.hidden=true;
+    try{sessionStorage.setItem("nbDemoTour","1");}catch(e){}}
+  $("#tourGo").addEventListener("click",hideTour);
+  $("#tourScrim").addEventListener("click",hideTour);
+  $("#tourBtn").addEventListener("click",showTour);
+  addEventListener("resize",()=>{if(!tour.hidden)placeHots();renderSpark();});
+  $("#boardwrap").addEventListener("scroll",()=>{if(!tour.hidden)placeHots();});
+
+  /* ---------- init ---------- */
+  select("NQ");
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(renderSpark);
+  requestAnimationFrame(renderSpark);
+  let showIt=true;
+  try{if(sessionStorage.getItem("nbDemoTour"))showIt=false;}catch(e){}
+  if(/\bnotour\b/.test(location.search))showIt=false;
+  if(showIt)setTimeout(showTour,350);
+})();
+</script>
+</body>
+</html>

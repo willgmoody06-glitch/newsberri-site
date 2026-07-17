@@ -1,0 +1,1133 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NewsBerri — The news, read for your trade</title>
+<meta name="description" content="NewsBerri reads live news wires and tells you, in plain language, what each headline means for the futures you trade — and gives you a heads-up before every scheduled release. Informational only — not trading advice.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Ccircle cx='26.1' cy='19.5' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='37.9' cy='19.5' r='6.5' fill='%2300e676'/%3E%3Ccircle cx='19.7' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='32' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='44.3' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='21.3' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='42.7' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='26.7' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='37.3' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='58.1' r='6' fill='%238f1029'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS — locked app tokens (verbatim) + site tints ============ */
+:root{
+  --mono:"Martian Mono",ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+  --grot:"Barlow Semi Condensed",system-ui,-apple-system,sans-serif;
+  --display:"Big Shoulders Display","Barlow Semi Condensed",system-ui,sans-serif;
+  --bull:#00e676; --bear:#ff1744; --amber:#ff9100; --neutral:#8a97a6;
+  --berry:#ff3b57; --berry-dk:#c2183a; --berry-deep:#8f1029;
+  --grad:linear-gradient(135deg,#E8336E 0%,#C74497 40%,#A64FC6 70%,#8B5CF6 100%);
+  --canvas:#000000; --panel:#0d1013; --panel-2:#101317; --raise:#14181d;
+  --hair:#1a1f25; --hair-strong:#262d35;
+  --ink:#f2f6f8; --ink-2:#b8c7d1; --ink-3:#8496a2; --ink-faint:#5d6d78;
+  --key:#ffffff; --key-ink:#04060a;
+  --key-glow:0 0 12px rgba(255,255,255,.25);
+  --bull-bg:rgba(0,210,122,.12); --bear-bg:rgba(255,65,81,.12);
+  /* site-only tints (never inside .snip) */
+  --vio:#8B5CF6; --vio-2:#A64FC6; --ras:#E8336E; --ras-2:#C74497;
+  --vio-ink:#c9b8fa; --ras-ink:#ff9dbd;
+  --well:#05080b; --well-line:#1f262e; --selrow:rgba(255,255,255,.06);
+  color-scheme:dark;
+}
+/* ============ BASE ============ */
+*,*::before,*::after{box-sizing:border-box;border-radius:0}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--grot);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;overflow-x:clip}
+::selection{background:rgba(199,68,151,.35)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--key);outline-offset:2px}
+img,svg{max-width:100%}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--key);color:var(--key-ink);padding:8px 16px;font-family:var(--mono);font-size:12px;z-index:99}
+.skip:focus{left:12px;top:12px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.micro{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.rule{border:0;border-top:1px solid var(--hair);margin:0 auto}
+.rule-scotch{border:0;height:6px;border-top:4px solid var(--ink);border-bottom:0;margin:0 auto;position:relative}
+.rule-scotch::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,#E8336E 14%,#C74497 40%,#A64FC6 66%,#8B5CF6 86%,transparent)}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.c-bull{color:var(--bull)} .c-bear{color:var(--bear)} .c-amb{color:var(--amber)} .c-neu{color:var(--neutral)}
+/* buttons */
+.btn-key{display:inline-block;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:2px;padding:13px 24px;box-shadow:var(--key-glow);border:1px solid var(--key);transition:box-shadow .18s ease}
+.btn-key:hover{box-shadow:0 0 14px rgba(232,51,110,.4),0 0 26px rgba(139,92,246,.35)}
+.btn-brk{display:inline-block;color:var(--ink-2);font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:2px;padding:13px 10px}
+.btn-brk::before{content:"[ ";color:var(--ink-faint)}
+.btn-brk::after{content:" ]";color:var(--ink-faint)}
+.btn-brk:hover{color:var(--key)}
+.btn-brk:hover::before,.btn-brk:hover::after{color:var(--ras-2)}
+/* the unmissable hero CTA (pulse lives in the motion block below) */
+.cta-big{display:inline-block;position:relative;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:14.5px;font-weight:700;letter-spacing:2.5px;padding:21px 36px;border:1px solid var(--key);isolation:isolate;box-shadow:var(--key-glow)}
+.cta-big::before{content:"";position:absolute;inset:-6px;background:var(--grad);filter:blur(14px);opacity:.5;z-index:-1}
+.cta-big:hover{box-shadow:0 0 16px rgba(232,51,110,.5),0 0 34px rgba(139,92,246,.5)}
+.cta-big:hover::before{opacity:.75}
+/* co-equal secondary hero CTA — the demo (strong, gradient-bordered, not tiny) */
+.cta-demo{display:inline-block;position:relative;background:linear-gradient(135deg,rgba(232,51,110,.09),rgba(139,92,246,.11)),var(--panel);color:var(--ink);font-family:var(--mono);font-size:14.5px;font-weight:700;letter-spacing:2.5px;padding:21px 34px;border:1px solid transparent;border-image:var(--grad) 1;transition:box-shadow .18s ease,color .18s ease}
+.cta-demo:hover{box-shadow:0 0 18px rgba(232,51,110,.32),0 0 30px rgba(139,92,246,.3);color:#fff}
+/* wordmark */
+.wordmark{font-family:var(--display);font-weight:800;letter-spacing:2px;color:var(--ink);text-transform:uppercase;line-height:1}
+.wordmark b{color:var(--berry);font-weight:800}
+/* ============ CHROME: topstrip / masthead / nav (copy verbatim on every page) ============ */
+.topstrip{display:flex;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px}
+.masthead{text-align:center;padding-top:30px;padding-bottom:22px;position:relative}
+.masthead::before{content:"";position:absolute;left:50%;top:-10px;transform:translateX(-50%);width:min(920px,92%);height:230px;pointer-events:none;
+  background:radial-gradient(ellipse 60% 100% at 50% 0%,rgba(199,68,151,.10),transparent 72%)}
+.masthead .nameplate{display:inline-flex;align-items:center;gap:22px;position:relative}
+.masthead .nameplate .wordmark{font-size:clamp(56px,7.4vw,100px)}
+.masthead .mark-lg svg{width:clamp(52px,6.5vw,88px);height:auto;display:block;filter:drop-shadow(0 0 14px rgba(255,59,87,.35))}
+.dek{font-family:var(--grot);font-weight:600;font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);margin:12px 0 0}
+.dateline{font-family:var(--mono);font-size:11px;letter-spacing:2.5px;color:var(--ink-3);margin-top:10px;font-variant-numeric:tabular-nums}
+.newsnav{position:sticky;top:0;z-index:50;background:rgba(0,0,0,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--hair-strong)}
+.newsnav .wrap{display:flex;align-items:center;gap:22px;min-height:54px}
+.newsnav .brand{display:flex;align-items:center;gap:9px}
+.newsnav .brand svg{display:block}
+.newsnav .brand .wordmark{font-size:21px}
+.newsnav .links{display:flex;gap:26px;margin-left:8px}
+.newsnav .links a{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;color:var(--ink-2);padding:6px 0;border-bottom:2px solid transparent}
+.newsnav .links a:hover{color:var(--key)}
+.newsnav .links a[aria-current="page"]{color:var(--ink);border-image:var(--grad) 1;border-bottom:2px solid}
+.newsnav .actions{margin-left:auto;display:flex;align-items:center;gap:14px}
+.newsnav .signin{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;color:var(--ink-3)}
+.newsnav .signin:hover{color:var(--key)}
+.newsnav .btn-key{padding:9px 18px;font-size:11px}
+.newsnav .btn-brk{padding:9px 4px;font-size:11px}
+/* ============ SECTION FURNITURE ============ */
+.sec{position:relative;padding:76px 0 0}
+.sec .inner{position:relative}
+.eychip{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:2px;color:#fff;background:var(--grad);padding:5px 12px;margin-bottom:14px}
+.sectitle{font-family:var(--display);font-weight:800;font-size:clamp(32px,3.6vw,48px);letter-spacing:1px;text-transform:uppercase;line-height:1.02;margin:0 0 14px}
+.secsub{color:var(--ink-2);font-size:17.5px;max-width:720px;margin:0 0 30px}
+.secsub b{color:var(--ink);font-weight:600}
+.wash-hero::before{content:"";position:absolute;inset:-60px -40px;pointer-events:none;
+  background:radial-gradient(ellipse 720px 460px at 12% 8%,rgba(232,51,110,.09),transparent 68%),
+             radial-gradient(ellipse 760px 500px at 88% 20%,rgba(139,92,246,.09),transparent 70%)}
+.wash-vio::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 900px 460px at 10% 0%,rgba(139,92,246,.07),transparent 70%)}
+.wash-ras::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 900px 460px at 90% 0%,rgba(232,51,110,.07),transparent 70%)}
+.wash-soft::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 860px 420px at 82% 24%,rgba(139,92,246,.06),transparent 72%),
+             radial-gradient(ellipse 620px 360px at 8% 40%,rgba(232,51,110,.05),transparent 74%)}
+/* transparency / public-ledger band (a record you can check, no invented numbers) */
+.transp-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:52px;align-items:center}
+.transp-grid>*{min-width:0}
+/* ============ HERO + THREE-BEAT OFFER ============ */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding:56px 0 40px}
+.hero>*{min-width:0}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(50px,5.5vw,86px);line-height:.98;letter-spacing:.5px;text-transform:uppercase;margin:0 0 16px}
+.hero .lede{font-size:19px;color:var(--ink-2);margin:0 0 28px;max-width:52ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+/* Topstep-pattern product-fact stats (markup holds the final numbers for no-JS; count-up on reveal) */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--hair-strong);margin:8px 0 0;padding:26px 0 30px}
+.stat{border-left:1px solid var(--hair);padding:2px 26px;min-width:0}
+.stat:first-child{border-left:0;padding-left:0}
+.stat .sv{display:block;font-family:var(--display);font-weight:800;font-size:clamp(36px,3.4vw,52px);line-height:1;letter-spacing:1px;font-variant-numeric:tabular-nums}
+.stat .sv .su{font-size:.42em;letter-spacing:2px;color:var(--ink-2)}
+.stat .sk{display:block;margin-top:9px;font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--ink-3)}
+/* small reassurance line near a CTA; and the required risk-disclosure bar (a feature, not fine print) */
+.reassure{font-family:var(--mono);font-size:11.5px;letter-spacing:.4px;color:var(--ink-3);margin:14px 0 0}
+.riskline{display:flex;gap:12px;align-items:flex-start;margin:32px 0 4px;padding:14px 16px;border:1px solid var(--hair-strong);background:rgba(255,255,255,.02);font-size:13.5px;line-height:1.5;color:var(--ink-2);max-width:1000px}
+.riskline .rk{flex:none;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:2px;color:var(--amber);border:1px solid color-mix(in srgb,var(--amber),transparent 55%);padding:3px 7px;text-transform:uppercase;margin-top:1px}
+.hero-fig{margin:0;position:relative}
+.hero-fig::before{content:"";position:absolute;inset:-26px -20px;pointer-events:none;
+  background:radial-gradient(ellipse 65% 70% at 50% 45%,rgba(166,79,198,.14),transparent 72%)}
+.snipcap{font-size:14.5px;color:var(--ink-3);line-height:1.55;margin:12px 2px 0}
+.snipcap b{color:var(--ink-2);font-weight:600}
+.beats{display:grid;grid-template-columns:repeat(3,1fr);gap:0 34px;border-top:1px solid var(--hair-strong);padding-bottom:10px}
+.beat{padding:24px 0 6px}
+.beat .bh{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:1px;text-transform:uppercase;margin:0 0 6px;display:flex;align-items:baseline;gap:10px}
+.beat .bh .n{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:2px;flex:none}
+.beat .bp{margin:0;font-size:15.5px;color:var(--ink-2);line-height:1.5}
+/* ============ DESK COMPARISON — SIDE BY SIDE ============ */
+.vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;max-width:1080px}
+.vpan{border:1px solid var(--hair-strong);background:var(--panel);padding:24px 26px;display:flex;flex-direction:column;min-width:0}
+.vpan .vh{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--ink-3);margin:0 0 12px}
+.vline{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:9px 0;border-top:1px solid var(--hair);font-size:15.5px;color:var(--ink-2)}
+.vline .va{font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.vline .vscope{display:block;font-style:normal;font-family:var(--mono);font-size:8.5px;letter-spacing:1.2px;color:var(--ink-faint);text-transform:uppercase;margin-top:3px}
+.vtotal{margin-top:auto;border-top:1px solid var(--hair-strong);padding-top:16px;display:flex;justify-content:space-between;align-items:baseline;gap:14px}
+.vtotal b{font-family:var(--mono);font-size:clamp(24px,2.6vw,34px);font-weight:700;font-variant-numeric:tabular-nums}
+.vsdiv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:0 20px}
+.vsdiv::before,.vsdiv::after{content:"";width:1px;flex:1;background:linear-gradient(180deg,transparent,rgba(232,51,110,.6) 45%,rgba(139,92,246,.6) 55%,transparent)}
+.vsdiv b{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:2px;color:var(--ink-2)}
+.vpan.us{border:1px solid transparent;border-image:var(--grad) 1;background:linear-gradient(135deg,rgba(232,51,110,.10),rgba(139,92,246,.10)),var(--panel);box-shadow:0 0 34px rgba(166,79,198,.14)}
+.vpan.us .vh{color:var(--ink-2)}
+.voffer{font-family:var(--display);font-weight:800;font-size:clamp(30px,3.2vw,46px);line-height:1;letter-spacing:1px;text-transform:uppercase;margin:6px 0 12px}
+.vnote{margin:0 0 18px;font-size:15.5px;color:var(--ink-2)}
+/* ============ SERVICE ROWS (snippet one side, words beside, alternating) ============ */
+.gbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:48px 0 0;padding:12px 16px;border:1px solid}
+.gbar h3{font-family:var(--display);font-weight:800;font-size:clamp(21px,2.2vw,27px);letter-spacing:1px;text-transform:uppercase;margin:0}
+.gbar.vio{border-color:rgba(139,92,246,.4);background:rgba(139,92,246,.07)}
+.gbar.ras{border-color:rgba(232,51,110,.4);background:rgba(232,51,110,.06)}
+.svc{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr);gap:44px;align-items:center;padding:30px 22px;border-top:1px solid var(--hair)}
+.svc .fig{margin:0;min-width:0}
+.svc .txt h4{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:1px;text-transform:uppercase;margin:0 0 8px}
+.svc .txt p{margin:0;font-size:15.5px;color:var(--ink-2);line-height:1.5}
+.gvio .svc .txt h4{color:var(--vio-ink)}
+.gras .svc .txt h4{color:var(--ras-ink)}
+.gvio .svc{background:linear-gradient(90deg,rgba(139,92,246,.05),transparent 58%)}
+.gvio .svc.flip{background:linear-gradient(270deg,rgba(139,92,246,.05),transparent 58%)}
+.gras .svc{background:linear-gradient(90deg,rgba(232,51,110,.045),transparent 58%)}
+.gras .svc.flip{background:linear-gradient(270deg,rgba(232,51,110,.045),transparent 58%)}
+@media (min-width:901px){.svc.flip .fig{order:2}}
+/* ============ UI SNIPPETS — the app's true skin (tokens only, no gradients) ============ */
+.snip{background:var(--panel);border:1px solid var(--hair-strong);position:relative;font-size:13px}
+.snip .ph{display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;border-bottom:1px solid var(--hair-strong);
+  font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:2.4px;color:var(--ink-2)}
+.snip .led{width:7px;height:7px;background:var(--key);box-shadow:0 0 8px rgba(255,255,255,.55);flex:none}
+.snip .led.live{background:var(--bull);box-shadow:0 0 7px 1px rgba(0,230,118,.6)}
+.snip .led.amb{background:var(--amber);box-shadow:0 0 7px 1px rgba(255,145,0,.6)}
+.snip .ph-r{margin-left:auto;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:1px;font-weight:400;color:var(--ink-faint);text-transform:uppercase}
+.snip .bd{padding:10px 12px}
+.hint{font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:1.2px;color:var(--amber);border:1px dashed color-mix(in srgb,var(--amber),transparent 45%);padding:2px 6px;text-transform:uppercase}
+/* tape rows */
+.wrow{display:grid;grid-template-columns:4px 30px 1fr;gap:9px;padding:8px 2px;border-bottom:1px solid var(--hair)}
+.wrow:last-child{border-bottom:0}
+.wsig{width:4px}
+.wimp{height:20px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700;border:1px solid var(--hair-strong);color:var(--ink-2)}
+.wrow.loud .wimp{background:var(--key);color:var(--key-ink);border-color:var(--key);box-shadow:0 0 10px rgba(255,255,255,.3)}
+.whl{font-weight:600;font-size:13px;line-height:1.32;color:var(--ink)}
+.wmeta{display:flex;align-items:center;gap:7px;margin-top:3px;font-family:var(--mono);font-size:8px;color:var(--ink-faint);letter-spacing:.5px;text-transform:uppercase;flex-wrap:wrap}
+.iimp{font-family:var(--mono);font-size:8.5px;font-weight:700;padding:2px 5px;display:inline-flex;gap:4px;
+  background:color-mix(in srgb,currentColor,transparent 89%);border:1px solid color-mix(in srgb,currentColor,transparent 78%)}
+.iimp .s{color:var(--ink-3);font-weight:400}
+.iimp.more{background:transparent;border-color:#1d242b;color:var(--ink-3)}
+.provtag{color:var(--amber);border:1px solid color-mix(in srgb,var(--amber),transparent 55%);padding:0 4px;font-size:7.5px;letter-spacing:1px;animation:pp 1.2s ease-in-out infinite}
+@keyframes pp{0%,100%{opacity:.5}50%{opacity:1}}
+.stag{color:var(--bull);border:1px solid color-mix(in srgb,var(--bull),transparent 55%);padding:0 4px;font-size:7.5px;letter-spacing:1px}
+/* interactive tape row: click (or first reveal) scores it in place */
+.tape-int .wsig{background:var(--hair-strong)}
+.tape-int.scored .wsig{background:var(--bear)}
+.tape-int .wimp::before{content:"—"}
+.tape-int:not(.scored) .wimp{border-style:dashed;color:var(--ink-faint)}
+.tape-int.scored .wimp::before{content:"52"}
+.sc-only{display:none}
+.tape-int.scored .sc-only{display:inline-flex}
+.tape-int.scored .pv-only{display:none}
+/* readout (lcd) */
+.lcdmini{display:flex;align-items:center;gap:16px;padding:12px;border-bottom:1px solid var(--hair);background:var(--panel-2)}
+.lcdmini .sym{display:flex;flex-direction:column;gap:2px}
+.lcdmini .sym b{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:2px;line-height:1}
+.lcdmini .sym span{font-family:var(--mono);font-size:7.5px;letter-spacing:1px;color:var(--ink-faint);text-transform:uppercase}
+.lcdmini .big{font-family:var(--mono);font-weight:700;font-size:34px;letter-spacing:-1px;line-height:1;
+  text-shadow:0 0 9px color-mix(in srgb,currentColor,transparent 45%)}
+.lcdmini .lab{font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:2.4px;padding:4px 10px;color:var(--key-ink);background:var(--bear);white-space:nowrap}
+/* meters */
+.met{display:flex;align-items:center;gap:8px;font-family:var(--mono)}
+.met .k{width:40px;font-size:7.5px;letter-spacing:1.2px;color:var(--ink-faint);text-transform:uppercase}
+.met .track{flex:1;height:6px;background:var(--well);border:1px solid var(--well-line);position:relative}
+.met .track i{position:absolute;left:1px;top:1px;bottom:1px;box-shadow:0 0 3px currentColor}
+.met b{font-size:10px;width:30px;text-align:right}
+/* contract rows */
+.crow2{display:grid;grid-template-columns:34px 1fr 88px 38px;align-items:center;gap:9px;padding:7px 4px;border-bottom:1px solid var(--hair)}
+.crow2:last-child{border-bottom:0}
+.crow2 .sym{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px}
+.crow2 .nm{font-family:var(--mono);font-size:7.5px;letter-spacing:.8px;color:var(--ink-faint);text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crow2 .cbar{height:5px;background:var(--well);border:1px solid #171d23;position:relative}
+.crow2 .cbar i{position:absolute;top:1px;bottom:1px;box-shadow:0 0 5px currentColor}
+.crow2 .idx{font-family:var(--mono);font-weight:700;font-size:10.5px;text-align:right}
+.crow2[role="button"]{cursor:pointer}
+.crow2[role="button"]:hover,.crow2.sel{background:var(--selrow)}
+/* app chips */
+.schip{font-family:var(--mono);font-size:8.5px;letter-spacing:.6px;text-transform:uppercase;padding:4px 8px;
+  border:1px solid var(--hair-strong);color:var(--ink-2);display:inline-flex;gap:5px;align-items:center;background:transparent}
+.schip b{font-weight:700;color:var(--ink)}
+.schip.alert{color:var(--amber);border-color:color-mix(in srgb,var(--amber),transparent 55%);background:color-mix(in srgb,var(--amber),transparent 88%)}
+.schip.alert b{color:var(--amber)}
+.schip.dim{color:var(--ink-faint)}
+.schip.dim b{color:var(--ink-3)}
+.schip.on{background:var(--key);color:var(--key-ink);border-color:var(--key);box-shadow:0 0 8px rgba(255,255,255,.25)}
+.schip.on b{color:var(--key-ink)}
+.chiprow{display:flex;flex-wrap:wrap;gap:5px}
+.gcycle{display:flex;flex-wrap:wrap;gap:5px;background:none;border:0;padding:0;margin:0;cursor:pointer;font:inherit;text-align:left}
+.sqkey{cursor:pointer}
+.sqkey:hover{border-color:var(--key);color:var(--key)}
+/* calendar + scenarios */
+.calrow{display:grid;grid-template-columns:1fr auto;gap:8px;padding:8px 2px;align-items:center;border-bottom:1px solid var(--hair)}
+.calrow[role="button"]{cursor:pointer}
+.calrow[role="button"]:hover{background:var(--selrow)}
+.cal-t{font-weight:600;font-size:13px;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cal-t .car{display:inline-block;width:12px;color:var(--ink-faint);font-size:10px}
+.cal-sub{font-family:var(--mono);font-size:8px;color:var(--ink-faint);letter-spacing:.5px;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cal-sub b{color:var(--ink-2)}
+.cdn{font-family:var(--mono);font-weight:700;font-size:15px;text-align:right;color:var(--key);text-shadow:0 0 10px rgba(255,255,255,.4)}
+.cdn.soon{color:var(--amber);text-shadow:0 0 10px color-mix(in srgb,var(--amber),transparent 35%)}
+.cd-l{font-family:var(--mono);font-size:7px;letter-spacing:1.4px;color:var(--ink-faint);text-transform:uppercase;text-align:right;display:block}
+.timeflag{font-family:var(--mono);font-size:7.5px;letter-spacing:1px;color:var(--amber);border:1px solid color-mix(in srgb,var(--amber),transparent 50%);padding:1px 4px;background:color-mix(in srgb,var(--amber),transparent 88%)}
+.symtag{font-family:var(--mono);font-size:7.5px;padding:1px 4px;border:1px solid #1d242b;color:var(--ink-3)}
+.scen{display:flex;flex-direction:column;gap:6px;margin:8px 2px 8px 12px;padding:8px 10px;border-left:2px solid var(--hair-strong);background:var(--panel-2)}
+.sc{display:flex;gap:9px;align-items:flex-start}
+.sctag{flex:none;font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:1px;padding:2px 6px;margin-top:1px;
+  background:color-mix(in srgb,currentColor,transparent 88%);border:1px solid color-mix(in srgb,currentColor,transparent 60%)}
+.sctxt{font-size:12px;color:var(--ink-2);line-height:1.4}
+html.js .cal-item:not(.open) .scen{display:none}
+/* explain / ai */
+.klab{font-family:var(--mono);font-size:7.5px;letter-spacing:1.8px;color:var(--ink-faint);text-transform:uppercase}
+.extxt{font-size:13px;line-height:1.55;color:var(--ink-2);margin:0}
+.exdrawer{margin:8px 2px 2px 12px;padding:10px 12px;border-left:2px solid var(--hair-strong);background:var(--panel-2);display:flex;flex-direction:column;gap:8px}
+html.js .exdrawer{display:none}
+html.js .exdrawer.open{display:flex}
+.wrow[role="button"]{cursor:pointer}
+.wrow[role="button"]:hover{background:var(--selrow)}
+/* squawk */
+.wave{display:flex;align-items:flex-end;gap:3px;height:30px;margin:2px 0 10px}
+.wave i{width:4px;background:var(--ink-3);transform-origin:50% 100%}
+.wave i:nth-child(4n+1){height:30%}.wave i:nth-child(4n+2){height:75%}.wave i:nth-child(4n+3){height:100%;background:var(--key)}.wave i:nth-child(4n){height:50%}
+.spoken{font-family:var(--mono);font-size:11px;color:var(--ink);letter-spacing:.4px;line-height:1.7}
+/* alert rules */
+.arow{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--hair);font-family:var(--mono);font-size:10.5px}
+.arow:last-child{border-bottom:0}
+.arow .ak{flex:none;width:74px;font-size:8px;letter-spacing:1.4px;color:var(--ink-3);text-transform:uppercase}
+.arow .av{flex:1;color:var(--ink-2);letter-spacing:.3px;min-width:0}
+.arow .ast{flex:none;font-size:8px;font-weight:700;letter-spacing:1.2px;color:var(--bull);border:1px solid color-mix(in srgb,var(--bull),transparent 60%);background:var(--bull-bg);padding:2px 6px}
+/* track record ticks + hover tips */
+.ticks-tl{display:flex;gap:2px;flex-wrap:wrap;margin-top:6px}
+.ticks-tl span{width:7px;height:12px;position:relative}
+.ticks-tl .hit{background:var(--bull);box-shadow:0 0 4px color-mix(in srgb,var(--bull),transparent 55%)}
+.ticks-tl .miss{background:var(--bear);box-shadow:0 0 4px color-mix(in srgb,var(--bear),transparent 55%)}
+.ticks-tl .fl{background:var(--neutral);opacity:.55}
+.ticks-tl span[data-tip]:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:6;white-space:nowrap;
+  background:var(--raise);border:1px solid var(--hair-strong);color:var(--ink-2);font-family:var(--mono);font-size:8px;letter-spacing:.6px;padding:4px 7px}
+.tr-line{font-family:var(--mono);font-size:8.5px;letter-spacing:.6px;color:var(--ink-faint);text-transform:uppercase}
+.tr-line b{color:var(--ink-2)}
+/* wide band snippet (try-it) */
+.bandsnip .bd{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:14px 16px}
+.bandsnip .metcol{display:flex;flex-direction:column;gap:7px;min-width:210px;flex:1}
+/* ============ TRY-IT BAND ============ */
+.tryband{margin-top:84px;position:relative;border-top:1px solid var(--hair-strong);border-bottom:1px solid var(--hair-strong);background:var(--panel);text-align:center;padding:64px 0 68px;overflow:hidden}
+.tryband::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 640px 380px at 22% 100%,rgba(232,51,110,.10),transparent 70%),
+             radial-gradient(ellipse 640px 380px at 78% 0%,rgba(139,92,246,.10),transparent 70%)}
+.tryband h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,4vw,54px);line-height:1;letter-spacing:1px;text-transform:uppercase;margin:0 0 14px}
+.tryband p{color:var(--ink-2);max-width:600px;margin:0 auto 28px;position:relative}
+.tryband .cta-row{justify-content:center;margin-bottom:34px}
+.tryband .bandsnip{max-width:980px;margin:0 auto;text-align:left}
+/* ============ FOUNDING-PRICING CLOSING BAND ============ */
+.earlyband{margin-top:80px;border-top:1px solid var(--hair-strong);padding:66px 0 4px;position:relative;overflow:hidden}
+.earlyband::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 760px 360px at 50% 0%,rgba(166,79,198,.10),transparent 70%)}
+.earlyband .ea{max-width:760px;margin:0 auto;text-align:center;position:relative}
+.earlyband .secsub{margin:0 auto 4px}
+.earlyband .cta-row{justify-content:center;margin-top:26px}
+.earlyband .reassure{margin-top:16px}
+/* ============ FAQ ============ */
+.queries{display:grid;grid-template-columns:repeat(3,1fr);gap:0 48px;padding-bottom:8px}
+.qa{border-top:1px solid var(--hair);padding:18px 0 6px;min-width:0}
+.qa h3{font-family:var(--grot);font-weight:700;font-size:17px;margin:0 0 8px;color:var(--ink)}
+.qa h3::before{content:"Q. ";font-family:var(--mono);font-size:12px;color:var(--berry);letter-spacing:1px}
+.qa p{margin:0 0 10px;font-size:15px;color:var(--ink-2)}
+.qa p::before{content:"A. ";font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:1px}
+.qa a{color:var(--ink);border-bottom:1px solid var(--hair-strong)}
+.qa a:hover{color:var(--key);border-color:var(--ras-2)}
+/* ============ FOOTER (copy verbatim on every page) ============ */
+.colophon{border-top:1px solid var(--hair-strong);margin-top:80px;padding:40px 0 34px;position:relative}
+.colophon::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(232,51,110,.55) 25%,rgba(139,92,246,.55) 75%,transparent)}
+.colo-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;padding-bottom:22px}
+.colo-brand{display:flex;align-items:center;gap:10px}
+.colo-brand .wordmark{font-size:26px}
+.colo-comp{font-family:var(--display);font-weight:700;font-size:clamp(20px,2.4vw,30px);letter-spacing:1px;text-transform:uppercase;margin:0}
+.colo-mid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;border-top:1px solid var(--hair);padding:14px 0}
+.colo-mid a{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-3);margin-right:22px}
+.colo-mid a:hover{color:var(--key)}
+.colo-bot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;border-top:1px solid var(--hair);padding-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--ink-faint)}
+.roundtag{color:var(--ink-3)}
+/* ============ REVEAL + MOTION (all js-gated or reduced-motion-gated) ============
+   No-JS: html.js never lands, everything below is inert, page fully readable.
+   Reduced motion: this whole block is skipped, and the global reduce rule
+   at the bottom kills every remaining animation/transition. */
+@media (prefers-reduced-motion:no-preference){
+  html.js .rv{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+  html.js .rv.d1{transition-delay:.08s}
+  html.js .rv.d2{transition-delay:.16s}
+  html.js .rv.d3{transition-delay:.24s}
+  html.js .rv.in{opacity:1;transform:none}
+  html.js .rv .met .track i{transition:width .6s ease .1s}
+  html.js .rv:not(.in) .met .track i{width:0 !important}
+  html.js .rv .ticks-tl span{transition:opacity .5s ease .25s}
+  html.js .rv:not(.in) .ticks-tl span{opacity:0}
+  .wash-hero::before{animation:drift 18s ease-in-out infinite alternate}
+  .cta-big{animation:ctapulse 2.6s ease-in-out infinite}
+  .hint{animation:hintp 2.4s ease-in-out infinite}
+  .tape-int.scored .sc-only,.tape-int.scored .wimp{animation:pop .32s ease}
+  html.js .exdrawer.open{animation:slidein .26s ease}
+  html.js .cal-item.open .scen{animation:slidein .26s ease}
+  .wave.talking i{animation:wv .6s ease-in-out infinite alternate}
+  .wave.talking i:nth-child(3n){animation-duration:.45s}
+  .wave.talking i:nth-child(4n){animation-duration:.75s}
+}
+@keyframes drift{from{transform:translate3d(-1.2%,-.6%,0)}to{transform:translate3d(1.2%,1%,0)}}
+@keyframes ctapulse{0%,100%{box-shadow:0 0 0 0 rgba(232,51,110,.45),0 0 16px rgba(139,92,246,.35)}50%{box-shadow:0 0 0 10px rgba(232,51,110,0),0 0 30px rgba(139,92,246,.6)}}
+@keyframes hintp{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes slidein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes wv{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+/* ============ RESPONSIVE ============ */
+@media (max-width:1024px){
+  .hero{grid-template-columns:1fr;gap:38px}
+  .newsnav .links{gap:18px}
+}
+@media (max-width:900px){
+  .newsnav .wrap{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+  .newsnav .links{order:3;width:100%;gap:16px;margin-left:0}
+  .newsnav .actions{gap:10px;flex-wrap:wrap;justify-content:flex-end}
+  .stats{grid-template-columns:1fr 1fr;gap:22px 0;padding:20px 0 24px}
+  .stat:nth-child(odd){border-left:0;padding-left:0}
+  .beats{grid-template-columns:1fr}
+  .beat{padding:16px 0 6px}
+  .vs{grid-template-columns:1fr}
+  .vsdiv{flex-direction:row;padding:14px 0}
+  .vsdiv::before,.vsdiv::after{width:auto;height:1px;flex:1}
+  .svc{grid-template-columns:1fr;gap:18px;padding:26px 14px}
+  .transp-grid{grid-template-columns:1fr;gap:26px}
+  .queries{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  body{font-size:16px}
+  .wrap{padding:0 18px}
+  .masthead{padding-top:22px;padding-bottom:16px}
+  .masthead .nameplate{gap:12px}
+  .masthead .nameplate .wordmark{font-size:clamp(38px,12vw,56px)}
+  .masthead .mark-lg svg{width:clamp(34px,10vw,52px)}
+  .topstrip{flex-direction:column;gap:2px}
+  .hero{padding:40px 0 30px}
+  .cta-big{padding:16px 22px;font-size:12.5px}
+  .cta-demo{padding:16px 22px;font-size:12.5px}
+  .lcdmini{gap:12px;flex-wrap:wrap}
+  .lcdmini .big{font-size:28px}
+  .bandsnip .bd{gap:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add("js");</script>
+<!-- =====================================================================
+DESIGN SYSTEM NOTES — SITE V1.3 (how-it-works / pricing / demo copy this chrome)
+CHROME, copy verbatim top-to-bottom: .topstrip → .rule → .masthead (nameplate +
+.dek + .dateline) → .rule-scotch (gradient hairline baked into ::after) →
+.newsnav (sticky; set aria-current="page" on the active link) → page content →
+.colophon (identical everywhere; only the <title>/meta change per page).
+GRADIENT RECIPE: --grad = 135deg #E8336E→#C74497→#A64FC6→#8B5CF6. Use it on
+.grad-text headline spans, solid .eychip section chips, .btn-key hover glow,
+6–10% alpha radial washes (.wash-hero/-vio/-ras), and the .cta-big glow ring.
+GROUP TINTS: "Understand…" = violet (--vio #8B5CF6) · "Don't get caught out…" =
+raspberry (--ras #E8336E) — now carried by slim .gbar intro bars and edge-faded
+tints on the full-width .svc feature rows (snippet one side, words beside,
+.flip alternates sides above 900px).
+SNIPPETS: .snip = the real app skin only — app tokens, square corners, --panel +
+hairlines, 30px .ph header w/ LED, mono micro labels; mock data, never a market
+price, and NO gradients inside a .snip, ever. Captions = .snipcap, 1 sentence.
+INTERACTIVE SNIPPETS (new): every service row's .snip responds — .tape-int rows
+score themselves on click, the contract mini-rail swaps the readout, the explain
+drawer + calendar scenario tree unfold (hidden only under html.js, so no-JS
+users see everything), the guardrail chips cycle ARMED→HOT→LIVE, the squawk key
+speaks via SpeechSynthesis (graceful fallback), ledger ticks carry hover tips.
+Each gets a tiny amber dashed .hint chip ("CLICK IT" style) in the .ph header.
+Real <button>s bind click only; div[role=button] uses the press() helper
+(click + Enter/Space).
+REVEAL SYSTEM (new — other pages may adopt): a one-line script stamps html.js;
+.rv elements start hidden ONLY under html.js AND prefers-reduced-motion:
+no-preference. IntersectionObserver adds .in (stagger via .d1/.d2/.d3);
+data-anim="tape|count" fires a one-time turn-on (hero tape row scores itself,
+desk total counts up from 0 — markup always holds the final figure for no-JS).
+Meters and ledger ticks inside a .rv fill/fade on reveal. Nothing over ~600ms,
+no scroll-jacking; ambient motion = hero wash drift + .cta-big pulse only.
+VOICE, one line: a knowledgeable friend explaining a useful tool — second person,
+contractions, warm and calm; drama, war-words and outcome promises stay out.
+====================================================================== -->
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ======== CHROME: topstrip + masthead ======== -->
+<div class="topstrip wrap micro" role="doc-pageheader">
+  <span>LIVE WIRES, ONE READ</span>
+  <span>INFORMATIONAL ONLY — NOT TRADING ADVICE</span>
+</div>
+<hr class="rule wrap">
+<header class="masthead wrap">
+  <a class="nameplate" href="index.html" aria-label="NewsBerri — home">
+    <span class="mark-lg" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <circle cx="26.1" cy="19.5" r="6.5" fill="#ff3b57"/><circle cx="37.9" cy="19.5" r="6.5" fill="#00e676"/>
+        <circle cx="19.7" cy="30.3" r="6.5" fill="#ff3b57"/><circle cx="32" cy="30.3" r="6.5" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="6.5" fill="#ff3b57"/>
+        <circle cx="21.3" cy="41.1" r="6.5" fill="#c2183a"/><circle cx="32" cy="41.1" r="6.5" fill="#c2183a"/><circle cx="42.7" cy="41.1" r="6.5" fill="#c2183a"/>
+        <circle cx="26.7" cy="50.9" r="6.5" fill="#c2183a"/><circle cx="37.3" cy="50.9" r="6.5" fill="#c2183a"/>
+        <circle cx="32" cy="58.1" r="6" fill="#8f1029"/>
+      </svg>
+    </span>
+    <span class="wordmark">News<b>Berri</b></span>
+  </a>
+  <p class="dek">News, read for your trade</p>
+  <p class="dateline">EDITION 2026-07-14 · MOCK DATA THROUGHOUT</p>
+</header>
+<hr class="rule-scotch wrap">
+
+<!-- ======== CHROME: sticky page-selector nav ======== -->
+<nav class="newsnav" aria-label="Site">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 64 64" width="22" height="22" fill="none" aria-hidden="true">
+        <path fill="#00e676" d="M30 15 C27.5 8 21.5 5.5 16 8.5 C18.5 14.5 25 17 30 15 Z"/>
+        <circle cx="26.1" cy="21.5" r="5.4" fill="#ff3b57"/><circle cx="37.9" cy="21.5" r="5.4" fill="#00e676"/>
+        <circle cx="19.7" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="32" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="5.4" fill="#ff3b57"/>
+        <circle cx="21.3" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="32" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="42.7" cy="39.1" r="5.4" fill="#c2183a"/>
+        <circle cx="26.7" cy="47.9" r="5.4" fill="#c2183a"/><circle cx="37.3" cy="47.9" r="5.4" fill="#c2183a"/>
+        <circle cx="32" cy="55.1" r="5.1" fill="#8f1029"/>
+      </svg>
+      <span class="wordmark">News<b>Berri</b></span>
+    </a>
+    <div class="links">
+      <a href="index.html" aria-current="page">HOME</a>
+      <a href="how-it-works.html">HOW IT WORKS</a>
+      <a href="pricing.html">PRICING</a>
+    </div>
+    <div class="actions">
+      <a class="signin" href="https://app.newsberri.com">SIGN IN</a>
+      <a class="btn-brk" href="pricing.html">COMPARE TIERS</a>
+      <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
+      <a class="btn-key" href="https://app.newsberri.com">START 7-DAY TRIAL</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<!-- ==================== 1 · HERO + THE THREE-BEAT OFFER ==================== -->
+<section class="sec wash-hero" aria-labelledby="hero-h" style="padding-top:0">
+  <div class="wrap inner">
+    <div class="hero">
+      <div class="rv d1">
+        <span class="eychip">THE NEWS, BESIDE YOUR PLATFORM</span>
+        <h1 id="hero-h">Start trading <span class="grad-text">better today.</span></h1>
+        <p class="lede">NewsBerri reads live news wires and tells you, in plain language, what every headline means for the futures you trade.</p>
+        <div class="cta-row">
+          <a class="cta-big" href="https://app.newsberri.com">TRY IT NOW — 7-DAY TRIAL</a>
+          <a class="cta-demo" href="demo.html">TRY THE DEMO — NO SIGN-UP</a>
+        </div>
+        <p class="reassure">7-day trial · cancel anytime · we email you before it renews.</p>
+      </div>
+      <figure class="hero-fig rv d2" data-anim="tape">
+        <div class="snip">
+          <div class="ph"><span class="led live"></span>LIVE WIRE — NQ<span class="ph-r">SENTIMENT · SIMULATED<span class="hint">CLICK THE ROW</span></span></div>
+          <div class="lcdmini">
+            <div class="sym"><b>NQ</b><span>NASDAQ-100 E-MINI · 14 STORIES/1H</span></div>
+            <div class="big c-bear">−34</div>
+            <div class="lab">STRONG BEAR</div>
+            <div class="met" style="flex:1;min-width:120px"><span class="k">CONF</span><div class="track"><i style="background:var(--bull);color:var(--bull);width:58%"></i></div><b>58%</b></div>
+          </div>
+          <div class="bd" style="padding-top:4px">
+            <div class="wrow tape-int" role="button" tabindex="0" aria-pressed="false" aria-label="Score this provisional headline">
+              <span class="wsig"></span>
+              <span class="wimp" aria-hidden="true"></span>
+              <div>
+                <p class="whl" style="margin:0">Nvidia server-rack supplier lead times stretch to 40 weeks — trade press</p>
+                <div class="wmeta"><span>JUST NOW</span><span>WEB</span>
+                  <span class="provtag pv-only">PROV · AWAITING SCORE</span>
+                  <span class="stag sc-only">SCORED · 2S</span>
+                  <span class="iimp c-bear sc-only">NQ −12</span><span class="iimp c-bear sc-only">ES −8</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <figcaption class="snipcap">The real terminal's skin, mock data and all — <b>watch the fresh headline score itself</b>.</figcaption>
+      </figure>
+    </div>
+    <div class="stats rv" data-anim="stats" aria-label="Product facts">
+      <div class="stat"><b class="sv"><span class="ct" data-n="42">42</span></b><span class="sk">FUTURES CONTRACTS</span></div>
+      <div class="stat"><b class="sv"><span class="ct" data-n="7">7</span></b><span class="sk">ASSET CLASSES</span></div>
+      <div class="stat"><b class="sv"><span class="ct" data-n="24">24</span><span class="su">/5</span></b><span class="sk">WIRE COVERAGE</span></div>
+      <div class="stat"><b class="sv">$<span class="ct" data-n="19">19</span><span class="su">/MO</span></b><span class="sk">PRICING FROM — EVERY TIER</span></div>
+    </div>
+    <div class="beats">
+      <div class="beat rv d1">
+        <p class="bh"><span class="n grad-text">01</span>News just as fast as the big desks.</p>
+        <p class="bp">Same wires, same speed — you see the headline the instant it crosses.</p>
+      </div>
+      <div class="beat rv d2">
+        <p class="bh"><span class="n grad-text">02</span>Scored for the contract you trade.</p>
+        <p class="bp">Pick your market; every headline gets a plain-language read for it.</p>
+      </div>
+      <div class="beat rv d3">
+        <p class="bh"><span class="n grad-text">03</span>Alerts before it lands.</p>
+        <p class="bp">A heads-up before scheduled releases and loud alerts on violent headlines — so disastrous news never catches you mid-trade.</p>
+      </div>
+    </div>
+    <p class="riskline rv"><span class="rk">Risk</span><span>Futures trading carries a substantial risk of loss and isn't right for everyone. NewsBerri is informational only — no advice, no recommendations, no profit claims.</span></p>
+  </div>
+</section>
+
+<!-- ==================== 2 · DESK COMPARISON — SIDE BY SIDE ==================== -->
+<section class="sec" aria-labelledby="vs-h">
+  <div class="wrap inner">
+    <span class="eychip">THE GOING RATE</span>
+    <h2 class="sectitle" id="vs-h">Same news. <span class="grad-text">Same speed.</span></h2>
+    <p class="secsub">Compare the bills. Newsquawk alone lists from <b>$199 a month</b> — NewsBerri starts at <b>$19</b>.</p>
+    <div class="vs">
+      <div class="vpan rv d1" data-anim="count" role="group" aria-label="Published institutional desk costs">
+        <p class="vh">THE INSTITUTIONAL DESK</p>
+        <div class="vline"><span>Newsquawk<i class="vscope">Live squawk audio — $199 one asset class · $399 all</i></span><span class="va">$199–399 / MO</span></div>
+        <div class="vline"><span>Benzinga Pro<i class="vscope">Stocks-first news terminal</i></span><span class="va">$37–197 / MO</span></div>
+        <div class="vline"><span>Bloomberg Terminal<i class="vscope">The whole institutional desk</i></span><span class="va">≈ $2,400+ / MO</span></div>
+        <div class="vline"><span>An analyst to read the tape</span><span class="va">A SALARY</span></div>
+        <div class="vtotal"><span class="micro">THE MONTHLY BILL</span><b id="vsTotal">≈$3,000+</b></div>
+      </div>
+      <div class="vsdiv" aria-hidden="true"><b>VS</b></div>
+      <div class="vpan us rv d2" role="group" aria-label="NewsBerri">
+        <p class="vh">NEWSBERRI</p>
+        <p class="voffer">All of it. <span class="grad-text">From $19/mo.</span></p>
+        <p class="vnote">Same wires, same speed, all 42 contracts — on every tier.</p>
+        <a class="btn-brk" href="pricing.html" style="margin-top:auto;align-self:flex-start;padding-left:0">COMPARE TIERS →</a>
+      </div>
+    </div>
+    <p class="micro" style="margin:12px 0 0">PUBLISHED LIST PRICING, JULY 2026 — CHECK WITH EACH VENDOR</p>
+  </div>
+</section>
+
+<!-- ============ 2.5 · TRANSPARENCY / PUBLIC-LEDGER BAND (honest, no invented numbers) ============ -->
+<section class="sec wash-soft" aria-labelledby="tr-h">
+  <div class="wrap inner">
+    <div class="transp-grid">
+      <div class="rv d1">
+        <span class="eychip">THE PUBLIC LEDGER</span>
+        <h2 class="sectitle" id="tr-h">Every call goes <span class="grad-text">on the record.</span></h2>
+        <p class="secsub">Every decisive call NewsBerri makes is logged in public — hits and misses, nothing deleted. Audit it whenever you like: it's a record you can check, not a number you have to trust.</p>
+      </div>
+      <figure class="fig rv d2" style="margin:0">
+        <div class="snip">
+          <div class="ph"><span class="led"></span>PUBLIC LEDGER<span class="ph-r">ILLUSTRATIVE · SIMULATED<span class="hint">HOVER THE TICKS</span></span></div>
+          <div class="bd">
+            <span class="tr-line">SAMPLE LEDGER — <b>SHOWS THE FORMAT</b> · HITS AND MISSES, NOTHING HIDDEN</span>
+            <div class="ticks-tl" id="trTicks2">
+              <span class="hit"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="fl"></span><span class="hit"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="hit"></span><span class="fl"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="hit"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="fl"></span><span class="hit"></span>
+            </div>
+          </div>
+        </div>
+        <figcaption class="snipcap">Simulated to show the format — <b>the real ledger is public, misses included.</b></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+<!-- ==================== 3 · WHAT YOU GET — SEVEN WORKING ROWS ==================== -->
+<section class="sec" aria-labelledby="offer-h">
+  <div class="wrap inner">
+    <span class="eychip">EVERYTHING ON THE DESK</span>
+    <h2 class="sectitle" id="offer-h">What you get</h2>
+    <p class="secsub">Every panel below is the real terminal's skin — and <b>every one of them works</b>. Click around.</p>
+
+    <!-- ———— GROUP 1 · violet ———— -->
+    <div class="gvio wash-vio" style="position:relative">
+      <div class="gbar vio rv"><h3>Understand what's moving the market</h3></div>
+
+      <article class="svc rv">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led live"></span>LIVE WIRE<span class="ph-r"><span class="hint">CLICK THE TOP ROW</span></span></div>
+            <div class="bd" style="padding-top:4px">
+              <div class="wrow tape-int" role="button" tabindex="0" aria-pressed="false" aria-label="Score this provisional headline">
+                <span class="wsig"></span>
+                <span class="wimp" aria-hidden="true"></span>
+                <div>
+                  <p class="whl" style="margin:0">Nvidia server-rack supplier lead times stretch to 40 weeks — trade press</p>
+                  <div class="wmeta"><span>40S AGO</span><span>WEB</span>
+                    <span class="provtag pv-only">PROV · AWAITING SCORE</span>
+                    <span class="stag sc-only">SCORED · 2S</span>
+                    <span class="iimp c-bear sc-only">NQ −12</span><span class="iimp c-bear sc-only">ES −8</span>
+                  </div>
+                </div>
+              </div>
+              <div class="wrow">
+                <span class="wsig" style="background:var(--bull)"></span>
+                <span class="wimp">34</span>
+                <div>
+                  <p class="whl" style="margin:0">EIA: crude inventories draw 2.1M bbl vs 1.4M consensus</p>
+                  <div class="wmeta"><span>3H AGO</span><span>OFFICIAL</span><span>SCORED</span><span class="iimp c-bull">CL +21</span><span class="iimp c-bull">RB +14</span></div>
+                </div>
+              </div>
+              <div class="wrow loud">
+                <span class="wsig" style="background:var(--bear)"></span>
+                <span class="wimp">92</span>
+                <div>
+                  <p class="whl" style="margin:0">CPI m/m +0.4% vs +0.3% est — core +0.35%, shelter re-accelerates</p>
+                  <div class="wmeta"><span>5H AGO</span><span>OFFICIAL</span><span>CORROB ×3</span><span class="iimp c-bear">NQ −62</span><span class="iimp c-bear">ES −55</span><span class="iimp more">+4 MORE</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>The live tape — three speeds, no secrets</h4>
+          <p>Headlines land the instant they cross, marked provisional, then score themselves in place. When a second wire confirms, the read firms up to corroborated.</p>
+        </div>
+      </article>
+
+      <article class="svc flip rv">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led"></span>CONTRACTS<span class="ph-r">SENTIMENT<span class="hint">PICK A CONTRACT</span></span></div>
+            <div class="lcdmini">
+              <div class="sym"><b id="ctrSym">NQ</b><span id="ctrName">NASDAQ-100 E-MINI</span></div>
+              <div class="big c-bear" id="ctrIdx">−34</div>
+              <div class="lab" id="ctrLab">STRONG BEAR</div>
+              <div class="met" style="flex:1;min-width:110px"><span class="k">CONF</span><div class="track"><i id="ctrConfI" style="background:var(--bull);color:var(--bull);width:58%"></i></div><b id="ctrConfV">58%</b></div>
+            </div>
+            <div class="bd" style="padding-top:4px" id="ctrRail">
+              <div class="crow2 sel" data-sym="NQ" role="button" tabindex="0" aria-pressed="true" aria-label="Show the NQ read"><span class="sym">NQ</span><span class="nm">NASDAQ-100 E-MINI</span><span class="cbar"><i style="background:var(--bear);color:var(--bear);right:50%;width:17%"></i></span><span class="idx c-bear">−34</span></div>
+              <div class="crow2" data-sym="ES" role="button" tabindex="0" aria-pressed="false" aria-label="Show the ES read"><span class="sym">ES</span><span class="nm">S&amp;P 500 E-MINI</span><span class="cbar"><i style="background:var(--bear);color:var(--bear);right:50%;width:14%"></i></span><span class="idx c-bear">−28</span></div>
+              <div class="crow2" data-sym="ZN" role="button" tabindex="0" aria-pressed="false" aria-label="Show the ZN read"><span class="sym">ZN</span><span class="nm">10-YR T-NOTE</span><span class="cbar"><i style="background:var(--bear);color:var(--bear);right:50%;width:11%"></i></span><span class="idx c-bear">−22</span></div>
+              <div class="crow2" data-sym="GC" role="button" tabindex="0" aria-pressed="false" aria-label="Show the GC read"><span class="sym">GC</span><span class="nm">GOLD</span><span class="cbar"><i style="background:var(--bull);color:var(--bull);left:50%;width:12%"></i></span><span class="idx c-bull">+24</span></div>
+              <div class="crow2" data-sym="CL" role="button" tabindex="0" aria-pressed="false" aria-label="Show the CL read"><span class="sym">CL</span><span class="nm">WTI CRUDE OIL</span><span class="cbar"><i style="background:var(--bull);color:var(--bull);left:50%;width:10%"></i></span><span class="idx c-bull">+21</span></div>
+              <div class="crow2" data-sym="ZW" role="button" tabindex="0" aria-pressed="false" aria-label="Show the ZW read"><span class="sym">ZW</span><span class="nm">CHICAGO WHEAT</span><span class="cbar"><i style="background:var(--neutral);color:var(--neutral);left:50%;width:3%"></i></span><span class="idx c-neu">+6</span></div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>A score for all 42 contracts</h4>
+          <p>The same story can be bad for the Nasdaq and good for gold, so every score is per contract — 42 futures markets across 7 asset classes, on every plan.</p>
+        </div>
+      </article>
+
+      <article class="svc rv">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led"></span>✦ EXPLAIN + AI OVERVIEW<span class="ph-r"><span class="hint">TAP THE HEADLINE</span></span></div>
+            <div class="bd" style="padding-top:4px">
+              <div class="wrow" id="exRow" role="button" tabindex="0" aria-expanded="false" aria-controls="exDrawer" style="border-bottom:0">
+                <span class="wsig" style="background:var(--bull)"></span>
+                <span class="wimp">74</span>
+                <div>
+                  <p class="whl" style="margin:0">Fed's Waller: June print “a bump, not a trend” — still sees two cuts this year</p>
+                  <div class="wmeta"><span>2H AGO</span><span>OFFICIAL</span><span class="iimp more">✦ EXPLAIN <span id="exCar">▸</span></span></div>
+                </div>
+              </div>
+              <div class="exdrawer" id="exDrawer">
+                <span class="klab">WHAT IT MEANS</span>
+                <p class="extxt">Waller pushed back on the hot inflation print within two hours, calling it noise rather than a trend change. That's the main thing keeping the bear read on NQ from running further.</p>
+                <span class="klab">SCORED IMPACT — SENTIMENT, NOT PRICE</span>
+                <div class="chiprow"><span class="iimp c-bull">NQ +18</span><span class="iimp c-bull">ES +15</span><span class="iimp c-bull">GC +12</span></div>
+              </div>
+              <div style="border-top:1px solid var(--hair);margin-top:8px;padding:8px 2px 2px">
+                <span class="klab" style="display:block;margin-bottom:4px">AI OVERVIEW — NQ</span>
+                <p class="extxt">Hot June core CPI re-prices the front end and knocks duration-heavy tech; Waller's pushback is capping the downside for now.</p>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>✦ Explain + the AI overview</h4>
+          <p>Tap any headline and the terminal talks like a person — what the story says and why it scored that way. The AI overview keeps a one-paragraph read of your whole day.</p>
+        </div>
+      </article>
+    </div>
+
+    <!-- ———— GROUP 2 · raspberry ———— -->
+    <div class="gras wash-ras" style="position:relative">
+      <div class="gbar ras rv"><h3>Don't get caught out by a headline</h3></div>
+
+      <article class="svc flip rv">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led amb"></span>ECON CALENDAR<span class="ph-r"><span class="hint">CLICK THE RELEASE</span></span></div>
+            <div class="bd" style="padding-top:4px">
+              <div class="cal-item" id="calItem">
+                <div class="calrow" id="calRow" role="button" tabindex="0" aria-expanded="false" aria-controls="calScen">
+                  <div>
+                    <p class="cal-t" style="margin:0"><span class="car" id="calCar" aria-hidden="true">▸</span>10-Yr Note Auction <span class="timeflag">IMMINENT</span></p>
+                    <div class="cal-sub"><span class="symtag">NQ</span><span class="symtag">ZN</span><span class="symtag">ZB</span><span>+5</span><span>GUARDRAIL ARMED · HIST ±0.1% TYP 15M (N=15)</span></div>
+                  </div>
+                  <div><span class="cdn soon">18m</span><span class="cd-l">TO RELEASE</span></div>
+                </div>
+                <div class="scen" id="calScen">
+                  <div class="sc"><span class="sctag c-bull">STRONG DEMAND</span><span class="sctxt">Duration relief — the bear reads on NQ and ZN likely ease toward neutral within the hour.</span></div>
+                  <div class="sc"><span class="sctag c-neu">IN LINE</span><span class="sctxt">Little new information — this morning's CPI story keeps the wheel.</span></div>
+                  <div class="sc"><span class="sctag c-bear">WEAK DEMAND</span><span class="sctxt">Second leg of the repricing — bear reads extend across rate-sensitive contracts.</span></div>
+                </div>
+              </div>
+              <div class="calrow" style="border-bottom:0">
+                <div>
+                  <p class="cal-t" style="margin:0"><span class="car" aria-hidden="true"> </span>Initial Jobless Claims</p>
+                  <div class="cal-sub"><span class="symtag">NQ</span><span class="symtag">ES</span><span class="symtag">ZB</span><span>FCST <b>232K</b> · PREV <b>228K</b></span></div>
+                </div>
+                <div><span class="cdn">18h 48m</span><span class="cd-l">TO RELEASE</span></div>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>The calendar, with the what-ifs written</h4>
+          <p>Every scheduled release that touches your contract, with the beat, in-line and miss outcomes sketched before it happens.</p>
+        </div>
+      </article>
+
+      <article class="svc rv">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led amb"></span>EVENT GUARDRAIL<span class="ph-r"><span id="grT">CORE CPI · T−28M</span><span class="hint">CLICK THE CHIPS</span></span></div>
+            <div class="bd" style="display:flex;flex-direction:column;gap:11px">
+              <button class="gcycle" id="grCycle" aria-label="Advance the Guardrail to its next stage">
+                <span class="schip alert"><b>ARMED</b> T−30</span>
+                <span class="schip dim"><b>HOT</b> T−10</span>
+                <span class="schip dim"><b>LIVE</b> T−2</span>
+              </button>
+              <p class="extxt" id="grCap" aria-live="polite" style="margin:0">ARMED — the release is 30 minutes out, and the terminal is already watching it for you.</p>
+              <div class="chiprow">
+                <span class="schip">HIST ±0.1% TYP 15M (N=15)</span>
+                <span class="schip">TOPSTEP &amp; APEX EVENT RULES · ON SCREEN</span>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>The Guardrail — a heads-up, three times</h4>
+          <p>ARMED at 30 minutes out, HOT at ten, LIVE at two — so a scheduled release never lands on you unannounced.</p>
+        </div>
+      </article>
+
+      <article class="svc flip rv">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led"></span>SQUAWK + ALERTS<span class="ph-r"><span class="hint">PRESS IT</span></span></div>
+            <div class="bd">
+              <div class="chiprow" style="margin-bottom:8px">
+                <button class="schip sqkey" id="sqBtn" aria-label="Hear the squawk read this headline out loud"><b id="sqGlyph">▶</b> PRESS TO HEAR IT</button>
+                <span class="schip">IMPACT 92 · CORROB ×3</span>
+                <span class="schip dim" id="sqHint">READS ALOUD IN YOUR BROWSER</span>
+              </div>
+              <div class="wave" id="sqWave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <p class="spoken" style="margin:0 0 10px">“CPI hotter than forecast — core re-accelerating. Read on NQ: strong bear, sentiment minus 34, confidence 58 percent.”</p>
+              <div class="arow" style="border-top:1px solid var(--hair)"><span class="ak">PUSH</span><span class="av">Guardrail steps + loud headlines → phone</span><span class="ast">ON</span></div>
+              <div class="arow"><span class="ak">DISCORD</span><span class="av">#trading-floor webhook · scored headlines</span><span class="ast">ON</span></div>
+              <div class="arow"><span class="ak">KEYWORD</span><span class="av">“OPEC” · any wire, any hour</span><span class="ast">ON</span></div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>The squawk — and alerts wherever you are</h4>
+          <p>Important headlines are read out loud, so you'll hear the news even when you're not looking. Push, Discord webhooks, keyword alerts and the desktop overlay carry it past the screen.</p>
+        </div>
+      </article>
+
+      <article class="svc rv">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led"></span>TRACK RECORD<span class="ph-r">PUBLIC LEDGER<span class="hint">HOVER THE TICKS</span></span></div>
+            <div class="bd">
+              <span class="tr-line">SIMULATED LEDGER — <b>HITS AND MISSES</b>, NOTHING HIDDEN</span>
+              <div class="ticks-tl" id="trTicks">
+                <span class="hit"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="hit"></span><span class="fl"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="hit"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="fl"></span><span class="hit"></span><span class="hit"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="hit"></span><span class="fl"></span><span class="miss"></span><span class="hit"></span><span class="hit"></span><span class="hit"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>A public track record, misses included</h4>
+          <p>When a read is strong enough to count as a call, it goes on the public ledger and is resolved against what happened next — misses included, nothing quietly deleted.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+<!-- ==================== 4 · TRY-IT BAND ==================== -->
+<section class="tryband" aria-labelledby="try-h">
+  <div class="wrap" style="position:relative">
+    <span class="eychip">NO SIGN-UP, NO CARD, NO CATCH</span>
+    <h2 id="try-h" class="rv">Click around <span class="grad-text">the real thing</span></h2>
+    <p class="rv d1">The demo is the whole terminal — everything's simulated, so click freely.</p>
+    <div class="cta-row rv d2">
+      <a class="btn-key" href="demo.html">TRY THE DEMO</a>
+      <a class="btn-brk" href="https://app.newsberri.com">START YOUR 7-DAY TRIAL</a>
+    </div>
+    <p class="reassure rv d2" style="margin:-18px auto 30px">7-day trial · cancel anytime, self-serve · we email you before it renews</p>
+    <div class="snip bandsnip rv d3" role="img" aria-label="The top band of the terminal: the NQ sentiment readout, its confidence, freshness and flow meters, and session status chips">
+      <div class="ph"><span class="led live"></span>THE BOARD — TOP BAND<span class="ph-r">SENTIMENT · SIMULATED · THE DEMO IS THE FULL BOARD</span></div>
+      <div class="bd">
+        <div class="lcdmini" style="border-bottom:0;padding:0;background:none;flex:none">
+          <div class="sym"><b>NQ</b><span>NASDAQ-100 E-MINI</span></div>
+          <div class="big c-bear">−34</div>
+          <div class="lab">STRONG BEAR</div>
+        </div>
+        <div class="metcol">
+          <div class="met"><span class="k">CONF</span><div class="track"><i style="background:var(--bull);color:var(--bull);width:58%"></i></div><b>58%</b></div>
+          <div class="met"><span class="k">FRESH</span><div class="track"><i style="background:var(--key);color:var(--key);width:84%"></i></div><b>84</b></div>
+          <div class="met"><span class="k">FLOW</span><div class="track"><i style="background:var(--key);color:var(--key);width:82%"></i></div><b>82</b></div>
+        </div>
+        <div class="chiprow" style="flex-direction:column;align-items:flex-start">
+          <span class="schip"><b>WIRE</b> LIVE·SIM</span>
+          <span class="schip alert"><b>EVENT</b> 10-YR AUCTION 18M</span>
+          <span class="schip"><b>SESSION</b> US·REGULAR</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 5 · SHORT FAQ ==================== -->
+<section class="sec" aria-labelledby="faq-h">
+  <div class="wrap inner">
+    <span class="eychip">FAIR QUESTIONS</span>
+    <h2 class="sectitle" id="faq-h">Things people ask us</h2>
+    <div class="queries">
+      <div class="qa rv d1">
+        <h3>Is this signals or another “guru” tool?</h3>
+        <p>No. It's a news terminal — informational only, no calls, no buy or sell, ever. We tell you what a story means; the trade stays yours.</p>
+      </div>
+      <div class="qa rv d2">
+        <h3>Why should I trust the read?</h3>
+        <p>You don't have to take our word for it — every call is logged in public, misses included, and the demo lets you judge the read yourself before you pay.</p>
+      </div>
+      <div class="qa rv d3">
+        <h3>I trade with a prop firm — is this okay?</h3>
+        <p>Yes. It's a news terminal, not a signal service — the Guardrail even puts Topstep's and Apex's release rules on screen.</p>
+      </div>
+      <div class="qa rv d1">
+        <h3>Where does the read come from?</h3>
+        <p>Live news wires, read and scored once on our servers — everyone sees the same read at the same moment. <a href="how-it-works.html">The full story →</a></p>
+      </div>
+      <div class="qa rv d2">
+        <h3>Can I cancel anytime?</h3>
+        <p>Yes — self-serve, whenever you like. We email you before the trial converts, so a renewal never sneaks up on you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 6 · FOUNDING PRICING — CLOSING CTA ==================== -->
+<section class="earlyband" aria-labelledby="ea-h">
+  <div class="wrap">
+    <div class="ea rv">
+      <span class="eychip">FOUNDING PRICING</span>
+      <h2 class="sectitle" id="ea-h">The rate you join at is <span class="grad-text">yours for life.</span></h2>
+      <p class="secsub">Founding pricing is simple: whatever your plan costs when you join is what it costs from then on. You also get a direct line to the people building NewsBerri — what you ask for shapes what ships next.</p>
+      <div class="cta-row">
+        <a class="btn-key" href="https://app.newsberri.com">START YOUR 7-DAY TRIAL</a>
+        <a class="btn-brk" href="demo.html">TRY THE DEMO FIRST</a>
+      </div>
+      <p class="reassure">Founding pricing — your rate is locked for life · 7-day trial · cancel anytime</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ======== CHROME: footer (copy verbatim on every page) ======== -->
+<footer class="colophon">
+  <div class="wrap">
+    <div class="colo-top">
+      <a class="colo-brand" href="index.html" aria-label="NewsBerri — home">
+        <svg viewBox="0 0 64 64" width="26" height="26" fill="none" aria-hidden="true">
+          <path fill="#00e676" d="M30 15 C27.5 8 21.5 5.5 16 8.5 C18.5 14.5 25 17 30 15 Z"/>
+          <circle cx="26.1" cy="21.5" r="5.4" fill="#ff3b57"/><circle cx="37.9" cy="21.5" r="5.4" fill="#00e676"/>
+          <circle cx="19.7" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="32" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="5.4" fill="#ff3b57"/>
+          <circle cx="21.3" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="32" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="42.7" cy="39.1" r="5.4" fill="#c2183a"/>
+          <circle cx="26.7" cy="47.9" r="5.4" fill="#c2183a"/><circle cx="37.3" cy="47.9" r="5.4" fill="#c2183a"/>
+          <circle cx="32" cy="55.1" r="5.1" fill="#8f1029"/>
+        </svg>
+        <span class="wordmark">News<b>Berri</b></span>
+      </a>
+      <p class="colo-comp">Informational only — not trading advice.</p>
+    </div>
+    <div class="colo-mid">
+      <span>
+        <a href="how-it-works.html">HOW IT WORKS</a>
+        <a href="pricing.html">PRICING</a>
+        <a href="demo.html">DEMO</a>
+        <a href="#">TERMS</a>
+        <a href="#">PRIVACY</a>
+        <a href="#">REFUNDS</a>
+        <a href="#">MARKET-DATA DISCLAIMER</a>
+      </span>
+      <a href="mailto:support@newsberri.com">SUPPORT@NEWSBERRI.COM</a>
+    </div>
+    <div class="colo-bot">
+      <span>© 2026 NEWSBERRI · ALL PAGES MOCK DATA</span>
+      <span class="roundtag">V1 DRAFT · MOCKUP — NOT LIVE</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+"use strict";
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s);};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+  var RM=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  /* click + Enter/Space for div[role=button]; real <button>s bind click only */
+  function press(el,fn){
+    el.addEventListener("click",fn);
+    el.addEventListener("keydown",function(e){
+      if(e.key==="Enter"||e.key===" "){e.preventDefault();fn(e);}
+    });
+  }
+
+  /* ---- shared count-up (markup always holds the final figure for no-JS;
+     reduced motion returns before the first frame, leaving the static value) ---- */
+  function countTo(el,end,fmt){
+    if(RM||!el)return;
+    var dur=600,t0=null;
+    function step(ts){
+      if(t0===null)t0=ts;
+      var p=Math.min(1,(ts-t0)/dur),e=1-Math.pow(1-p,3);
+      el.textContent=fmt(Math.round(end*e));
+      if(p<1)requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---- scroll reveal: .in on entry, one-time data-anim turn-ons.
+     Wired FIRST, before any interaction binding, so an exception in the
+     wiring below can never leave .rv content hidden (scoreRow and countTo
+     are function declarations, so they hoist above this block). ---- */
+  var turnOn={
+    tape:function(el){var r=$(".tape-int",el);
+      if(r&&!r.classList.contains("scored"))setTimeout(function(){scoreRow(r,true);},RM?0:600);},
+    count:function(){countTo($("#vsTotal"),3000,function(n){return "≈$"+n.toLocaleString("en-US")+"+";});},
+    stats:function(el){$$(".ct",el).forEach(function(c){
+      countTo(c,parseInt(c.getAttribute("data-n"),10)||0,String);});}
+  };
+  function reveal(el){
+    el.classList.add("in");
+    var a=el.getAttribute("data-anim");
+    if(a&&turnOn[a]){turnOn[a](el);el.removeAttribute("data-anim");}
+  }
+  var targets=$$(".rv");
+  function inView(el){var r=el.getBoundingClientRect();return r.top<innerHeight*.95&&r.bottom>0;}
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if(!en.isIntersecting)return;
+        io.unobserve(en.target);reveal(en.target);
+      });
+    },{threshold:.15,rootMargin:"0px 0px -5% 0px"});
+    /* anything already on screen reveals instantly (no first-paint lag,
+       and no reliance on the first observer frame) */
+    targets.forEach(function(el){if(inView(el)){reveal(el);}else{io.observe(el);}});
+  }else{
+    targets.forEach(reveal);
+  }
+  /* fallback sweep: some embedded/throttled browsers never deliver IO callbacks,
+     which would leave below-fold .rv content at opacity 0 forever. A passive
+     geometric check on scroll/resize reveals on time either way; when IO works
+     it wins the race and the sweep finds nothing. reveal() is idempotent. */
+  var pending=targets.slice(),sweeping=false;
+  function sweep(){
+    sweeping=false;
+    pending=pending.filter(function(el){
+      if(el.classList.contains("in"))return false;
+      if(inView(el)){reveal(el);return false;}
+      return true;
+    });
+    if(!pending.length){
+      removeEventListener("scroll",onSweep);removeEventListener("resize",onSweep);
+    }
+  }
+  function onSweep(){if(sweeping)return;sweeping=true;setTimeout(sweep,60);}
+  addEventListener("scroll",onSweep,{passive:true});
+  addEventListener("resize",onSweep,{passive:true});
+
+  /* ---- tape rows that score themselves (hero auto-scores on reveal; both toggle on click) ---- */
+  function scoreRow(row,force){
+    var on=(force===undefined)?!row.classList.contains("scored"):force;
+    row.classList.toggle("scored",on);
+    row.setAttribute("aria-pressed",String(on));
+  }
+  $$(".tape-int").forEach(function(row){press(row,function(){scoreRow(row);});});
+
+  /* ---- contract picker: click the mini-rail, the readout swaps ---- */
+  var SC={
+    NQ:{name:"NASDAQ-100 E-MINI",idx:-34,conf:58},
+    ES:{name:"S&P 500 E-MINI",idx:-28,conf:55},
+    ZN:{name:"10-YR T-NOTE",idx:-22,conf:60},
+    GC:{name:"GOLD",idx:24,conf:51},
+    CL:{name:"WTI CRUDE OIL",idx:21,conf:47},
+    ZW:{name:"CHICAGO WHEAT",idx:6,conf:33}
+  };
+  function sgn(n){return (n>0?"+":n<0?"−":"")+Math.abs(n);}
+  function lab(n){var a=Math.abs(n),d=n>0?"BULL":"BEAR";
+    return a>=30?"STRONG "+d:a>=15?d:a>=8?"LEAN "+d:"NEUTRAL";}
+  function col(n){return Math.abs(n)<8?"var(--neutral)":n>0?"var(--bull)":"var(--bear)";}
+  function pick(sym){
+    var c=SC[sym];if(!c)return;
+    $("#ctrSym").textContent=sym;
+    $("#ctrName").textContent=c.name;
+    var big=$("#ctrIdx");big.textContent=sgn(c.idx);big.style.color=col(c.idx);
+    var l=$("#ctrLab");l.textContent=lab(c.idx);l.style.background=col(c.idx);
+    $("#ctrConfI").style.width=c.conf+"%";
+    $("#ctrConfV").textContent=c.conf+"%";
+    $$("#ctrRail .crow2").forEach(function(r){
+      var on=r.getAttribute("data-sym")===sym;
+      r.classList.toggle("sel",on);r.setAttribute("aria-pressed",String(on));
+    });
+  }
+  $$("#ctrRail .crow2").forEach(function(r){press(r,function(){pick(r.getAttribute("data-sym"));});});
+
+  /* ---- explain drawer ---- */
+  var exRow=$("#exRow"),exDr=$("#exDrawer");
+  press(exRow,function(){
+    var open=exDr.classList.toggle("open");
+    exRow.setAttribute("aria-expanded",String(open));
+    $("#exCar").textContent=open?"▾":"▸";
+  });
+
+  /* ---- calendar scenario tree ---- */
+  var calItem=$("#calItem"),calRow=$("#calRow");
+  press(calRow,function(){
+    var open=calItem.classList.toggle("open");
+    calRow.setAttribute("aria-expanded",String(open));
+    $("#calCar").textContent=open?"▾":"▸";
+  });
+
+  /* ---- guardrail: cycle ARMED → HOT → LIVE, explain each stage plainly ---- */
+  var GR=[
+    {t:"CORE CPI · T−28M",chip:0,cap:"ARMED — the release is 30 minutes out, and the terminal is already watching it for you."},
+    {t:"CORE CPI · T−9M",chip:1,cap:"HOT — ten minutes to go. Toast, notification and a spoken callout, with your firm's release rules on screen."},
+    {t:"CORE CPI · T−90S",chip:2,cap:"LIVE — two minutes. The print is about to cross; you'll hear it the moment it lands."}
+  ];
+  var gi=0,grChips=$$("#grCycle .schip");
+  function grShow(){
+    var g=GR[gi];
+    grChips.forEach(function(ch,i){
+      ch.classList.toggle("alert",i===g.chip);
+      ch.classList.toggle("dim",i!==g.chip);
+    });
+    $("#grT").textContent=g.t;
+    $("#grCap").textContent=g.cap;
+  }
+  $("#grCycle").addEventListener("click",function(){gi=(gi+1)%GR.length;grShow();});
+  grShow();
+
+  /* ---- squawk (SpeechSynthesis, click-only, graceful fallback) ---- */
+  var sqBtn=$("#sqBtn"),sqWave=$("#sqWave"),sqHint=$("#sqHint");
+  var SQ="NewsBerri squawk demo. Impact 92. CPI hotter than forecast — core re-accelerating. Read on N Q: strong bear. Sentiment minus 34, confidence 58 percent.";
+  var NOSQ="NO SPEECH IN THIS BROWSER — THE LINE BELOW IS WHAT IT SAYS";
+  function sqOff(){sqBtn.classList.remove("on");sqWave.classList.remove("talking");$("#sqGlyph").textContent="▶";}
+  sqBtn.addEventListener("click",function(){
+    if(!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined"){sqHint.textContent=NOSQ;return;}
+    if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();sqOff();return;}
+    try{
+      var u=new SpeechSynthesisUtterance(SQ);
+      u.rate=1.02;u.pitch=.95;
+      u.onstart=function(){sqBtn.classList.add("on");sqWave.classList.add("talking");$("#sqGlyph").textContent="■";};
+      u.onend=sqOff;u.onerror=sqOff;
+      window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+    }catch(e){sqHint.textContent=NOSQ;}
+  });
+
+  /* ---- track record: hover tips on every tick ---- */
+  var NOTES={hit:"HIT — the read matched what came next",miss:"MISS — the read went the wrong way",fl:"FLAT — expired neutral, no call made"};
+  $$(".ticks-tl").forEach(function(strip){
+    $$("span",strip).forEach(function(t,i){
+      var k=t.classList.contains("hit")?"hit":t.classList.contains("miss")?"miss":"fl";
+      var note="CALL #"+(i+1)+" · "+NOTES[k];
+      t.setAttribute("data-tip",note);
+      /* the visible tip stays hover-only per the brief; assistive tech gets the same note */
+      t.setAttribute("role","img");
+      t.setAttribute("aria-label",note);
+    });
+  });
+
+  pick("NQ");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NewsBerri — Pricing · The whole wire on every tier</title>
+<meta name="description" content="NewsBerri pricing: Core $19/mo, Pro $39/mo — every tier gets all 42 contracts, every wire, at the same speed. Paid tiers add platform and AI depth, never faster data. 7-day trial, cancel anytime. Informational only — not trading advice.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Ccircle cx='26.1' cy='19.5' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='37.9' cy='19.5' r='6.5' fill='%2300e676'/%3E%3Ccircle cx='19.7' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='32' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='44.3' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='21.3' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='42.7' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='26.7' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='37.3' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='58.1' r='6' fill='%238f1029'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS — locked app tokens (verbatim) + site tints ============ */
+:root{
+  --mono:"Martian Mono",ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+  --grot:"Barlow Semi Condensed",system-ui,-apple-system,sans-serif;
+  --display:"Big Shoulders Display","Barlow Semi Condensed",system-ui,sans-serif;
+  --bull:#00e676; --bear:#ff1744; --amber:#ff9100; --neutral:#8a97a6;
+  --berry:#ff3b57; --berry-dk:#c2183a; --berry-deep:#8f1029;
+  --grad:linear-gradient(135deg,#E8336E 0%,#C74497 40%,#A64FC6 70%,#8B5CF6 100%);
+  --canvas:#000000; --panel:#0d1013; --panel-2:#101317; --raise:#14181d;
+  --hair:#1a1f25; --hair-strong:#262d35;
+  --ink:#f2f6f8; --ink-2:#b8c7d1; --ink-3:#8496a2; --ink-faint:#5d6d78;
+  --key:#ffffff; --key-ink:#04060a;
+  --key-glow:0 0 12px rgba(255,255,255,.25);
+  --bull-bg:rgba(0,210,122,.12); --bear-bg:rgba(255,65,81,.12);
+  /* site-only tints (never inside .snip) */
+  --vio:#8B5CF6; --vio-2:#A64FC6; --ras:#E8336E; --ras-2:#C74497;
+  --vio-ink:#c9b8fa; --ras-ink:#ff9dbd;
+  --well:#05080b; --well-line:#1f262e; --selrow:rgba(255,255,255,.06);
+  color-scheme:dark;
+}
+/* ============ BASE ============ */
+*,*::before,*::after{box-sizing:border-box;border-radius:0}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--grot);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(199,68,151,.35)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--key);outline-offset:2px}
+img,svg{max-width:100%}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--key);color:var(--key-ink);padding:8px 16px;font-family:var(--mono);font-size:12px;z-index:99}
+.skip:focus{left:12px;top:12px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.micro{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.rule{border:0;border-top:1px solid var(--hair);margin:0 auto}
+.rule-scotch{border:0;height:6px;border-top:4px solid var(--ink);border-bottom:0;margin:0 auto;position:relative}
+.rule-scotch::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,#E8336E 14%,#C74497 40%,#A64FC6 66%,#8B5CF6 86%,transparent)}
+.hair-grad{border:0;height:1px;margin:0 auto;background:linear-gradient(90deg,transparent,rgba(232,51,110,.6) 20%,rgba(139,92,246,.6) 80%,transparent)}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* buttons */
+.btn-key{display:inline-block;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:2px;padding:13px 24px;box-shadow:var(--key-glow);border:1px solid var(--key);transition:box-shadow .18s ease}
+.btn-key:hover{box-shadow:0 0 14px rgba(232,51,110,.4),0 0 26px rgba(139,92,246,.35)}
+.btn-brk{display:inline-block;color:var(--ink-2);font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:2px;padding:13px 10px}
+.btn-brk::before{content:"[ ";color:var(--ink-faint)}
+.btn-brk::after{content:" ]";color:var(--ink-faint)}
+.btn-brk:hover{color:var(--key)}
+.btn-brk:hover::before,.btn-brk:hover::after{color:var(--ras-2)}
+/* wordmark */
+.wordmark{font-family:var(--display);font-weight:800;letter-spacing:2px;color:var(--ink);text-transform:uppercase;line-height:1}
+.wordmark b{color:var(--berry);font-weight:800}
+/* ============ CHROME: topstrip / masthead / nav (copied verbatim from index) ============ */
+.topstrip{display:flex;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px}
+.masthead{text-align:center;padding-top:30px;padding-bottom:22px;position:relative}
+.masthead::before{content:"";position:absolute;left:50%;top:-10px;transform:translateX(-50%);width:min(920px,92%);height:230px;pointer-events:none;
+  background:radial-gradient(ellipse 60% 100% at 50% 0%,rgba(199,68,151,.10),transparent 72%)}
+.masthead .nameplate{display:inline-flex;align-items:center;gap:22px;position:relative}
+.masthead .nameplate .wordmark{font-size:clamp(56px,7.4vw,100px)}
+.masthead .mark-lg svg{width:clamp(52px,6.5vw,88px);height:auto;display:block;filter:drop-shadow(0 0 14px rgba(255,59,87,.35))}
+.dek{font-family:var(--grot);font-weight:600;font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2);margin:12px 0 0}
+.dateline{font-family:var(--mono);font-size:11px;letter-spacing:2.5px;color:var(--ink-3);margin-top:10px;font-variant-numeric:tabular-nums}
+.newsnav{position:sticky;top:0;z-index:50;background:rgba(0,0,0,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--hair-strong)}
+.newsnav .wrap{display:flex;align-items:center;gap:22px;min-height:54px}
+.newsnav .brand{display:flex;align-items:center;gap:9px}
+.newsnav .brand svg{display:block}
+.newsnav .brand .wordmark{font-size:21px}
+.newsnav .links{display:flex;gap:26px;margin-left:8px}
+.newsnav .links a{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;color:var(--ink-2);padding:6px 0;border-bottom:2px solid transparent}
+.newsnav .links a:hover{color:var(--key)}
+.newsnav .links a[aria-current="page"]{color:var(--ink);border-image:var(--grad) 1;border-bottom:2px solid}
+.newsnav .actions{margin-left:auto;display:flex;align-items:center;gap:14px}
+.newsnav .signin{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;color:var(--ink-3)}
+.newsnav .signin:hover{color:var(--key)}
+.newsnav .btn-key{padding:9px 18px;font-size:11px}
+.newsnav .btn-brk{padding:9px 4px;font-size:11px}
+/* ============ SECTION FURNITURE (from index) ============ */
+.sec{position:relative;padding:76px 0 0}
+.sec .inner{position:relative}
+.eychip{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:2px;color:#fff;background:var(--grad);padding:5px 12px;margin-bottom:14px}
+.eychip.vio{background:rgba(139,92,246,.13);color:var(--vio-ink);border:1px solid rgba(139,92,246,.45)}
+.eychip.ras{background:rgba(232,51,110,.12);color:var(--ras-ink);border:1px solid rgba(232,51,110,.45)}
+.sectitle{font-family:var(--display);font-weight:800;font-size:clamp(32px,3.6vw,48px);letter-spacing:1px;text-transform:uppercase;line-height:1.02;margin:0 0 14px}
+.secsub{color:var(--ink-2);font-size:17.5px;max-width:720px;margin:0 0 30px}
+.secsub b{color:var(--ink);font-weight:600}
+.wash-hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 720px 460px at 12% 8%,rgba(232,51,110,.09),transparent 68%),
+             radial-gradient(ellipse 760px 500px at 88% 20%,rgba(139,92,246,.09),transparent 70%)}
+.wash-vio::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 900px 460px at 10% 0%,rgba(139,92,246,.07),transparent 70%)}
+.wash-ras::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 900px 460px at 90% 0%,rgba(232,51,110,.07),transparent 70%)}
+/* ============ SAME-WIRE STRIP — first thing on the page ============ */
+.samewire{position:relative;text-align:center;border-bottom:1px solid var(--hair-strong);background:var(--panel);padding:30px 0 32px;overflow:hidden}
+.samewire::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 540px 280px at 12% 50%,rgba(232,51,110,.10),transparent 70%),
+             radial-gradient(ellipse 540px 280px at 88% 50%,rgba(139,92,246,.10),transparent 70%)}
+.samewire::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(232,51,110,.55) 25%,rgba(139,92,246,.55) 75%,transparent)}
+.samewire .inner{position:relative}
+.samewire .big{font-size:19px;color:var(--ink);max-width:840px;margin:0 auto 12px;line-height:1.5}
+.samewire .big b{font-weight:600}
+/* ============ PAGE HEADER ============ */
+.pagehead{padding:56px 0 0}
+.pagehead h1{font-family:var(--display);font-weight:800;font-size:clamp(42px,4.6vw,66px);line-height:.98;letter-spacing:.5px;text-transform:uppercase;margin:0 0 16px;max-width:900px}
+/* ============ TIER CARDS ============ */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch;margin-top:36px}
+.plan{position:relative;border:1px solid var(--hair-strong);background:var(--panel);padding:28px 26px 24px;display:flex;flex-direction:column;min-width:0}
+.plan .tiername{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:2.5px;color:var(--ink-3);margin:0 0 14px}
+.plan .price{font-family:var(--display);font-weight:800;font-size:54px;line-height:1;letter-spacing:1px;margin:0}
+.plan .price sub{font-family:var(--mono);font-size:11px;font-weight:400;letter-spacing:1px;color:var(--ink-3);vertical-align:baseline}
+.plan .blurb{font-size:15px;color:var(--ink-2);margin:14px 0 0}
+.popchip{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:1.5px;color:#fff;background:var(--grad);padding:3px 8px;margin-left:10px;vertical-align:2px}
+.manifest{list-style:none;margin:20px 0 24px;padding:0;flex:1}
+.manifest li{border-top:1px solid var(--hair);padding:9px 0;font-size:14.5px;color:var(--ink-2);display:flex;align-items:baseline;gap:10px}
+.manifest li::before{content:"✓";font-family:var(--mono);font-size:11px;color:var(--ink);flex:none}
+.manifest li.plus::before{content:"+";color:var(--ink-3)}
+.manifest li b{color:var(--ink);font-weight:600}
+.plan .cta{display:block;text-align:center;margin-top:auto}
+.plan .cta-note{text-align:center;margin-top:10px}
+.plan.pro{background:linear-gradient(180deg,rgba(199,68,151,.09),rgba(139,92,246,.04) 46%,transparent 80%),var(--panel);border-color:var(--hair-strong)}
+.plan.pro::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:3px;background:var(--grad)}
+.plan.ghost{background:var(--well);border-style:dashed;color:var(--ink-faint)}
+.plan.ghost .tiername,.plan.ghost .price,.plan.ghost .blurb{color:var(--ink-faint)}
+.plan.ghost .manifest li{color:var(--ink-faint);border-top-color:var(--well-line)}
+.plan.ghost .manifest li::before{content:"—";color:var(--ink-faint)}
+.preview-chip{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:1.5px;color:var(--ink-3);border:1px dashed var(--hair-strong);padding:3px 7px;margin-top:14px}
+.btn-ghosted{display:block;text-align:center;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:2px;padding:13px 24px;color:var(--ink-faint);border:1px dashed var(--hair-strong);cursor:not-allowed;margin-top:auto}
+.plans-foot{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-3);margin-top:14px;font-variant-numeric:tabular-nums}
+/* ============ MONTHLY / ANNUAL TOGGLE ============ */
+.billrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:6px 0 4px}
+.billrow-lab{color:var(--ink-3)}
+.billtoggle{display:inline-flex;border:1px solid var(--hair-strong);background:var(--panel)}
+.bt-opt{font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:1.5px;color:var(--ink-3);background:transparent;border:0;padding:11px 20px;cursor:pointer;display:inline-flex;align-items:center;gap:9px;transition:color .18s ease,background .18s ease}
+.bt-opt+.bt-opt{border-left:1px solid var(--hair-strong)}
+.bt-opt:hover{color:var(--ink)}
+.bt-opt.is-on{color:var(--key);background:linear-gradient(180deg,rgba(199,68,151,.13),rgba(139,92,246,.06))}
+.bt-save{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:1px;color:#fff;background:var(--grad);padding:3px 7px}
+.bt-opt:not(.is-on) .bt-save{opacity:.7}
+/* price sub-line (annual/monthly alternate, always visible with JS off) */
+.price-alt{color:var(--ink-3);margin:8px 0 0;letter-spacing:1.2px}
+.plan.ghost .price-alt{visibility:hidden}
+/* ============ AT-CTA REASSURANCE / RISK / FOUNDING PRICING ============ */
+.atcta{margin-top:26px;border:1px solid var(--hair-strong);background:var(--panel);position:relative;padding:20px 24px}
+.atcta::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(232,51,110,.55) 25%,rgba(139,92,246,.55) 75%,transparent)}
+.reassure{font-family:var(--mono);font-size:11px;letter-spacing:1.3px;line-height:1.95;color:var(--ink-2);margin:0;font-variant-numeric:tabular-nums}
+.reassure .sep{color:var(--ras-2);padding:0 4px}
+.earlyaccess{font-size:14.5px;color:var(--ink-2);margin:14px 0 0;max-width:780px}
+.earlyaccess b{color:var(--ink);font-weight:600}
+.risknote{font-size:12.5px;line-height:1.55;color:var(--ink-2);margin:12px 0 0;max-width:840px;border-top:1px solid var(--hair);padding-top:12px}
+/* ============ COMPARISON TABLE ============ */
+.tablewrap{overflow-x:auto}
+.matrix{width:100%;border-collapse:collapse;margin:6px 0 8px;min-width:680px}
+.matrix caption{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-faint);padding-bottom:9px}
+.matrix th{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;font-weight:500;color:var(--ink-3);text-transform:uppercase;text-align:left;border-top:1px solid var(--hair-strong);border-bottom:1px solid var(--hair-strong);padding:8px 12px}
+.matrix th.val-h{text-align:center;width:170px;color:var(--ink)}
+.matrix th.val-h small{display:block;font-weight:400;color:var(--ink-3);letter-spacing:1px;margin-top:3px}
+.matrix th.val-h .popchip{display:inline-block;margin:0 0 4px;vertical-align:0}
+.matrix td{border-bottom:1px solid var(--hair);padding:11px 12px;font-size:15.5px;color:var(--ink-2);vertical-align:top}
+.matrix td small{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:1px;color:var(--ink-faint);margin-top:3px}
+.matrix td.val{font-family:var(--mono);font-size:12px;letter-spacing:.5px;text-align:center;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.matrix td.na{color:var(--ink-faint)}
+.matrix th.ghostcol,.matrix td.ghostcol{background:var(--well);color:var(--ink-faint)}
+.matrix th.ghostcol small{color:var(--ink-faint)}
+.matrix td.procol{background:rgba(139,92,246,.05)}
+.matrix th.procol{background:rgba(139,92,246,.07)}
+.matrix tbody tr:hover td{background:var(--selrow)}
+.matrix tbody tr:hover td.ghostcol{background:var(--well)}
+.footnote{font-family:var(--mono);font-size:9.5px;letter-spacing:1px;color:var(--ink-faint);line-height:1.8}
+/* ============ COST STRIP (from index, slightly expanded) ============ */
+.cost{border:1px solid var(--hair-strong);background:var(--panel);max-width:920px}
+.costrow{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) auto;gap:8px 18px;align-items:baseline;padding:11px 20px;border-top:1px solid var(--hair)}
+.costrow:first-child{border-top:0}
+.costrow .what{font-size:15.5px;color:var(--ink-2)}
+.costrow .how{font-family:var(--mono);font-size:10.5px;letter-spacing:.8px;color:var(--ink-faint);align-self:center}
+.costrow .amt{font-family:var(--mono);font-size:12.5px;font-weight:700;letter-spacing:.5px;color:var(--ink);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+.costrow.us{background:linear-gradient(90deg,rgba(232,51,110,.10),rgba(139,92,246,.10));border-top:1px solid var(--hair-strong)}
+.costrow.us .what{color:var(--ink);font-weight:600}
+.costrow.us .amt{font-size:14px}
+.cost-foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;max-width:920px;padding:12px 2px 0}
+/* ============ HONEST BILLING ============ */
+.fineprint{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--hair-strong);background:var(--panel);position:relative}
+.fineprint::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(232,51,110,.55) 25%,rgba(139,92,246,.55) 75%,transparent)}
+.fp-item{min-width:0;padding:24px}
+.fp-item+.fp-item{border-left:1px solid var(--hair)}
+.fp-item h3{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2px;color:var(--ink);margin:0 0 10px;text-transform:uppercase}
+.fp-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+/* ============ FAQ (from index) ============ */
+.queries{display:grid;grid-template-columns:1fr 1fr;gap:0 60px;padding-bottom:8px}
+.qa{border-top:1px solid var(--hair);padding:18px 0 6px;min-width:0}
+.qa h3{font-family:var(--grot);font-weight:700;font-size:17px;margin:0 0 8px;color:var(--ink)}
+.qa h3::before{content:"Q. ";font-family:var(--mono);font-size:12px;color:var(--berry);letter-spacing:1px}
+.qa p{margin:0 0 10px;font-size:15px;color:var(--ink-2)}
+.qa p::before{content:"A. ";font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:1px}
+.qa a{color:var(--ink);border-bottom:1px solid var(--hair-strong)}
+.qa a:hover{color:var(--key);border-color:var(--ras-2)}
+/* ============ CTA BAND (tryband pattern from index) ============ */
+.tryband{margin-top:84px;position:relative;border-top:1px solid var(--hair-strong);border-bottom:1px solid var(--hair-strong);background:var(--panel);text-align:center;padding:64px 0 68px;overflow:hidden}
+.tryband::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 640px 380px at 22% 100%,rgba(232,51,110,.10),transparent 70%),
+             radial-gradient(ellipse 640px 380px at 78% 0%,rgba(139,92,246,.10),transparent 70%)}
+.tryband h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,4vw,54px);line-height:1;letter-spacing:1px;text-transform:uppercase;margin:0 0 14px}
+.tryband p{color:var(--ink-2);max-width:600px;margin:0 auto 28px;position:relative}
+.cta-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.tryband .cta-row{justify-content:center;margin-bottom:20px}
+.trust{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--ink-3);padding:26px 0 0;font-variant-numeric:tabular-nums;position:relative}
+.tryband .trust{max-width:none;margin:0 auto}
+/* ============ FOOTER (copied verbatim from index) ============ */
+.colophon{border-top:1px solid var(--hair-strong);margin-top:80px;padding:40px 0 34px;position:relative}
+.colophon::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(232,51,110,.55) 25%,rgba(139,92,246,.55) 75%,transparent)}
+.colo-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;padding-bottom:22px}
+.colo-brand{display:flex;align-items:center;gap:10px}
+.colo-brand .wordmark{font-size:26px}
+.colo-comp{font-family:var(--display);font-weight:700;font-size:clamp(20px,2.4vw,30px);letter-spacing:1px;text-transform:uppercase;margin:0}
+.colo-mid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;border-top:1px solid var(--hair);padding:14px 0}
+.colo-mid a{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-3);margin-right:22px}
+.colo-mid a:hover{color:var(--key)}
+.colo-bot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;border-top:1px solid var(--hair);padding-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--ink-faint)}
+.roundtag{color:var(--ink-3)}
+/* ============ RESPONSIVE ============ */
+@media (max-width:1024px){
+  .newsnav .links{gap:18px}
+  .plans{gap:14px}
+  .plan{padding:24px 18px 20px}
+  .fineprint{grid-template-columns:1fr 1fr}
+  .fp-item:nth-child(3){border-left:0}
+  .fp-item:nth-child(n+3){border-top:1px solid var(--hair)}
+}
+@media (max-width:900px){
+  .newsnav .wrap{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+  .newsnav .links{order:3;width:100%;gap:16px;margin-left:0}
+  .newsnav .actions{gap:10px;flex-wrap:wrap;justify-content:flex-end}
+  .plans{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  body{font-size:16px}
+  .wrap{padding:0 18px}
+  .queries,.fineprint{display:block}
+  .fp-item+.fp-item{border-left:0;border-top:1px solid var(--hair)}
+  .masthead{padding-top:22px;padding-bottom:16px}
+  .masthead .nameplate{gap:12px}
+  .masthead .nameplate .wordmark{font-size:clamp(38px,12vw,56px)}
+  .masthead .mark-lg svg{width:clamp(34px,10vw,52px)}
+  .topstrip{flex-direction:column;gap:2px}
+  .pagehead{padding-top:40px}
+  .costrow{grid-template-columns:1fr auto}
+  .costrow .how{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<!-- =====================================================================
+PRICING — SITE V1. Chrome copied verbatim from index.html (see its DESIGN
+SYSTEM NOTES); only <title>/meta and aria-current change. Page order per
+Will: same-wire strip ABOVE everything → three tier cards (Desk is a
+ghosted structure placeholder, nothing invented) → comparison table →
+short institutional cost block → honest billing → billing FAQ → CTA band.
+Squawk is deliberately absent from tiers and matrix (tier placement
+undecided). No "coming" labels on any feature — the one sanctioned note
+is the Desk card's "details coming from the founders".
+====================================================================== -->
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ======== CHROME: topstrip + masthead ======== -->
+<div class="topstrip wrap micro" role="doc-pageheader">
+  <span>LIVE WIRES, ONE READ</span>
+  <span>INFORMATIONAL ONLY — NOT TRADING ADVICE</span>
+</div>
+<hr class="rule wrap">
+<header class="masthead wrap">
+  <a class="nameplate" href="index.html" aria-label="NewsBerri — home">
+    <span class="mark-lg" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <circle cx="26.1" cy="19.5" r="6.5" fill="#ff3b57"/><circle cx="37.9" cy="19.5" r="6.5" fill="#00e676"/>
+        <circle cx="19.7" cy="30.3" r="6.5" fill="#ff3b57"/><circle cx="32" cy="30.3" r="6.5" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="6.5" fill="#ff3b57"/>
+        <circle cx="21.3" cy="41.1" r="6.5" fill="#c2183a"/><circle cx="32" cy="41.1" r="6.5" fill="#c2183a"/><circle cx="42.7" cy="41.1" r="6.5" fill="#c2183a"/>
+        <circle cx="26.7" cy="50.9" r="6.5" fill="#c2183a"/><circle cx="37.3" cy="50.9" r="6.5" fill="#c2183a"/>
+        <circle cx="32" cy="58.1" r="6" fill="#8f1029"/>
+      </svg>
+    </span>
+    <span class="wordmark">News<b>Berri</b></span>
+  </a>
+  <p class="dek">News, read for your trade</p>
+  <p class="dateline">EDITION 2026-07-14 · MOCK DATA THROUGHOUT</p>
+</header>
+<hr class="rule-scotch wrap">
+
+<!-- ======== CHROME: sticky page-selector nav ======== -->
+<nav class="newsnav" aria-label="Site">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 64 64" width="22" height="22" fill="none" aria-hidden="true">
+        <path fill="#00e676" d="M30 15 C27.5 8 21.5 5.5 16 8.5 C18.5 14.5 25 17 30 15 Z"/>
+        <circle cx="26.1" cy="21.5" r="5.4" fill="#ff3b57"/><circle cx="37.9" cy="21.5" r="5.4" fill="#00e676"/>
+        <circle cx="19.7" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="32" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="5.4" fill="#ff3b57"/>
+        <circle cx="21.3" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="32" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="42.7" cy="39.1" r="5.4" fill="#c2183a"/>
+        <circle cx="26.7" cy="47.9" r="5.4" fill="#c2183a"/><circle cx="37.3" cy="47.9" r="5.4" fill="#c2183a"/>
+        <circle cx="32" cy="55.1" r="5.1" fill="#8f1029"/>
+      </svg>
+      <span class="wordmark">News<b>Berri</b></span>
+    </a>
+    <div class="links">
+      <a href="index.html">HOME</a>
+      <a href="how-it-works.html">HOW IT WORKS</a>
+      <a href="pricing.html" aria-current="page">PRICING</a>
+    </div>
+    <div class="actions">
+      <a class="signin" href="https://app.newsberri.com">SIGN IN</a>
+      <a class="btn-brk" href="pricing.html">COMPARE TIERS</a>
+      <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
+      <a class="btn-key" href="https://app.newsberri.com">START 7-DAY TRIAL</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<!-- ==================== 1 · THE SAME-WIRE STRIP — above everything ==================== -->
+<section class="samewire" aria-label="The every-tier rule">
+  <div class="wrap inner">
+    <span class="eychip">SAME WIRE, SAME SPEED, EVERY TIER</span>
+    <p class="big">Every tier gets the same speed and the same coverage — <b>all 42 contracts, every wire, the moment they move</b>. Paid tiers add platform and AI depth, never faster data.</p>
+    <p class="micro" style="margin:0">42 CONTRACTS · 7 ASSET CLASSES · LIVE NEWS WIRES — ON EVERY PLAN</p>
+  </div>
+</section>
+
+<!-- ==================== 2 · PAGE HEADER + THE THREE TIERS ==================== -->
+<section class="sec wash-hero pagehead" aria-labelledby="pricing-h">
+  <div class="wrap inner">
+    <span class="eychip">PRICING</span>
+    <h1 id="pricing-h">Pay for depth, <span class="grad-text">never for the news</span>.</h1>
+    <p class="secsub">Most terminals charge more to show you more of the tape. We don't. Core and Pro both get every contract and every wire at full speed — upgrading buys you <b>more platform around the read</b>, not permission to see the news. A third tier is on the founders' desk; we'll fill in that column when they do.</p>
+
+    <div class="billrow">
+      <span class="micro billrow-lab">BILLED</span>
+      <div class="billtoggle" role="group" aria-label="Choose billing period">
+        <button type="button" class="bt-opt is-on" data-annual="false" aria-pressed="true">MONTHLY</button>
+        <button type="button" class="bt-opt" data-annual="true" aria-pressed="false">ANNUAL <span class="bt-save">2 MONTHS FREE</span></button>
+      </div>
+    </div>
+
+    <div class="plans">
+      <article class="plan" aria-labelledby="plan-core">
+        <h2 class="tiername" id="plan-core">CORE</h2>
+        <p class="price" data-mo="$19" data-yr="$15.83"><span class="price-num">$19</span><sub class="price-per">/MO</sub></p>
+        <p class="price-alt micro" data-mo="OR $190 A YEAR — 2 MONTHS FREE" data-yr="BILLED $190/YR · 2 MONTHS FREE">OR $190 A YEAR — 2 MONTHS FREE</p>
+        <p class="blurb">The full read for one screen. Everything the wire prints, scored and explained.</p>
+        <ul class="manifest">
+          <li><b>All 42 contracts</b> &amp; sector reads — the whole wire</li>
+          <li>The live tape, three speeds — provisional the moment it crosses, scored seconds later, corroborated once a second wire confirms it</li>
+          <li>Top Stories</li>
+          <li>AI Overview of your day</li>
+          <li>The calendar, with beat / in-line / miss scenarios</li>
+          <li>✦ Explain — 15 a day</li>
+          <li>3 alert rules — in-app, audio, browser</li>
+          <li>1 device</li>
+        </ul>
+        <a class="btn-key cta" href="https://app.newsberri.com">START YOUR 7-DAY TRIAL</a>
+        <p class="micro cta-note">CARD REQUIRED · CANCEL ANYTIME, SELF-SERVE</p>
+      </article>
+
+      <article class="plan pro" aria-labelledby="plan-pro">
+        <h2 class="tiername" id="plan-pro">PRO<span class="popchip">MOST POPULAR</span></h2>
+        <p class="price" data-mo="$39" data-yr="$32.50"><span class="price-num">$39</span><sub class="price-per">/MO</sub></p>
+        <p class="price-alt micro" data-mo="OR $390 A YEAR — 2 MONTHS FREE" data-yr="BILLED $390/YR · 2 MONTHS FREE">OR $390 A YEAR — 2 MONTHS FREE</p>
+        <p class="blurb">Everything in Core, plus the half that keeps watch — and no limits on the depth.</p>
+        <ul class="manifest">
+          <li class="plus"><b>Everything in Core</b>, plus:</li>
+          <li>Unlimited ✦ Explain &amp; scenarios</li>
+          <li>The Event Guardrail — ARMED, HOT and LIVE heads-ups at 30, 10 and 2 minutes before a release</li>
+          <li>20 alert rules, including push to your phone</li>
+          <li>Discord webhooks &amp; keyword tripwires</li>
+          <li>Morning Sift &amp; Away Digest</li>
+          <li>The desktop overlay app</li>
+          <li>Your personal accuracy ledger</li>
+          <li>Named layouts, synced across devices</li>
+          <li>3 devices</li>
+          <li>Priority support</li>
+        </ul>
+        <a class="btn-key cta" href="https://app.newsberri.com">START YOUR 7-DAY TRIAL</a>
+        <p class="micro cta-note">CARD REQUIRED · CANCEL ANYTIME, SELF-SERVE</p>
+      </article>
+
+      <article class="plan ghost" aria-labelledby="plan-desk">
+        <h2 class="tiername" id="plan-desk">DESK</h2>
+        <p class="price">$—</p>
+        <p class="price-alt micro" aria-hidden="true">&nbsp;</p>
+        <span class="preview-chip">DETAILS COMING FROM THE FOUNDERS</span>
+        <p class="blurb">The column is here; the contents aren't. We'd rather leave it blank than guess.</p>
+        <ul class="manifest" aria-label="Desk tier contents not yet announced">
+          <li>—</li>
+          <li>—</li>
+          <li>—</li>
+          <li>—</li>
+          <li>—</li>
+          <li>—</li>
+          <li>—</li>
+          <li>—</li>
+        </ul>
+        <span class="btn-ghosted" aria-disabled="true">NOT ON SALE YET</span>
+        <p class="micro cta-note">NOTHING TO BUY HERE YET</p>
+      </article>
+    </div>
+
+    <div class="atcta">
+      <p class="reassure">7-DAY TRIAL<span class="sep">·</span>CARD REQUIRED<span class="sep">·</span>CANCEL ANYTIME, SELF-SERVE<span class="sep">·</span>WE EMAIL YOU BEFORE IT RENEWS<span class="sep">·</span>FOUNDING MEMBERS KEEP THEIR PRICE FOR LIFE</p>
+      <p class="earlyaccess"><b>Founding pricing:</b> the rate you join at is yours for life. You also get a direct line to the people building it — what you ask for shapes what we build next.</p>
+      <p class="risknote">Futures trading carries a substantial risk of loss and isn't right for everyone. NewsBerri is informational only — no advice, no recommendations, no profit claims.</p>
+    </div>
+
+    <p class="plans-foot">PRICES IN USD · YEARLY BILLING WORKS OUT TO TWO MONTHS FREE</p>
+  </div>
+</section>
+
+<!-- ==================== 3 · THE COMPARISON TABLE ==================== -->
+<section class="sec wash-vio" aria-labelledby="matrix-h">
+  <div class="wrap inner">
+    <span class="eychip vio">LINE BY LINE</span>
+    <h2 class="sectitle" id="matrix-h">The tiers, side by side</h2>
+    <p class="secsub">The honest version of the pricing grid: what's in each tier, row by row. The Desk column stays blank until the founders set it — a dash there means <b>"not announced yet"</b>, not "not included".</p>
+    <div class="tablewrap">
+      <table class="matrix">
+        <caption>FEATURE COMPARISON — ✓ INCLUDED · — NOT IN TIER, OR NOT YET ANNOUNCED</caption>
+        <thead>
+          <tr>
+            <th scope="col">What you get</th>
+            <th scope="col" class="val-h">CORE<small>$19/MO</small></th>
+            <th scope="col" class="val-h procol"><span class="popchip">MOST POPULAR</span><br>PRO<small>$39/MO</small></th>
+            <th scope="col" class="val-h ghostcol">DESK<small>$—</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>The live tape, three speeds<small>ALL 42 CONTRACTS · 7 ASSET CLASSES · SECTOR READS — EVERY TIER</small></td>
+            <td class="val">✓ FULL</td><td class="val procol">✓ FULL</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>Top Stories</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>AI Overview of your day</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>Calendar with beat / in-line / miss scenarios<small>THE WHAT-IFS WRITTEN BEFORE EVERY MAPPED RELEASE</small></td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>✦ Explain &amp; scenarios<small>THE WHY BEHIND ANY SCORE, ON DEMAND</small></td>
+            <td class="val">15 / DAY</td><td class="val procol">UNLIMITED</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>Alert rules<small>CORE: IN-APP, AUDIO, BROWSER · PRO ADDS PUSH TO YOUR PHONE</small></td>
+            <td class="val">3</td><td class="val procol">20</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>Discord webhooks &amp; keyword tripwires</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>The Event Guardrail<small>A HEADS-UP 30, 10 AND 2 MINUTES BEFORE A RELEASE · TOPSTEP &amp; APEX RULES ON SCREEN</small></td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>Morning Sift &amp; Away Digest</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>Desktop overlay app<small>FLOATS THE READ OVER YOUR TRADING PLATFORM</small></td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>Personal accuracy ledger</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>Named layouts, synced</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>Devices</td>
+            <td class="val">1</td><td class="val procol">3</td><td class="val ghostcol">—</td>
+          </tr>
+          <tr>
+            <td>Support</td>
+            <td class="val">STANDARD</td><td class="val procol">PRIORITY</td><td class="val ghostcol">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">The Desk column prints "—" until the founders set its contents — nothing in that column is announced. All figures on this page are subscription prices, never market prices.</p>
+  </div>
+</section>
+
+<!-- ==================== 4 · THE INSTITUTIONAL COST BLOCK ==================== -->
+<section class="sec wash-ras" aria-labelledby="cost-h">
+  <div class="wrap inner">
+    <span class="eychip ras">THE GOING RATE</span>
+    <h2 class="sectitle" id="cost-h">What this desk costs elsewhere</h2>
+    <p class="secsub">You could assemble this desk the traditional way — trading floors have for decades. If what you want is <b>the news, read for your trade</b>, here's what the two roads go for.</p>
+    <div class="cost" role="table" aria-label="Published list pricing for named institutional services compared with NewsBerri Core and Pro">
+      <div class="costrow" role="row"><span class="what" role="cell">Newsquawk</span><span class="how" role="cell">LIVE SQUAWK AUDIO, INSTITUTIONAL · BASIC $199 (ONE ASSET CLASS) → PRO $399 (ALL)</span><span class="amt" role="cell">$199–399 / MO</span></div>
+      <div class="costrow" role="row"><span class="what" role="cell">Benzinga Pro</span><span class="how" role="cell">STOCKS-FIRST NEWS TERMINAL · BASIC TO UPPER TIERS</span><span class="amt" role="cell">$37–197 / MO</span></div>
+      <div class="costrow" role="row"><span class="what" role="cell">Bloomberg Terminal</span><span class="how" role="cell">THE WHOLE INSTITUTIONAL DESK, PER SEAT · ≈ $30K / YR</span><span class="amt" role="cell">≈ $2,400+ / MO</span></div>
+      <div class="costrow" role="row"><span class="what" role="cell">An analyst to read the tape</span><span class="how" role="cell">A HUMAN ON THE DESK, FULL-TIME</span><span class="amt" role="cell">A SALARY</span></div>
+      <div class="costrow us" role="row"><span class="what" role="cell">NewsBerri Core — the whole wire</span><span class="how" role="cell">EVERY CONTRACT, EVERY WIRE, ONE DEVICE</span><span class="amt grad-text" role="cell">$19 / MO</span></div>
+      <div class="costrow us" role="row"><span class="what" role="cell">NewsBerri Pro — adds the watchful half</span><span class="how" role="cell">GUARDRAIL, ALERTS EVERYWHERE, UNLIMITED DEPTH</span><span class="amt grad-text" role="cell">$39 / MO</span></div>
+    </div>
+    <div class="cost-foot">
+      <span class="micro">PUBLISHED LIST PRICING, JULY 2026 — CHECK WITH EACH VENDOR · SUBSCRIPTION PRICES, NEVER MARKET PRICES</span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 5 · HONEST BILLING ==================== -->
+<section class="sec" aria-labelledby="billing-h">
+  <div class="wrap inner">
+    <span class="eychip">THE FINE PRINT, IN BIG TYPE</span>
+    <h2 class="sectitle" id="billing-h">Billing, in plain sight</h2>
+    <p class="secsub">The stuff other pricing pages bury in a footnote. We'd rather you read it before you sign up than discover it after.</p>
+    <div class="fineprint">
+      <div class="fp-item">
+        <h3>The trial</h3>
+        <p>Seven days on the full product. It does need a card up front — we'd rather tell you that here, in big type, than in the small print.</p>
+      </div>
+      <div class="fp-item">
+        <h3>The reminder</h3>
+        <p>Before your trial converts, we email you. Paying should be a decision you make on purpose, not a surprise on a statement.</p>
+      </div>
+      <div class="fp-item">
+        <h3>Cancelling</h3>
+        <p>Anytime, self-serve, from your account. No retention chat, no phone call. It takes about as long as reading this box.</p>
+      </div>
+      <div class="fp-item">
+        <h3>Founding pricing</h3>
+        <p>The rate you join at is yours for as long as you stay. Our list prices might move later; yours won't.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 6 · BILLING FAQ ==================== -->
+<section class="sec" aria-labelledby="faq-h">
+  <div class="wrap inner">
+    <span class="eychip">FAIR QUESTIONS</span>
+    <h2 class="sectitle" id="faq-h">Billing questions</h2>
+    <div class="queries">
+      <div class="qa">
+        <h3>How does the trial work?</h3>
+        <p>You get the full product for seven days, card required up front. We email you a reminder before it converts, so paying is always your call — never a surprise charge.</p>
+      </div>
+      <div class="qa">
+        <h3>Can I switch tiers or cancel later?</h3>
+        <p>Both, anytime, self-serve from your account. Upgrades take effect right away, and if you cancel you keep access until the end of what you've already paid for.</p>
+      </div>
+      <div class="qa">
+        <h3>What do I need to run it?</h3>
+        <p>A browser — nothing to install. Core covers one device, Pro covers three, and Pro's desktop overlay app floats the read right over your trading platform. <a href="how-it-works.html">How the read is made →</a></p>
+      </div>
+      <div class="qa">
+        <h3>Is yearly really two months free?</h3>
+        <p>Pretty much. $190 a year against $19 a month saves you two months' worth, and the same math holds for Pro at $390. No other catch to it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ==================== CTA BAND ==================== -->
+<section class="tryband" aria-labelledby="final-h">
+  <div class="wrap" style="position:relative">
+    <span class="eychip">SEVEN DAYS, THE WHOLE THING</span>
+    <h2 id="final-h">Start with <span class="grad-text">the whole wire</span></h2>
+    <p>Core or Pro, you get every contract and every wire from the first minute. There's a reminder before you're ever charged, and cancelling takes a couple of clicks.</p>
+    <div class="cta-row">
+      <a class="btn-key" href="https://app.newsberri.com">START YOUR 7-DAY TRIAL</a>
+      <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
+    </div>
+    <p class="trust">42 CONTRACTS · 7 ASSET CLASSES · LIVE NEWS WIRES · PUBLIC TRACK RECORD FROM DAY ONE</p>
+  </div>
+</section>
+</main>
+
+<!-- ======== CHROME: footer (copy verbatim on every page) ======== -->
+<footer class="colophon">
+  <div class="wrap">
+    <div class="colo-top">
+      <a class="colo-brand" href="index.html" aria-label="NewsBerri — home">
+        <svg viewBox="0 0 64 64" width="26" height="26" fill="none" aria-hidden="true">
+          <path fill="#00e676" d="M30 15 C27.5 8 21.5 5.5 16 8.5 C18.5 14.5 25 17 30 15 Z"/>
+          <circle cx="26.1" cy="21.5" r="5.4" fill="#ff3b57"/><circle cx="37.9" cy="21.5" r="5.4" fill="#00e676"/>
+          <circle cx="19.7" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="32" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="5.4" fill="#ff3b57"/>
+          <circle cx="21.3" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="32" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="42.7" cy="39.1" r="5.4" fill="#c2183a"/>
+          <circle cx="26.7" cy="47.9" r="5.4" fill="#c2183a"/><circle cx="37.3" cy="47.9" r="5.4" fill="#c2183a"/>
+          <circle cx="32" cy="55.1" r="5.1" fill="#8f1029"/>
+        </svg>
+        <span class="wordmark">News<b>Berri</b></span>
+      </a>
+      <p class="colo-comp">Informational only — not trading advice.</p>
+    </div>
+    <div class="colo-mid">
+      <span>
+        <a href="how-it-works.html">HOW IT WORKS</a>
+        <a href="pricing.html">PRICING</a>
+        <a href="demo.html">DEMO</a>
+        <a href="#">TERMS</a>
+        <a href="#">PRIVACY</a>
+        <a href="#">REFUNDS</a>
+        <a href="#">MARKET-DATA DISCLAIMER</a>
+      </span>
+      <a href="mailto:support@newsberri.com">SUPPORT@NEWSBERRI.COM</a>
+    </div>
+    <div class="colo-bot">
+      <span>© 2026 NEWSBERRI · ALL PAGES MOCK DATA</span>
+      <span class="roundtag">V1 DRAFT · MOCKUP — NOT LIVE</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* Monthly / annual toggle — vanilla, progressive-enhancement. With JS off the
+   page shows monthly prices with the annual line visible under each; JS only
+   swaps the displayed figures. ANNUAL shows the per-month EQUIVALENT as the
+   big number ($15.83 / $32.50, suffix stays /MO) with the billed-yearly total
+   on the line beneath. prefers-reduced-motion is honored by the global CSS
+   rule (this only changes text + classes, never depends on animation). */
+(function () {
+  var opts = document.querySelectorAll(".bt-opt");
+  if (!opts.length) return;
+  var prices = document.querySelectorAll(".plan .price[data-mo]");
+  var alts = document.querySelectorAll(".plan .price-alt[data-mo]");
+  function apply(annual) {
+    prices.forEach(function (p) {
+      var num = p.querySelector(".price-num");
+      if (num) num.textContent = annual ? p.getAttribute("data-yr") : p.getAttribute("data-mo");
+    });
+    alts.forEach(function (a) {
+      a.textContent = annual ? a.getAttribute("data-yr") : a.getAttribute("data-mo");
+    });
+    opts.forEach(function (o) {
+      var on = (o.getAttribute("data-annual") === "true") === annual;
+      o.classList.toggle("is-on", on);
+      o.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+  opts.forEach(function (o) {
+    o.addEventListener("click", function () {
+      apply(o.getAttribute("data-annual") === "true");
+    });
+  });
+})();
+</script>
+</body>
+</html>
