@@ -155,17 +155,17 @@ a.btn{text-decoration:none}
 #p-risk .pbody,#p-ai .pbody{justify-content:space-evenly}
 #p-trend{grid-column:1/3}
 /* tape */
-.wire-row{display:grid;grid-template-columns:4px 30px 1fr;gap:9px;padding:8px 2px;border-bottom:1px solid var(--hair);cursor:pointer}
-.wire-row:hover{background:var(--selrow)}
-.wire-row:last-child{border-bottom:0}
-.wire-row.dim{opacity:.4}
+.feed-row{display:grid;grid-template-columns:4px 30px 1fr;gap:9px;padding:8px 2px;border-bottom:1px solid var(--hair);cursor:pointer}
+.feed-row:hover{background:var(--selrow)}
+.feed-row:last-child{border-bottom:0}
+.feed-row.dim{opacity:.4}
 .wsig{width:4px}
 .wimp{height:20px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700;background:transparent;border:1px solid var(--hair-strong);color:var(--ink-2)}
-.wire-row.loud .wimp{background:var(--key);color:var(--key-ink);border-color:var(--key);box-shadow:0 0 10px rgba(255,255,255,.3)}
+.feed-row.loud .wimp{background:var(--key);color:var(--key-ink);border-color:var(--key);box-shadow:0 0 10px rgba(255,255,255,.3)}
 .whl{font-weight:600;font-size:13px;line-height:1.32}
 .wmeta{display:flex;align-items:center;gap:7px;margin-top:3px;font-family:var(--mono);font-size:8px;color:var(--ink-faint);letter-spacing:.5px;text-transform:uppercase;flex-wrap:wrap}
 .wmeta .exp{margin-left:auto;border:1px solid var(--hair-strong);color:var(--ink-3);padding:1px 5px;letter-spacing:1px}
-.wire-row:hover .exp{border-color:var(--key);color:var(--key)}
+.feed-row:hover .exp{border-color:var(--key);color:var(--key)}
 .iimp{font-family:var(--mono);font-size:8.5px;font-weight:700;padding:2px 5px;
   background:color-mix(in srgb,currentColor,transparent 89%);
   border:1px solid color-mix(in srgb,currentColor,transparent 78%);display:inline-flex;gap:4px}
@@ -337,7 +337,7 @@ a.btn{text-decoration:none}
     <div class="plate statclu">
       <div class="row"><span class="k">SESSION</span><span style="color:var(--ink-2)">US·REGULAR</span></div>
       <div class="row"><span class="k">CLOCK</span><span style="color:var(--ink-2)">13:42:07 ET · SIM</span></div>
-      <div class="row"><span class="k">WIRE</span><span class="dot up" style="width:7px;height:7px"></span><span class="up">LIVE·SIM</span></div>
+      <div class="row"><span class="k">FEED</span><span class="dot up" style="width:7px;height:7px"></span><span class="up">LIVE·SIM</span></div>
       <div class="row"><span class="k">EVENT</span><span id="evtStat" style="color:var(--amber)">10-YR AUCTION 18M</span></div>
     </div>
     <div class="plate bandkeys">
@@ -353,9 +353,9 @@ a.btn{text-decoration:none}
   </aside>
 
   <div id="main">
-    <section class="panel plate" id="p-wire" aria-label="Live wire">
-      <div class="ph"><span class="led" style="background:var(--bull);box-shadow:0 0 7px 1px color-mix(in srgb,var(--bull),transparent 30%)"></span>LIVE WIRE<span class="ph-r" id="wireNote"></span></div>
-      <div class="pbody" style="gap:0" id="wireBody"></div>
+    <section class="panel plate" id="p-feed" aria-label="Live feed">
+      <div class="ph"><span class="led" style="background:var(--bull);box-shadow:0 0 7px 1px color-mix(in srgb,var(--bull),transparent 30%)"></span>LIVE FEED<span class="ph-r" id="feedNote"></span></div>
+      <div class="pbody" style="gap:0" id="feedBody"></div>
     </section>
 
     <section class="panel plate" id="p-risk" aria-label="Risk and volatility">
@@ -498,9 +498,9 @@ a.btn{text-decoration:none}
 
   const FEED=[
     {imp:52,hl:"Nvidia server-rack supplier lead times stretch to 40 weeks — trade press",src:"web",t:"40s",prov:1,imps:[],rel:["NQ"],
-     ex:"A supply-chain trade outlet reports lead times for AI server racks stretching to 40 weeks. The story is on the tape as provisional — one source, not yet scored — so it carries no read. If a second wire corroborates, a scored per-contract impact on NQ would follow and upgrade in place."},
-    {imp:81,hl:"BLS detail: core services ex-shelter +0.42% m/m — 3-month annualized 3.9%",src:"wire",t:"9m",cor:2,loud:1,imps:[["NQ",-34],["ES",-28],["ZN",-22]],more:3,
-     ex:"The supercore detail is the sticky part of the June print: services inflation ex-shelter re-accelerated on the month. That keeps the rate impulse alive beyond the headline number, which is why the bear read extends across rate-sensitive equity index and treasury contracts. Corroborated by two wires — confidence is high."},
+     ex:"A supply-chain trade outlet reports lead times for AI server racks stretching to 40 weeks. The story is on the tape as provisional — one source, not yet scored — so it carries no read. If a second source corroborates, a scored per-contract impact on NQ would follow and upgrade in place."},
+    {imp:81,hl:"BLS detail: core services ex-shelter +0.42% m/m — 3-month annualized 3.9%",src:"feed",t:"9m",cor:2,loud:1,imps:[["NQ",-34],["ES",-28],["ZN",-22]],more:3,
+     ex:"The supercore detail is the sticky part of the June print: services inflation ex-shelter re-accelerated on the month. That keeps the rate impulse alive beyond the headline number, which is why the bear read extends across rate-sensitive equity index and treasury contracts. Corroborated by two sources — confidence is high."},
     {imp:47,hl:"Dallas Fed's Logan: balance-sheet runoff “well calibrated”",src:"official",t:"1h",imps:[["ZN",6],["ZB",5]],rel:["ZN"],
      ex:"Logan signaled no change to the pace of balance-sheet runoff, removing one tail scenario for the treasury market ahead of the afternoon auction. The read is mildly supportive for duration but small — this is calibration language, not new policy."},
     {imp:74,hl:"Fed's Waller: June print “a bump, not a trend” — still sees two cuts this year",src:"official",t:"2h",imps:[["NQ",18],["ES",15],["GC",12]],
@@ -509,9 +509,9 @@ a.btn{text-decoration:none}
      ex:"The weekly EIA report showed a larger-than-expected crude draw with product demand holding firm. The bullish read on CL reflects the supply-side surprise — it runs independent of the CPI story dominating the rest of the tape."},
     {imp:41,hl:"Gold ETF flows: fifth straight session of net inflows — fund-flow trackers",src:"web",t:"3h",imps:[["GC",16],["SI",9]],
      ex:"Fund-flow trackers logged a fifth consecutive session of net inflows into gold ETFs, extending the hedging bid that has built all week. Set against a hot CPI print, the flow keeps GC's read constructive even as the real-rate math tightens. Single-source flow data — moderate confidence."},
-    {imp:44,hl:"OPEC+ delegates signal compliance letter ahead of August meeting — wire",src:"wire",t:"4h",imps:[["CL",9]],
-     ex:"Delegates flagged a forthcoming compliance letter pressing over-producers ahead of the August meeting. It is a mild supply-discipline signal for crude — scored bullish but low impact until the letter itself is confirmed on a second wire."},
-    {imp:38,hl:"Black Sea corridor: insurers re-quote coverage on Odesa grain routes",src:"wire",t:"4h",imps:[["ZW",11],["ZC",6]],
+    {imp:44,hl:"OPEC+ delegates signal compliance letter ahead of August meeting — sources",src:"feed",t:"4h",imps:[["CL",9]],
+     ex:"Delegates flagged a forthcoming compliance letter pressing over-producers ahead of the August meeting. It is a mild supply-discipline signal for crude — scored bullish but low impact until the letter itself is confirmed by a second source."},
+    {imp:38,hl:"Black Sea corridor: insurers re-quote coverage on Odesa grain routes",src:"feed",t:"4h",imps:[["ZW",11],["ZC",6]],
      ex:"Marine insurers re-quoting Odesa coverage signals rising friction on the Black Sea grain corridor. Export-logistics risk is the main lever in the wheat read this week; the score is bullish ZW but tentative until a shipper confirms route changes."},
     {imp:92,hl:"CPI m/m +0.4% vs +0.3% est — core +0.35%, shelter re-accelerates",src:"official",t:"5h",cor:3,loud:1,imps:[["NQ",-62],["ES",-55],["ZN",-44]],more:4,
      ex:"June CPI printed a tenth hot at both headline and core, with shelter re-accelerating after two soft months. This is the story that set the afternoon's read: rate-sensitive contracts carry the pressure, duration-heavy tech most of all. Triple-corroborated within minutes — confidence is high."}
@@ -582,25 +582,25 @@ a.btn{text-decoration:none}
   }
 
   /* ---------- tape (filter / reorder by selected contract) ---------- */
-  function wireRow(f,i,dim){
+  function feedRow(f,i,dim){
     const dom=(f.imps&&f.imps.length)?f.imps[0]:null;
     const sigCol=dom?(dom[1]>0?"var(--bull)":"var(--bear)"):"transparent";
     const wash=(f.loud&&dom&&!dim)?` background:${dom[1]<0?"var(--bear-wash)":"var(--bull-wash)"};`:"";
     const imps=(f.imps||[]).slice(0,3).map(([s,v])=>`<span class="iimp" style="color:${magColor(v>0?"var(--bull)":"var(--bear)",Math.abs(v),10,80)}"><span class="s">${s}</span>${sgn(v)}</span>`).join("")+
       (f.more?`<span class="iimp more" style="color:var(--ink-faint)">+${f.more}</span>`:"");
-    return `<div class="wire-row${f.loud?" loud":""}${dim?" dim":""}" data-i="${i}" role="button" tabindex="0" aria-label="Explain this headline" style="${wash}">`+
+    return `<div class="feed-row${f.loud?" loud":""}${dim?" dim":""}" data-i="${i}" role="button" tabindex="0" aria-label="Explain this headline" style="${wash}">`+
       `<span class="wsig" style="background:${sigCol}"></span><span class="wimp">${f.imp}</span><div>`+
       `<div class="whl">${f.hl}</div>`+
       `<div class="wmeta"><span>${f.src}</span><span>·</span><span>${f.t}</span>${f.prov?'<span class="prov">SCORING…</span>':""}${f.cor?`<span>✓ ${f.cor}×</span>`:""}<span class="exp">✦ EXPLAIN</span></div>`+
       `</div></div>`;
   }
-  function renderWire(){
+  function renderFeed(){
     const rel=[],rest=[];
     FEED.forEach((f,i)=>{(relevant(f)?rel:rest).push([f,i]);});
-    $("#wireNote").textContent=`${SEL} FLOW FIRST · ${rel.length} OF ${FEED.length} STORIES`;
-    $("#wireBody").innerHTML=
-      rel.map(([f,i])=>wireRow(f,i,false)).join("")+
-      (rest.length?`<div class="wdiv">OTHER CONTRACTS — DIMMED</div>`+rest.map(([f,i])=>wireRow(f,i,true)).join(""):"");
+    $("#feedNote").textContent=`${SEL} FLOW FIRST · ${rel.length} OF ${FEED.length} STORIES`;
+    $("#feedBody").innerHTML=
+      rel.map(([f,i])=>feedRow(f,i,false)).join("")+
+      (rest.length?`<div class="wdiv">OTHER CONTRACTS — DIMMED</div>`+rest.map(([f,i])=>feedRow(f,i,true)).join(""):"");
   }
 
   /* ---------- risk panel ---------- */
@@ -727,7 +727,7 @@ a.btn{text-decoration:none}
   function select(sym){
     if(!CONTRACTS[sym])return;
     SEL=sym;closeDrawer();
-    renderBand();renderRail();renderWire();renderRisk();renderAI();renderSpark();renderCal();
+    renderBand();renderRail();renderFeed();renderRisk();renderAI();renderSpark();renderCal();
   }
 
   /* ---------- delegation (click + keyboard) ---------- */
@@ -738,7 +738,7 @@ a.btn{text-decoration:none}
     root.addEventListener("click",h);root.addEventListener("keydown",h);
   }
   delegate($("#railList"),".crow",el=>select(el.dataset.sym));
-  delegate($("#wireBody"),".wire-row",el=>openExplain(FEED[+el.dataset.i]));
+  delegate($("#feedBody"),".feed-row",el=>openExplain(FEED[+el.dataset.i]));
   delegate($("#calBody"),".cal-row",el=>{
     const item=el.closest(".cal-item"),open=item.classList.toggle("open");
     el.setAttribute("aria-expanded",open);
@@ -754,11 +754,11 @@ a.btn{text-decoration:none}
   /* ---------- tour ---------- */
   const tour=$("#tour");
   const HOTS=[
-    {n:1,t:"#p-wire .ph",l:"The live tape. Every headline gets a score for each contract it touches — click any story and ✦ EXPLAIN tells you why, in plain language."},
+    {n:1,t:"#p-feed .ph",l:"The live tape. Every headline gets a score for each contract it touches — click any story and ✦ EXPLAIN tells you why, in plain language."},
     {n:2,t:"#lcdIdx",l:"The big number is sentiment for this contract, −100 to +100, with a plain-language call beside it. It’s never a price."},
     {n:3,t:"#chipGuard",l:"The Guardrail. ARMED means a release is 30 minutes out — you get a heads-up at 30, 10 and 2 minutes, so nothing lands on you cold."},
     {n:4,t:"#calBody .cal-row",l:"The calendar. Click a release and you’ll see the beat, in-line and miss outcomes — already written before it happens."},
-    {n:5,t:"#sqBtn",l:"The squawk. Press it and you’ll hear the top headline read out loud — eyes on your platform, ears on the wire."}
+    {n:5,t:"#sqBtn",l:"The squawk. Press it and you’ll hear the top headline read out loud — eyes on your platform, ears on the news."}
   ];
   function placeHots(){
     tour.querySelectorAll(".hs").forEach(el=>el.remove());

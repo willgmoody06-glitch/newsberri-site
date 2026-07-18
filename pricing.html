@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NewsBerri — Pricing · The whole wire on every tier</title>
-<meta name="description" content="NewsBerri pricing: Core $19/mo, Pro $39/mo — every tier gets all 42 contracts, every wire, at the same speed. Paid tiers add platform and AI depth, never faster data. 7-day trial, cancel anytime. Informational only — not trading advice.">
+<title>NewsBerri — Pricing · Every market on every tier</title>
+<meta name="description" content="NewsBerri pricing: Core $19/mo, Pro $39/mo — every tier gets all 42 contracts, every source, at the same speed. Paid tiers add platform and AI depth, never faster data. 7-day trial, cancel anytime. Informational only — not trading advice.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Ccircle cx='26.1' cy='19.5' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='37.9' cy='19.5' r='6.5' fill='%2300e676'/%3E%3Ccircle cx='19.7' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='32' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='44.3' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='21.3' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='42.7' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='26.7' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='37.3' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='58.1' r='6' fill='%238f1029'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -98,16 +98,16 @@ img,svg{max-width:100%}
   background:radial-gradient(ellipse 900px 460px at 10% 0%,rgba(139,92,246,.07),transparent 70%)}
 .wash-ras::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse 900px 460px at 90% 0%,rgba(232,51,110,.07),transparent 70%)}
-/* ============ SAME-WIRE STRIP — first thing on the page ============ */
-.samewire{position:relative;text-align:center;border-bottom:1px solid var(--hair-strong);background:var(--panel);padding:30px 0 32px;overflow:hidden}
-.samewire::before{content:"";position:absolute;inset:0;pointer-events:none;
+/* ============ SAME-SOURCES STRIP — first thing on the page ============ */
+.samesource{position:relative;text-align:center;border-bottom:1px solid var(--hair-strong);background:var(--panel);padding:30px 0 32px;overflow:hidden}
+.samesource::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse 540px 280px at 12% 50%,rgba(232,51,110,.10),transparent 70%),
              radial-gradient(ellipse 540px 280px at 88% 50%,rgba(139,92,246,.10),transparent 70%)}
-.samewire::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+.samesource::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
   background:linear-gradient(90deg,transparent,rgba(232,51,110,.55) 25%,rgba(139,92,246,.55) 75%,transparent)}
-.samewire .inner{position:relative}
-.samewire .big{font-size:19px;color:var(--ink);max-width:840px;margin:0 auto 12px;line-height:1.5}
-.samewire .big b{font-weight:600}
+.samesource .inner{position:relative}
+.samesource .big{font-size:19px;color:var(--ink);max-width:840px;margin:0 auto 12px;line-height:1.5}
+.samesource .big b{font-weight:600}
 /* ============ PAGE HEADER ============ */
 .pagehead{padding:56px 0 0}
 .pagehead h1{font-family:var(--display);font-weight:800;font-size:clamp(42px,4.6vw,66px);line-height:.98;letter-spacing:.5px;text-transform:uppercase;margin:0 0 16px;max-width:900px}
@@ -266,7 +266,7 @@ img,svg{max-width:100%}
 <!-- =====================================================================
 PRICING — SITE V1. Chrome copied verbatim from index.html (see its DESIGN
 SYSTEM NOTES); only <title>/meta and aria-current change. Page order per
-Will: same-wire strip ABOVE everything → three tier cards (Desk is a
+Will: same-sources strip ABOVE everything → three tier cards (Desk is a
 ghosted structure placeholder, nothing invented) → comparison table →
 short institutional cost block → honest billing → billing FAQ → CTA band.
 Squawk is deliberately absent from tiers and matrix (tier placement
@@ -327,12 +327,12 @@ is the Desk card's "details coming from the founders".
 </nav>
 
 <main id="main">
-<!-- ==================== 1 · THE SAME-WIRE STRIP — above everything ==================== -->
-<section class="samewire" aria-label="The every-tier rule">
+<!-- ==================== 1 · THE SAME-SOURCES STRIP — above everything ==================== -->
+<section class="samesource" aria-label="The every-tier rule">
   <div class="wrap inner">
-    <span class="eychip">SAME WIRE, SAME SPEED, EVERY TIER</span>
-    <p class="big">Every tier gets the same speed and the same coverage — <b>all 42 contracts, every wire, the moment they move</b>. Paid tiers add platform and AI depth, never faster data.</p>
-    <p class="micro" style="margin:0">42 CONTRACTS · 7 ASSET CLASSES · LIVE NEWS WIRES — ON EVERY PLAN</p>
+    <span class="eychip">SAME SOURCES, SAME SPEED, EVERY TIER</span>
+    <p class="big">Every tier gets the same speed and the same coverage — <b>all 42 contracts, every source, the moment they move</b>. Paid tiers add platform and AI depth, never faster data.</p>
+    <p class="micro" style="margin:0">42 CONTRACTS · 7 ASSET CLASSES · LIVE NEWS SOURCES — ON EVERY PLAN</p>
   </div>
 </section>
 
@@ -356,10 +356,10 @@ is the Desk card's "details coming from the founders".
         <h2 class="tiername" id="plan-core">CORE</h2>
         <p class="price" data-mo="$19" data-yr="$15.83"><span class="price-num">$19</span><sub class="price-per">/MO</sub></p>
         <p class="price-alt micro" data-mo="OR $190 A YEAR — 2 MONTHS FREE" data-yr="BILLED $190/YR · 2 MONTHS FREE">OR $190 A YEAR — 2 MONTHS FREE</p>
-        <p class="blurb">The full read for one screen. Everything the wire prints, scored and explained.</p>
+        <p class="blurb">The full read for one screen. Everything the feed prints, scored and explained.</p>
         <ul class="manifest">
-          <li><b>All 42 contracts</b> &amp; sector reads — the whole wire</li>
-          <li>The live tape, three speeds — provisional the moment it crosses, scored seconds later, corroborated once a second wire confirms it</li>
+          <li><b>All 42 contracts</b> &amp; sector reads — the whole feed</li>
+          <li>The live tape, three speeds — provisional the moment it crosses, scored seconds later, corroborated once a second source confirms it</li>
           <li>Top Stories</li>
           <li>AI Overview of your day</li>
           <li>The calendar, with beat / in-line / miss scenarios</li>
@@ -381,7 +381,7 @@ is the Desk card's "details coming from the founders".
           <li>Unlimited ✦ Explain &amp; scenarios</li>
           <li>The Event Guardrail — ARMED, HOT and LIVE heads-ups at 30, 10 and 2 minutes before a release</li>
           <li>20 alert rules, including push to your phone</li>
-          <li>Discord webhooks &amp; keyword tripwires</li>
+          <li>Discord webhooks &amp; keyword triggers</li>
           <li>Morning Sift &amp; Away Digest</li>
           <li>The desktop overlay app</li>
           <li>Your personal accuracy ledger</li>
@@ -467,7 +467,7 @@ is the Desk card's "details coming from the founders".
             <td class="val">3</td><td class="val procol">20</td><td class="val ghostcol">—</td>
           </tr>
           <tr>
-            <td>Discord webhooks &amp; keyword tripwires</td>
+            <td>Discord webhooks &amp; keyword triggers</td>
             <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
           </tr>
           <tr>
@@ -515,7 +515,7 @@ is the Desk card's "details coming from the founders".
       <div class="costrow" role="row"><span class="what" role="cell">Benzinga Pro</span><span class="how" role="cell">STOCKS-FIRST NEWS TERMINAL · BASIC TO UPPER TIERS</span><span class="amt" role="cell">$37–197 / MO</span></div>
       <div class="costrow" role="row"><span class="what" role="cell">Bloomberg Terminal</span><span class="how" role="cell">THE WHOLE INSTITUTIONAL DESK, PER SEAT · ≈ $30K / YR</span><span class="amt" role="cell">≈ $2,400+ / MO</span></div>
       <div class="costrow" role="row"><span class="what" role="cell">An analyst to read the tape</span><span class="how" role="cell">A HUMAN ON THE DESK, FULL-TIME</span><span class="amt" role="cell">A SALARY</span></div>
-      <div class="costrow us" role="row"><span class="what" role="cell">NewsBerri Core — the whole wire</span><span class="how" role="cell">EVERY CONTRACT, EVERY WIRE, ONE DEVICE</span><span class="amt grad-text" role="cell">$19 / MO</span></div>
+      <div class="costrow us" role="row"><span class="what" role="cell">NewsBerri Core — the whole feed</span><span class="how" role="cell">EVERY CONTRACT, EVERY SOURCE, ONE DEVICE</span><span class="amt grad-text" role="cell">$19 / MO</span></div>
       <div class="costrow us" role="row"><span class="what" role="cell">NewsBerri Pro — adds the watchful half</span><span class="how" role="cell">GUARDRAIL, ALERTS EVERYWHERE, UNLIMITED DEPTH</span><span class="amt grad-text" role="cell">$39 / MO</span></div>
     </div>
     <div class="cost-foot">
@@ -581,12 +581,12 @@ is the Desk card's "details coming from the founders".
   <div class="wrap" style="position:relative">
     <span class="eychip">SEVEN DAYS, THE WHOLE THING</span>
     <h2 id="final-h">Start with <span class="grad-text">the entire desk</span></h2>
-    <p>Core or Pro, you get every contract and every wire from the first minute. There's a reminder before you're ever charged, and cancelling takes a couple of clicks.</p>
+    <p>Core or Pro, you get every contract and every source from the first minute. There's a reminder before you're ever charged, and cancelling takes a couple of clicks.</p>
     <div class="cta-row">
       <a class="btn-key" href="https://app.newsberri.com">START YOUR 7-DAY TRIAL</a>
       <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
     </div>
-    <p class="trust">42 CONTRACTS · 7 ASSET CLASSES · LIVE NEWS WIRES · PUBLIC TRACK RECORD FROM DAY ONE</p>
+    <p class="trust">42 CONTRACTS · 7 ASSET CLASSES · LIVE NEWS SOURCES · PUBLIC TRACK RECORD FROM DAY ONE</p>
   </div>
 </section>
 </main>
