@@ -90,12 +90,14 @@ img,svg{max-width:100%}
 .newsnav .signin:hover{color:var(--key)}
 .newsnav .btn-key{padding:9px 18px;font-size:11px}
 .newsnav .btn-brk{padding:9px 4px;font-size:11px}
+/* mobile-only chrome controls (short CTA + hamburger) — shown only in the ≤760px block */
+.newsnav .mcta,.newsnav .mnav{display:none}
 /* ============ SECTION FURNITURE ============ */
-.sec{position:relative;padding:76px 0 0}
+.sec{position:relative;padding:112px 0 0}
 .sec .inner{position:relative}
-.eychip{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:2px;color:#fff;background:var(--grad);padding:5px 12px;margin-bottom:14px}
-.sectitle{font-family:var(--display);font-weight:800;font-size:clamp(32px,3.6vw,48px);letter-spacing:1px;text-transform:uppercase;line-height:1.02;margin:0 0 14px}
-.secsub{color:var(--ink-2);font-size:17.5px;max-width:720px;margin:0 0 30px}
+.eychip{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:2px;color:#fff;background:var(--grad);padding:5px 12px;margin-bottom:18px}
+.sectitle{font-family:var(--display);font-weight:800;font-size:clamp(32px,3.6vw,48px);letter-spacing:1px;text-transform:uppercase;line-height:1.02;margin:0 0 18px}
+.secsub{color:var(--ink-2);font-size:17.5px;max-width:56ch;margin:0 0 48px}
 .secsub b{color:var(--ink);font-weight:600}
 .wash-hero::before{content:"";position:absolute;inset:-60px -40px;pointer-events:none;
   background:radial-gradient(ellipse 720px 460px at 12% 8%,rgba(232,51,110,.09),transparent 68%),
@@ -107,68 +109,72 @@ img,svg{max-width:100%}
 .wash-soft::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse 860px 420px at 82% 24%,rgba(139,92,246,.06),transparent 72%),
              radial-gradient(ellipse 620px 360px at 8% 40%,rgba(232,51,110,.05),transparent 74%)}
-/* transparency / public-ledger band (a record you can check, no invented numbers) */
-.transp-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:52px;align-items:center}
+/* transparency / public-ledger band (a record you can check, no invented numbers) — words above, ledger below */
+.transp-grid{display:grid;grid-template-columns:1fr;gap:48px}
 .transp-grid>*{min-width:0}
-/* ============ HERO + THREE-BEAT OFFER ============ */
-.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding:56px 0 40px}
+.transp-grid .secsub{margin-bottom:0}
+.transp-grid .fig{max-width:940px}
+/* ============ HERO + THREE-BEAT OFFER (stacked: text owns the first view, snippet below) ============ */
+.hero{display:block;padding:56px 0 0}
 .hero>*{min-width:0}
-.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(50px,5.5vw,86px);line-height:.98;letter-spacing:.5px;text-transform:uppercase;margin:0 0 16px}
-.hero .lede{font-size:19px;color:var(--ink-2);margin:0 0 28px;max-width:52ch}
-.cta-row{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+.hero>div:first-child{min-height:44vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(50px,5.5vw,86px);line-height:.98;letter-spacing:.5px;text-transform:uppercase;margin:0 0 22px}
+.hero .lede{font-size:19px;color:var(--ink-2);margin:0 0 38px;max-width:52ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:20px;align-items:center}
 /* Topstep-pattern product-fact stats (markup holds the final numbers for no-JS; count-up on reveal) */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--hair-strong);margin:8px 0 0;padding:26px 0 30px}
-.stat{border-left:1px solid var(--hair);padding:2px 26px;min-width:0}
-.stat:first-child{border-left:0;padding-left:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);margin:96px 0 0;padding:0}
+.stat{padding:0 26px 0 0;min-width:0}
 .stat .sv{display:block;font-family:var(--display);font-weight:800;font-size:clamp(36px,3.4vw,52px);line-height:1;letter-spacing:1px;font-variant-numeric:tabular-nums}
 .stat .sv .su{font-size:.42em;letter-spacing:2px;color:var(--ink-2)}
 .stat .sk{display:block;margin-top:9px;font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--ink-3)}
 /* small reassurance line near a CTA; and the required risk-disclosure bar (a feature, not fine print) */
 .reassure{font-family:var(--mono);font-size:11.5px;letter-spacing:.4px;color:var(--ink-3);margin:14px 0 0}
-.riskline{display:flex;gap:12px;align-items:flex-start;margin:32px 0 4px;padding:14px 16px;border:1px solid var(--hair-strong);background:rgba(255,255,255,.02);font-size:13.5px;line-height:1.5;color:var(--ink-2);max-width:1000px}
+.hero .reassure{margin-top:18px}
+.riskline{display:flex;gap:12px;align-items:flex-start;margin:88px 0 0;padding:14px 16px;border:1px solid var(--hair-strong);background:rgba(255,255,255,.02);font-size:13.5px;line-height:1.5;color:var(--ink-2);max-width:1000px}
 .riskline .rk{flex:none;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:2px;color:var(--amber);border:1px solid color-mix(in srgb,var(--amber),transparent 55%);padding:3px 7px;text-transform:uppercase;margin-top:1px}
-.hero-fig{margin:0;position:relative}
+.hero-fig{margin:72px 0 0;position:relative}
 .hero-fig::before{content:"";position:absolute;inset:-26px -20px;pointer-events:none;
   background:radial-gradient(ellipse 65% 70% at 50% 45%,rgba(166,79,198,.14),transparent 72%)}
-.snipcap{font-size:14.5px;color:var(--ink-3);line-height:1.55;margin:12px 2px 0}
+.snipcap{font-size:14.5px;color:var(--ink-3);line-height:1.55;margin:12px 2px 0;max-width:56ch}
 .snipcap b{color:var(--ink-2);font-weight:600}
-.beats{display:grid;grid-template-columns:repeat(3,1fr);gap:0 34px;border-top:1px solid var(--hair-strong);padding-bottom:10px}
-.beat{padding:24px 0 6px}
+.beats{display:grid;grid-template-columns:1fr;gap:0;margin-top:96px;padding-bottom:0}
+.beat{padding:0}
+.beat+.beat{margin-top:64px}
 .beat .bh{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:1px;text-transform:uppercase;margin:0 0 6px;display:flex;align-items:baseline;gap:10px}
 .beat .bh .n{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:2px;flex:none}
-.beat .bp{margin:0;font-size:15.5px;color:var(--ink-2);line-height:1.5}
-/* ============ DESK COMPARISON — SIDE BY SIDE ============ */
-.vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;max-width:1080px}
-.vpan{border:1px solid var(--hair-strong);background:var(--panel);padding:24px 26px;display:flex;flex-direction:column;min-width:0}
+.beat .bp{margin:0;font-size:15.5px;color:var(--ink-2);line-height:1.5;max-width:56ch}
+/* ============ DESK COMPARISON — STACKED PANELS, HORIZONTAL VS DIVIDER ============ */
+.vs{display:grid;grid-template-columns:1fr;max-width:880px}
+.vpan{border:1px solid var(--hair-strong);background:var(--panel);padding:28px 30px;display:flex;flex-direction:column;min-width:0}
 .vpan .vh{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--ink-3);margin:0 0 12px}
 .vline{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:9px 0;border-top:1px solid var(--hair);font-size:15.5px;color:var(--ink-2)}
 .vline .va{font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
 .vline .vscope{display:block;font-style:normal;font-family:var(--mono);font-size:8.5px;letter-spacing:1.2px;color:var(--ink-faint);text-transform:uppercase;margin-top:3px}
 .vtotal{margin-top:auto;border-top:1px solid var(--hair-strong);padding-top:16px;display:flex;justify-content:space-between;align-items:baseline;gap:14px}
 .vtotal b{font-family:var(--mono);font-size:clamp(24px,2.6vw,34px);font-weight:700;font-variant-numeric:tabular-nums}
-.vsdiv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:0 20px}
-.vsdiv::before,.vsdiv::after{content:"";width:1px;flex:1;background:linear-gradient(180deg,transparent,rgba(232,51,110,.6) 45%,rgba(139,92,246,.6) 55%,transparent)}
+.vsdiv{display:flex;align-items:center;justify-content:center;gap:10px;padding:28px 0}
+.vsdiv::before,.vsdiv::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(232,51,110,.6) 45%,rgba(139,92,246,.6) 55%,transparent)}
 .vsdiv b{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:2px;color:var(--ink-2)}
 .vpan.us{border:1px solid transparent;border-image:var(--grad) 1;background:linear-gradient(135deg,rgba(232,51,110,.10),rgba(139,92,246,.10)),var(--panel);box-shadow:0 0 34px rgba(166,79,198,.14)}
 .vpan.us .vh{color:var(--ink-2)}
 .voffer{font-family:var(--display);font-weight:800;font-size:clamp(30px,3.2vw,46px);line-height:1;letter-spacing:1px;text-transform:uppercase;margin:6px 0 12px}
-.vnote{margin:0 0 18px;font-size:15.5px;color:var(--ink-2)}
-/* ============ SERVICE ROWS (snippet one side, words beside, alternating) ============ */
-.gbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:48px 0 0;padding:12px 16px;border:1px solid}
+.vnote{margin:0 0 18px;font-size:15.5px;color:var(--ink-2);max-width:56ch}
+/* ============ SERVICE ROWS (single column: eyebrow -> title -> support line -> artifact) ============ */
+.gbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:96px 0 0;padding:12px 16px;border:1px solid}
 .gbar h3{font-family:var(--display);font-weight:800;font-size:clamp(21px,2.2vw,27px);letter-spacing:1px;text-transform:uppercase;margin:0}
 .gbar.vio{border-color:rgba(139,92,246,.4);background:rgba(139,92,246,.07)}
 .gbar.ras{border-color:rgba(232,51,110,.4);background:rgba(232,51,110,.06)}
-.svc{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr);gap:44px;align-items:center;padding:30px 22px;border-top:1px solid var(--hair)}
-.svc .fig{margin:0;min-width:0}
+.svc{display:grid;grid-template-columns:1fr;gap:44px;padding:84px 0 0}
+.svc .txt{order:-1}
+.svc .fig{margin:0;min-width:0;width:100%;max-width:940px}
 .svc .txt h4{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:1px;text-transform:uppercase;margin:0 0 8px}
-.svc .txt p{margin:0;font-size:15.5px;color:var(--ink-2);line-height:1.5}
+.svc .txt p{margin:0;font-size:15.5px;color:var(--ink-2);line-height:1.5;max-width:56ch}
 .gvio .svc .txt h4{color:var(--vio-ink)}
 .gras .svc .txt h4{color:var(--ras-ink)}
 .gvio .svc{background:linear-gradient(90deg,rgba(139,92,246,.05),transparent 58%)}
 .gvio .svc.flip{background:linear-gradient(270deg,rgba(139,92,246,.05),transparent 58%)}
 .gras .svc{background:linear-gradient(90deg,rgba(232,51,110,.045),transparent 58%)}
 .gras .svc.flip{background:linear-gradient(270deg,rgba(232,51,110,.045),transparent 58%)}
-@media (min-width:901px){.svc.flip .fig{order:2}}
 /* ============ UI SNIPPETS — the app's true skin (tokens only, no gradients) ============ */
 .snip{background:var(--panel);border:1px solid var(--hair-strong);position:relative;font-size:13px}
 .snip .ph{display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;border-bottom:1px solid var(--hair-strong);
@@ -293,33 +299,34 @@ html.js .exdrawer.open{display:flex}
 .bandsnip .bd{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:14px 16px}
 .bandsnip .metcol{display:flex;flex-direction:column;gap:7px;min-width:210px;flex:1}
 /* ============ TRY-IT BAND ============ */
-.tryband{margin-top:84px;position:relative;border-top:1px solid var(--hair-strong);border-bottom:1px solid var(--hair-strong);background:var(--panel);text-align:center;padding:64px 0 68px;overflow:hidden}
+.tryband{margin-top:96px;position:relative;border-top:1px solid var(--hair-strong);border-bottom:1px solid var(--hair-strong);background:var(--panel);text-align:center;padding:96px 0 100px;overflow:hidden}
 .tryband::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse 640px 380px at 22% 100%,rgba(232,51,110,.10),transparent 70%),
              radial-gradient(ellipse 640px 380px at 78% 0%,rgba(139,92,246,.10),transparent 70%)}
-.tryband h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,4vw,54px);line-height:1;letter-spacing:1px;text-transform:uppercase;margin:0 0 14px}
-.tryband p{color:var(--ink-2);max-width:600px;margin:0 auto 28px;position:relative}
-.tryband .cta-row{justify-content:center;margin-bottom:34px}
-.tryband .bandsnip{max-width:980px;margin:0 auto;text-align:left}
+.tryband h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,4vw,54px);line-height:1;letter-spacing:1px;text-transform:uppercase;margin:0 0 18px}
+.tryband p{color:var(--ink-2);max-width:56ch;margin:0 auto 34px;position:relative}
+.tryband .cta-row{justify-content:center;margin-bottom:48px}
+.tryband .bandsnip{max-width:980px;margin:28px auto 0;text-align:left}
 /* ============ FOUNDING-PRICING CLOSING BAND ============ */
-.earlyband{margin-top:80px;border-top:1px solid var(--hair-strong);padding:66px 0 4px;position:relative;overflow:hidden}
+.earlyband{margin-top:96px;padding:48px 0 4px;position:relative;overflow:hidden}
 .earlyband::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse 760px 360px at 50% 0%,rgba(166,79,198,.10),transparent 70%)}
 .earlyband .ea{max-width:760px;margin:0 auto;text-align:center;position:relative}
 .earlyband .secsub{margin:0 auto 4px}
-.earlyband .cta-row{justify-content:center;margin-top:26px}
+.earlyband .cta-row{justify-content:center;margin-top:36px}
 .earlyband .reassure{margin-top:16px}
-/* ============ FAQ ============ */
-.queries{display:grid;grid-template-columns:repeat(3,1fr);gap:0 48px;padding-bottom:8px}
-.qa{border-top:1px solid var(--hair);padding:18px 0 6px;min-width:0}
-.qa h3{font-family:var(--grot);font-weight:700;font-size:17px;margin:0 0 8px;color:var(--ink)}
+/* ============ FAQ (single column, gaps instead of hairlines) ============ */
+.queries{display:grid;grid-template-columns:1fr;gap:0;padding-bottom:0}
+.qa{padding:0;min-width:0}
+.qa+.qa{margin-top:56px}
+.qa h3{font-family:var(--grot);font-weight:700;font-size:17px;margin:0 0 10px;color:var(--ink)}
 .qa h3::before{content:"Q. ";font-family:var(--mono);font-size:12px;color:var(--berry);letter-spacing:1px}
-.qa p{margin:0 0 10px;font-size:15px;color:var(--ink-2)}
+.qa p{margin:0 0 10px;font-size:15px;color:var(--ink-2);max-width:56ch}
 .qa p::before{content:"A. ";font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:1px}
 .qa a{color:var(--ink);border-bottom:1px solid var(--hair-strong)}
 .qa a:hover{color:var(--key);border-color:var(--ras-2)}
 /* ============ FOOTER (copy verbatim on every page) ============ */
-.colophon{border-top:1px solid var(--hair-strong);margin-top:80px;padding:40px 0 34px;position:relative}
+.colophon{border-top:1px solid var(--hair-strong);margin-top:96px;padding:40px 0 34px;position:relative}
 .colophon::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;
   background:linear-gradient(90deg,transparent,rgba(232,51,110,.55) 25%,rgba(139,92,246,.55) 75%,transparent)}
 .colo-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;padding-bottom:22px}
@@ -363,35 +370,95 @@ html.js .exdrawer.open{display:flex}
 @keyframes wv{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
 /* ============ RESPONSIVE ============ */
 @media (max-width:1024px){
-  .hero{grid-template-columns:1fr;gap:38px}
   .newsnav .links{gap:18px}
 }
 @media (max-width:900px){
   .newsnav .wrap{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
   .newsnav .links{order:3;width:100%;gap:16px;margin-left:0}
   .newsnav .actions{gap:10px;flex-wrap:wrap;justify-content:flex-end}
-  .stats{grid-template-columns:1fr 1fr;gap:22px 0;padding:20px 0 24px}
-  .stat:nth-child(odd){border-left:0;padding-left:0}
-  .beats{grid-template-columns:1fr}
-  .beat{padding:16px 0 6px}
-  .vs{grid-template-columns:1fr}
-  .vsdiv{flex-direction:row;padding:14px 0}
-  .vsdiv::before,.vsdiv::after{width:auto;height:1px;flex:1}
-  .svc{grid-template-columns:1fr;gap:18px;padding:26px 14px}
-  .transp-grid{grid-template-columns:1fr;gap:26px}
-  .queries{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr;gap:22px 0}
+  .vsdiv{padding:22px 0}
+  .svc{gap:28px;padding:64px 0 0}
+  .transp-grid{gap:32px}
 }
+/* ============ MOBILE CHROME (≤760px) — copy this block byte-identical on every page ============ */
 @media (max-width:760px){
   body{font-size:16px}
   .wrap{padding:0 18px}
-  .masthead{padding-top:22px;padding-bottom:16px}
-  .masthead .nameplate{gap:12px}
-  .masthead .nameplate .wordmark{font-size:clamp(38px,12vw,56px)}
-  .masthead .mark-lg svg{width:clamp(34px,10vw,52px)}
-  .topstrip{flex-direction:column;gap:2px}
-  .hero{padding:40px 0 30px}
-  .cta-big{padding:16px 22px;font-size:12.5px}
-  .cta-demo{padding:16px 22px;font-size:12.5px}
+  /* topstrip: one tiny centered compliance line */
+  .topstrip{flex-direction:row;justify-content:center;text-align:center;gap:0;padding-top:4px;padding-bottom:4px;font-size:8.5px;letter-spacing:1.2px;line-height:1.2}
+  .topstrip span{margin:0 !important}
+  /* masthead: one inline row — mark 26px + nameplate 30px; dek/dateline are desktop-only */
+  .masthead{padding-top:8px;padding-bottom:8px;line-height:1}
+  .masthead::before{display:none}
+  .masthead .nameplate{gap:10px;vertical-align:top}
+  .masthead .nameplate .wordmark{font-size:30px}
+  .masthead .mark-lg svg{width:26px}
+  .masthead .dek,.masthead .dateline{display:none}
+  .rule-scotch{height:3px;border-top-width:2px}
+  /* sticky nav: brand + short key CTA + JS-free hamburger; desktop links/actions hidden */
+  .newsnav .wrap{flex-wrap:nowrap;gap:10px;min-height:48px;padding-top:0;padding-bottom:0}
+  .newsnav .brand{gap:7px}
+  .newsnav .brand svg{width:18px;height:18px}
+  .newsnav .brand .wordmark{font-size:17px}
+  .newsnav .links,.newsnav .actions{display:none}
+  .newsnav .mcta{display:inline-flex;align-items:center;min-height:44px;margin-left:auto;font-size:11px;padding:10px 14px;letter-spacing:1.5px}
+  .newsnav .mnav{display:block}
+  .mnav summary{list-style:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;cursor:pointer;border:1px solid var(--hair-strong);color:var(--ink-2);font-size:17px;line-height:1;user-select:none}
+  .mnav summary::-webkit-details-marker{display:none}
+  .mnav summary:hover{color:var(--key);border-color:var(--key)}
+  .mnav[open] summary{background:var(--raise);color:var(--key)}
+  .mnav-panel{position:absolute;left:0;right:0;top:100%;background:#000;border-bottom:1px solid var(--hair-strong);box-shadow:0 18px 30px rgba(0,0,0,.55)}
+  .mnav-panel a{display:flex;align-items:center;min-height:48px;padding:0 18px;font-family:var(--mono);font-size:12px;letter-spacing:1.5px;color:var(--ink-2);border-top:1px solid var(--hair)}
+  .mnav-panel a:hover{color:var(--key);background:var(--selrow)}
+  .mnav-panel a[aria-current="page"]{color:var(--ink);box-shadow:inset 2px 0 0 var(--ras)}
+  /* no horizontal page scroll: clip decorative washes at the viewport */
+  main{overflow-x:clip}
+  .wash-hero::before{left:0;right:0}
+  /* wide artifacts scroll inside their own shell, never the page */
+  .scrollx{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .scrollx-fade{position:relative}
+  .scrollx-fade::after{content:"";position:absolute;top:0;right:0;bottom:0;width:16px;pointer-events:none;background:linear-gradient(270deg,rgba(0,0,0,.5),transparent)}
+  .snip .bd{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .snip .ph{height:auto;min-height:30px;padding-top:3px;padding-bottom:3px;flex-wrap:wrap;line-height:1.2}
+}
+/* ============ MOBILE POLISH — index (≤760px) ============ */
+@media (max-width:760px){
+  .sec{padding-top:56px}
+  .sectitle{font-size:clamp(27px,8vw,40px)}
+  .secsub{margin-bottom:32px;font-size:16.5px}
+  .hero{padding:32px 0 0}
+  .hero>div:first-child{min-height:0}
+  .hero h1{font-size:clamp(34px,10.5vw,48px)}
+  .hero .lede{font-size:17px;margin-bottom:28px}
+  .hero-fig{margin-top:44px}
+  .hero-fig::before{left:-14px;right:-14px}
+  .cta-row{flex-direction:column;align-items:stretch;gap:12px}
+  .cta-big,.cta-demo{display:block;width:100%;text-align:center;padding:16px 18px;font-size:12.5px}
+  .cta-row .btn-key,.cta-row .btn-brk{display:block;width:100%;text-align:center;padding:15px 12px}
+  .reassure{text-align:center}
+  .stats{grid-template-columns:1fr 1fr;gap:20px;margin-top:64px}
+  .stat{padding:0}
+  .beats{margin-top:64px}
+  .beat+.beat{margin-top:44px}
+  .riskline{margin-top:56px}
+  .svc{gap:24px;padding:56px 0 0}
+  .svc .fig,.transp-grid .fig{max-width:none}
+  .gbar{margin-top:64px}
+  .vpan{padding:20px 16px}
+  .tryband{margin-top:64px;padding:64px 0 68px}
+  .tryband h2{font-size:clamp(28px,8vw,40px)}
+  .tryband .cta-row{margin-bottom:36px}
+  .tryband .reassure{margin:-10px auto 24px !important}
+  .earlyband{margin-top:64px}
+  .qa+.qa{margin-top:40px}
+  .colophon{margin-top:64px}
+  /* tap targets ≥44px */
+  .wrow[role="button"],.calrow[role="button"]{min-height:44px}
+  .crow2{min-height:44px}
+  .gcycle{min-height:44px;align-items:center}
+  .schip{align-items:center}
+  .sqkey{min-height:44px}
   .lcdmini{gap:12px;flex-wrap:wrap}
   .lcdmini .big{font-size:28px}
   .bandsnip .bd{gap:14px}
@@ -404,6 +471,20 @@ html.js .exdrawer.open{display:flex}
 </head>
 <body>
 <script>document.documentElement.classList.add("js");</script>
+<!-- =====================================================================
+MOBILE CHROME NOTES — V1.8 (page agents: replicate this pattern byte-consistently)
+≤760px chrome budget ~116px: topstrip ~18 + rule 1 + masthead ~46 + scotch 3 + nav 48.
+MARKUP: inside .newsnav .wrap, AFTER .actions, add <a class="btn-key mcta">START
+TRIAL</a> then <details class="mnav"> → <summary aria-label="Menu"> ☰ </summary> →
+.mnav-panel links: HOME · HOW IT WORKS · PRICING · COMPARE TIERS · TRY THE DEMO ·
+SIGN IN (aria-current="page" on the active one; no-masthead pages skip that rule set).
+CSS: base rule ".newsnav .mcta,.newsnav .mnav{display:none}" + copy the
+"MOBILE CHROME (≤760px)" media block VERBATIM; the "MOBILE POLISH" block is per-page.
+JS: the tiny mnav close script right after </nav> (link tap + outside tap) is
+progressive enhancement only — with JS off, <details>/<summary> still toggles.
+Wide artifacts: <div class="scrollx-fade"><div class="scrollx"> table </div></div>.
+Desktop ≥761px is untouched — every mobile rule lives inside the 760 media queries.
+===================================================================== -->
 <!-- =====================================================================
 DESIGN SYSTEM NOTES — SITE V1.3 (how-it-works / pricing / demo copy this chrome)
 CHROME, copy verbatim top-to-bottom: .topstrip → .rule → .masthead (nameplate +
@@ -488,8 +569,33 @@ contractions, warm and calm; drama, war-words and outcome promises stay out.
       <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
       <a class="btn-key" href="https://app.newsberri.com">START 7-DAY TRIAL</a>
     </div>
+    <a class="btn-key mcta" href="https://app.newsberri.com">START TRIAL</a>
+    <details class="mnav">
+      <summary aria-label="Menu"><span aria-hidden="true">☰</span></summary>
+      <div class="mnav-panel">
+        <a href="index.html" aria-current="page">HOME</a>
+        <a href="how-it-works.html">HOW IT WORKS</a>
+        <a href="pricing.html">PRICING</a>
+        <a href="pricing.html">COMPARE TIERS</a>
+        <a href="demo.html">TRY THE DEMO</a>
+        <a href="https://app.newsberri.com">SIGN IN</a>
+      </div>
+    </details>
   </div>
 </nav>
+<script>
+/* mnav close (progressive enhancement only — with JS off, summary still toggles) */
+(function(){
+  var d=document.querySelector("details.mnav");if(!d)return;
+  d.addEventListener("click",function(e){
+    var t=e.target;
+    while(t&&t!==d){if(t.tagName==="A"){d.removeAttribute("open");return;}t=t.parentNode;}
+  });
+  document.addEventListener("click",function(e){
+    if(d.hasAttribute("open")&&!d.contains(e.target))d.removeAttribute("open");
+  });
+})();
+</script>
 
 <main id="main">
 <!-- ==================== 1 · HERO + THE THREE-BEAT OFFER ==================== -->

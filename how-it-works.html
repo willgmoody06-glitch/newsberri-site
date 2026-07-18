@@ -83,6 +83,7 @@ img,svg{max-width:100%}
 .newsnav .signin:hover{color:var(--key)}
 .newsnav .btn-key{padding:9px 18px;font-size:11px}
 .newsnav .btn-brk{padding:9px 4px;font-size:11px}
+.newsnav .mcta,.newsnav .mnav{display:none}
 /* ============ SECTION FURNITURE (from index.html) ============ */
 .sec{position:relative;padding:76px 0 0}
 .sec .inner{position:relative}
@@ -227,18 +228,79 @@ img,svg{max-width:100%}
   .newsnav .actions{gap:10px;flex-wrap:wrap;justify-content:flex-end}
   .twobox{grid-template-columns:1fr}
 }
+/* ============ MOBILE CHROME (≤760px) — copy this block byte-identical on every page ============ */
 @media (max-width:760px){
   body{font-size:16px}
   .wrap{padding:0 18px}
-  .masthead{padding-top:22px;padding-bottom:16px}
-  .masthead .nameplate{gap:12px}
-  .masthead .nameplate .wordmark{font-size:clamp(38px,12vw,56px)}
-  .masthead .mark-lg svg{width:clamp(34px,10vw,52px)}
-  .topstrip{flex-direction:column;gap:2px}
+  /* topstrip: one tiny centered compliance line */
+  .topstrip{flex-direction:row;justify-content:center;text-align:center;gap:0;padding-top:4px;padding-bottom:4px;font-size:8.5px;letter-spacing:1.2px;line-height:1.2}
+  .topstrip span{margin:0 !important}
+  /* masthead: one inline row — mark 26px + nameplate 30px; dek/dateline are desktop-only */
+  .masthead{padding-top:8px;padding-bottom:8px;line-height:1}
+  .masthead::before{display:none}
+  .masthead .nameplate{gap:10px;vertical-align:top}
+  .masthead .nameplate .wordmark{font-size:30px}
+  .masthead .mark-lg svg{width:26px}
+  .masthead .dek,.masthead .dateline{display:none}
+  .rule-scotch{height:3px;border-top-width:2px}
+  /* sticky nav: brand + short key CTA + JS-free hamburger; desktop links/actions hidden */
+  .newsnav .wrap{flex-wrap:nowrap;gap:10px;min-height:48px;padding-top:0;padding-bottom:0}
+  .newsnav .brand{gap:7px}
+  .newsnav .brand svg{width:18px;height:18px}
+  .newsnav .brand .wordmark{font-size:17px}
+  .newsnav .links,.newsnav .actions{display:none}
+  .newsnav .mcta{display:inline-flex;align-items:center;min-height:44px;margin-left:auto;font-size:11px;padding:10px 14px;letter-spacing:1.5px}
+  .newsnav .mnav{display:block}
+  .mnav summary{list-style:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;cursor:pointer;border:1px solid var(--hair-strong);color:var(--ink-2);font-size:17px;line-height:1;user-select:none}
+  .mnav summary::-webkit-details-marker{display:none}
+  .mnav summary:hover{color:var(--key);border-color:var(--key)}
+  .mnav[open] summary{background:var(--raise);color:var(--key)}
+  .mnav-panel{position:absolute;left:0;right:0;top:100%;background:#000;border-bottom:1px solid var(--hair-strong);box-shadow:0 18px 30px rgba(0,0,0,.55)}
+  .mnav-panel a{display:flex;align-items:center;min-height:48px;padding:0 18px;font-family:var(--mono);font-size:12px;letter-spacing:1.5px;color:var(--ink-2);border-top:1px solid var(--hair)}
+  .mnav-panel a:hover{color:var(--key);background:var(--selrow)}
+  .mnav-panel a[aria-current="page"]{color:var(--ink);box-shadow:inset 2px 0 0 var(--ras)}
+  /* no horizontal page scroll: clip decorative washes at the viewport */
+  main{overflow-x:clip}
+  .wash-hero::before{left:0;right:0}
+  /* wide artifacts scroll inside their own shell, never the page */
+  .scrollx{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .scrollx-fade{position:relative}
+  .scrollx-fade::after{content:"";position:absolute;top:0;right:0;bottom:0;width:16px;pointer-events:none;background:linear-gradient(270deg,rgba(0,0,0,.5),transparent)}
+  .snip .bd{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .snip .ph{height:auto;min-height:30px;padding-top:3px;padding-bottom:3px;flex-wrap:wrap;line-height:1.2}
+}
+/* ============ MOBILE POLISH — how-it-works (≤760px) ============ */
+@media (max-width:760px){
+  .sec{padding-top:56px}
+  .sectitle{font-size:clamp(27px,8vw,40px)}
+  .secsub{margin-bottom:32px;font-size:16.5px}
   .lead,.stage{display:block}
+  .lead{padding:32px 0 6px}
+  .lead h1{font-size:clamp(34px,10.5vw,48px)}
+  .lead .lede{font-size:17px}
+  .pullline{font-size:19px;margin-top:20px}
   .l-copy,.st-copy{padding-right:0}
   .l-side,.st-fig{border-left:0;padding-left:0;margin-top:26px;padding-top:22px;border-top:1px solid var(--hair)}
   .st-fig{display:flex}
+  /* sidebar index -> horizontal scroll chip row under the lede */
+  .mindex{display:flex;gap:8px;padding:2px 0 6px}
+  .mindex li{border-top:0;flex:none}
+  .mindex a{border:1px solid var(--hair-strong);min-height:44px;align-items:center;gap:8px;padding:0 13px;white-space:nowrap}
+  .l-note{margin-top:16px}
+  /* step figures full width; SVGs keep aspect; the wide map + ledger scroll in their own shell */
+  .bigfig{margin-top:22px;padding:16px 14px 12px}
+  .bigfig .scrollx svg{min-width:720px}
+  .panelfig{padding:14px}
+  .ledtable{min-width:430px}
+  .ledtable th,.ledtable td{padding-left:8px;padding-right:8px}
+  .grchip{padding:14px}
+  .twobox{gap:20px}
+  .stdbox{padding:22px 18px 16px}
+  .tryband{margin-top:64px}
+  .tryband h2{font-size:clamp(28px,8vw,40px)}
+  .cta-row{flex-direction:column;align-items:stretch;gap:12px}
+  .cta-row .btn-key,.cta-row .btn-brk{display:block;width:100%;text-align:center;padding:15px 12px}
+  .colophon{margin-top:64px}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
@@ -304,8 +366,33 @@ All backend/mechanics content for the site lives on THIS page only.
       <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
       <a class="btn-key" href="https://app.newsberri.com">START 7-DAY TRIAL</a>
     </div>
+    <a class="btn-key mcta" href="https://app.newsberri.com">START TRIAL</a>
+    <details class="mnav">
+      <summary aria-label="Menu"><span aria-hidden="true">☰</span></summary>
+      <div class="mnav-panel">
+        <a href="index.html">HOME</a>
+        <a href="how-it-works.html" aria-current="page">HOW IT WORKS</a>
+        <a href="pricing.html">PRICING</a>
+        <a href="pricing.html">COMPARE TIERS</a>
+        <a href="demo.html">TRY THE DEMO</a>
+        <a href="https://app.newsberri.com">SIGN IN</a>
+      </div>
+    </details>
   </div>
 </nav>
+<script>
+/* mnav close (progressive enhancement only — with JS off, summary still toggles) */
+(function(){
+  var d=document.querySelector("details.mnav");if(!d)return;
+  d.addEventListener("click",function(e){
+    var t=e.target;
+    while(t&&t!==d){if(t.tagName==="A"){d.removeAttribute("open");return;}t=t.parentNode;}
+  });
+  document.addEventListener("click",function(e){
+    if(d.hasAttribute("open")&&!d.contains(e.target))d.removeAttribute("open");
+  });
+})();
+</script>
 
 <main id="main">
 <!-- ==================== LEAD ==================== -->
@@ -322,7 +409,7 @@ All backend/mechanics content for the site lives on THIS page only.
       <aside class="l-side" aria-label="What's on this page">
         <h2>What's on this page</h2>
         <p class="micro">EIGHT STOPS, TOP TO BOTTOM</p>
-        <ol class="mindex">
+        <div class="scrollx-fade"><ol class="mindex scrollx">
           <li><a href="#sources"><span>THE SOURCES</span><span class="pg">01</span></a></li>
           <li><a href="#scoring"><span>THE SCORING STEP</span><span class="pg">02</span></a></li>
           <li><a href="#second"><span>A SECOND SOURCE</span><span class="pg">03</span></a></li>
@@ -331,7 +418,7 @@ All backend/mechanics content for the site lives on THIS page only.
           <li><a href="#squawk"><span>THE SQUAWK</span><span class="pg">06</span></a></li>
           <li><a href="#record"><span>THE TRACK RECORD</span><span class="pg">07</span></a></li>
           <li><a href="#standards"><span>WHAT WE DON'T DO</span><span class="pg">08</span></a></li>
-        </ol>
+        </ol></div>
         <p class="l-note">Wondering what it costs? Every tier gets the same sources, the same speed, all 42 contracts. <a href="pricing.html">Compare tiers →</a></p>
       </aside>
     </div>
@@ -344,6 +431,7 @@ All backend/mechanics content for the site lives on THIS page only.
     <span class="eychip">THE MAP</span>
     <h2 class="sectitle" id="map-h">Live sources in, one read out</h2>
     <figure class="bigfig">
+      <div class="scrollx-fade"><div class="scrollx">
       <svg viewBox="0 0 960 290" role="img" aria-label="Diagram of the whole pipeline: live news sources feed the scoring step, where an AI reads each story once on our servers; a second source confirms the story and the score firms up; everything rolls into one index number per contract; the result goes to every subscriber at the same moment. A dashed path above shows that headlines reach you provisionally the instant they cross, before any scoring.">
         <defs>
           <linearGradient id="mapgrad" x1="0" y1="0" x2="1" y2="0">
@@ -391,6 +479,7 @@ All backend/mechanics content for the site lives on THIS page only.
         <rect x="858" y="219" width="64" height="14" fill="none" stroke="var(--ink-3)"/>
         <text x="596" y="266" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-faint)">EVERYONE GETS THE SAME READ, AT THE SAME MOMENT</text>
       </svg>
+      </div></div>
       <figcaption class="snipcap"><span class="figtag">THE WHOLE PIPELINE, ONE PICTURE</span>The dashed path on top is the headline coming straight to you — you see it the instant it crosses, before we've read it. The solid path is the meaning being made: read once on our servers, confirmed by a second source, rolled into one number per contract, and sent to everyone at the same moment. The calendar (step 5) and the squawk (step 6) sit beside this pipeline, not inside it.</figcaption>
     </figure>
   </div>
@@ -693,6 +782,7 @@ All backend/mechanics content for the site lives on THIS page only.
       </div>
       <div class="st-fig">
         <figure class="panelfig">
+          <div class="scrollx-fade"><div class="scrollx">
           <table class="ledtable">
             <caption>FROM THE PUBLIC LEDGER — RECENT CALLS (MOCK DATA)</caption>
             <thead><tr><th scope="col">Logged</th><th scope="col">Call</th><th scope="col">How it resolved</th></tr></thead>
@@ -703,6 +793,7 @@ All backend/mechanics content for the site lives on THIS page only.
               <tr><td class="num">JUL 09 · 10:03</td><td class="num">GC · BULL</td><td><b>Matched</b> what followed</td></tr>
             </tbody>
           </table>
+          </div></div>
           <figcaption class="snipcap"><span class="figtag">THE RECORD, AS ANYONE CAN READ IT</span>Illustrative rows, not the live ledger. No percentages, no pruning. The second row is the honest part — and the reason the other rows mean anything.</figcaption>
         </figure>
       </div>

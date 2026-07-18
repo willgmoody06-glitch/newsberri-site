@@ -82,6 +82,8 @@ img,svg{max-width:100%}
 .newsnav .signin:hover{color:var(--key)}
 .newsnav .btn-key{padding:9px 18px;font-size:11px}
 .newsnav .btn-brk{padding:9px 4px;font-size:11px}
+/* mobile-only chrome controls (short CTA + hamburger) — shown only in the ≤760px block */
+.newsnav .mcta,.newsnav .mnav{display:none}
 /* ============ SECTION FURNITURE (from index) ============ */
 .sec{position:relative;padding:76px 0 0}
 .sec .inner{position:relative}
@@ -242,19 +244,77 @@ img,svg{max-width:100%}
   .newsnav .actions{gap:10px;flex-wrap:wrap;justify-content:flex-end}
   .plans{grid-template-columns:1fr}
 }
+/* ============ MOBILE CHROME (≤760px) — copy this block byte-identical on every page ============ */
 @media (max-width:760px){
   body{font-size:16px}
   .wrap{padding:0 18px}
+  /* topstrip: one tiny centered compliance line */
+  .topstrip{flex-direction:row;justify-content:center;text-align:center;gap:0;padding-top:4px;padding-bottom:4px;font-size:8.5px;letter-spacing:1.2px;line-height:1.2}
+  .topstrip span{margin:0 !important}
+  /* masthead: one inline row — mark 26px + nameplate 30px; dek/dateline are desktop-only */
+  .masthead{padding-top:8px;padding-bottom:8px;line-height:1}
+  .masthead::before{display:none}
+  .masthead .nameplate{gap:10px;vertical-align:top}
+  .masthead .nameplate .wordmark{font-size:30px}
+  .masthead .mark-lg svg{width:26px}
+  .masthead .dek,.masthead .dateline{display:none}
+  .rule-scotch{height:3px;border-top-width:2px}
+  /* sticky nav: brand + short key CTA + JS-free hamburger; desktop links/actions hidden */
+  .newsnav .wrap{flex-wrap:nowrap;gap:10px;min-height:48px;padding-top:0;padding-bottom:0}
+  .newsnav .brand{gap:7px}
+  .newsnav .brand svg{width:18px;height:18px}
+  .newsnav .brand .wordmark{font-size:17px}
+  .newsnav .links,.newsnav .actions{display:none}
+  .newsnav .mcta{display:inline-flex;align-items:center;min-height:44px;margin-left:auto;font-size:11px;padding:10px 14px;letter-spacing:1.5px}
+  .newsnav .mnav{display:block}
+  .mnav summary{list-style:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;cursor:pointer;border:1px solid var(--hair-strong);color:var(--ink-2);font-size:17px;line-height:1;user-select:none}
+  .mnav summary::-webkit-details-marker{display:none}
+  .mnav summary:hover{color:var(--key);border-color:var(--key)}
+  .mnav[open] summary{background:var(--raise);color:var(--key)}
+  .mnav-panel{position:absolute;left:0;right:0;top:100%;background:#000;border-bottom:1px solid var(--hair-strong);box-shadow:0 18px 30px rgba(0,0,0,.55)}
+  .mnav-panel a{display:flex;align-items:center;min-height:48px;padding:0 18px;font-family:var(--mono);font-size:12px;letter-spacing:1.5px;color:var(--ink-2);border-top:1px solid var(--hair)}
+  .mnav-panel a:hover{color:var(--key);background:var(--selrow)}
+  .mnav-panel a[aria-current="page"]{color:var(--ink);box-shadow:inset 2px 0 0 var(--ras)}
+  /* no horizontal page scroll: clip decorative washes at the viewport */
+  main{overflow-x:clip}
+  .wash-hero::before{left:0;right:0}
+  /* wide artifacts scroll inside their own shell, never the page */
+  .scrollx{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .scrollx-fade{position:relative}
+  .scrollx-fade::after{content:"";position:absolute;top:0;right:0;bottom:0;width:16px;pointer-events:none;background:linear-gradient(270deg,rgba(0,0,0,.5),transparent)}
+  .snip .bd{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .snip .ph{height:auto;min-height:30px;padding-top:3px;padding-bottom:3px;flex-wrap:wrap;line-height:1.2}
+}
+/* ============ MOBILE POLISH — pricing (≤760px) ============ */
+@media (max-width:760px){
+  .sec{padding-top:56px}
+  .sectitle{font-size:clamp(27px,8vw,40px)}
+  .secsub{margin-bottom:24px;font-size:16.5px}
+  .samesource{padding:24px 0 26px}
+  .samesource .big{font-size:17px}
+  .pagehead{padding-top:40px}
+  .pagehead h1{font-size:clamp(34px,10.5vw,48px)}
+  /* billing toggle: full-width, ≥44px targets */
+  .billrow{flex-direction:column;align-items:stretch;gap:10px;margin:10px 0 4px}
+  .billtoggle{display:flex;width:100%}
+  .bt-opt{flex:1;justify-content:center;min-height:44px;padding:11px 8px;text-align:center}
+  /* tier cards stack Core → Pro → Desk */
+  .plans{grid-template-columns:1fr;gap:18px;margin-top:28px}
+  .plan{padding:24px 18px 20px}
+  .plan .cta,.btn-ghosted{padding:15px 24px}
+  .atcta{padding:18px 16px}
+  /* matrix + cost table scroll inside their own shells (see .scrollx wrappers) */
+  .scrollx .cost{min-width:640px;max-width:none}
+  .cost-foot{padding-top:10px}
+  /* honest-billing boxes + FAQ stack */
   .queries,.fineprint{display:block}
   .fp-item+.fp-item{border-left:0;border-top:1px solid var(--hair)}
-  .masthead{padding-top:22px;padding-bottom:16px}
-  .masthead .nameplate{gap:12px}
-  .masthead .nameplate .wordmark{font-size:clamp(38px,12vw,56px)}
-  .masthead .mark-lg svg{width:clamp(34px,10vw,52px)}
-  .topstrip{flex-direction:column;gap:2px}
-  .pagehead{padding-top:40px}
-  .costrow{grid-template-columns:1fr auto}
-  .costrow .how{display:none}
+  /* CTA band */
+  .tryband{margin-top:64px;padding:56px 0 60px}
+  .tryband h2{font-size:clamp(28px,8vw,40px)}
+  .cta-row{flex-direction:column;align-items:stretch;gap:12px}
+  .cta-row .btn-key,.cta-row .btn-brk{display:block;width:100%;text-align:center;padding:15px 12px}
+  .colophon{margin-top:64px}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
@@ -323,8 +383,33 @@ is the Desk card's "details coming from the founders".
       <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
       <a class="btn-key" href="https://app.newsberri.com">START 7-DAY TRIAL</a>
     </div>
+    <a class="btn-key mcta" href="https://app.newsberri.com">START TRIAL</a>
+    <details class="mnav">
+      <summary aria-label="Menu"><span aria-hidden="true">☰</span></summary>
+      <div class="mnav-panel">
+        <a href="index.html">HOME</a>
+        <a href="how-it-works.html">HOW IT WORKS</a>
+        <a href="pricing.html" aria-current="page">PRICING</a>
+        <a href="pricing.html">COMPARE TIERS</a>
+        <a href="demo.html">TRY THE DEMO</a>
+        <a href="https://app.newsberri.com">SIGN IN</a>
+      </div>
+    </details>
   </div>
 </nav>
+<script>
+/* mnav close (progressive enhancement only — with JS off, summary still toggles) */
+(function(){
+  var d=document.querySelector("details.mnav");if(!d)return;
+  d.addEventListener("click",function(e){
+    var t=e.target;
+    while(t&&t!==d){if(t.tagName==="A"){d.removeAttribute("open");return;}t=t.parentNode;}
+  });
+  document.addEventListener("click",function(e){
+    if(d.hasAttribute("open")&&!d.contains(e.target))d.removeAttribute("open");
+  });
+})();
+</script>
 
 <main id="main">
 <!-- ==================== 1 · THE SAME-SOURCES STRIP — above everything ==================== -->
@@ -430,7 +515,8 @@ is the Desk card's "details coming from the founders".
     <span class="eychip vio">LINE BY LINE</span>
     <h2 class="sectitle" id="matrix-h">The tiers, side by side</h2>
     <p class="secsub">The detailed version of the pricing grid: what's in each tier, row by row.</p>
-    <div class="tablewrap">
+    <div class="scrollx-fade">
+    <div class="tablewrap scrollx">
       <table class="matrix">
         <caption>FEATURE COMPARISON — ✓ INCLUDED · — NOT IN TIER, OR NOT YET ANNOUNCED</caption>
         <thead>
@@ -501,6 +587,7 @@ is the Desk card's "details coming from the founders".
         </tbody>
       </table>
     </div>
+    </div>
   </div>
 </section>
 
@@ -510,6 +597,8 @@ is the Desk card's "details coming from the founders".
     <span class="eychip ras">THE GOING RATE</span>
     <h2 class="sectitle" id="cost-h">What this desk costs elsewhere</h2>
     <p class="secsub">You could assemble this desk the traditional way — trading floors have for decades. If what you want is <b>the news, read for your trade</b>, here's what the two roads go for.</p>
+    <div class="scrollx-fade">
+    <div class="scrollx">
     <div class="cost" role="table" aria-label="Published list pricing for named institutional services compared with NewsBerri Core and Pro">
       <div class="costrow" role="row"><span class="what" role="cell">Newsquawk</span><span class="how" role="cell">LIVE SQUAWK AUDIO, INSTITUTIONAL · BASIC $199 (ONE ASSET CLASS) → PRO $399 (ALL)</span><span class="amt" role="cell">$199–399 / MO</span></div>
       <div class="costrow" role="row"><span class="what" role="cell">Benzinga Pro</span><span class="how" role="cell">STOCKS-FIRST NEWS TERMINAL · BASIC TO UPPER TIERS</span><span class="amt" role="cell">$37–197 / MO</span></div>
@@ -517,6 +606,8 @@ is the Desk card's "details coming from the founders".
       <div class="costrow" role="row"><span class="what" role="cell">An analyst to read the tape</span><span class="how" role="cell">A HUMAN ON THE DESK, FULL-TIME</span><span class="amt" role="cell">A SALARY</span></div>
       <div class="costrow us" role="row"><span class="what" role="cell">NewsBerri Core — the whole feed</span><span class="how" role="cell">EVERY CONTRACT, EVERY SOURCE, ONE DEVICE</span><span class="amt grad-text" role="cell">$19 / MO</span></div>
       <div class="costrow us" role="row"><span class="what" role="cell">NewsBerri Pro — adds the watchful half</span><span class="how" role="cell">GUARDRAIL, ALERTS EVERYWHERE, UNLIMITED DEPTH</span><span class="amt grad-text" role="cell">$39 / MO</span></div>
+    </div>
+    </div>
     </div>
     <div class="cost-foot">
       <span class="micro">PUBLISHED LIST PRICING, JULY 2026 — CHECK WITH EACH VENDOR · SUBSCRIPTION PRICES, NEVER MARKET PRICES</span>

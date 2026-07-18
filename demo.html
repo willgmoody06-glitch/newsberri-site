@@ -91,6 +91,8 @@ a.btn{text-decoration:none}
 .db-back:hover::before,.db-back:hover::after{color:#C74497}
 .db-key{display:inline-flex;align-items:center;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:2px;padding:8px 16px;border:1px solid var(--key);box-shadow:var(--key-glow);text-decoration:none;white-space:nowrap;transition:box-shadow .18s ease}
 .db-key:hover{box-shadow:0 0 14px rgba(232,51,110,.4),0 0 26px rgba(139,92,246,.35)}
+.db-key .db-short{display:none}
+#demobar .mnav{display:none}
 
 /* ===== board frame: horizontal-scrolls inside itself under 1024 ===== */
 #boardwrap{flex:1;min-height:0;overflow:auto;background:var(--canvas)}
@@ -280,6 +282,51 @@ a.btn{text-decoration:none}
   .brandsub{display:none}.brandplate{padding:0 12px}.brandplate .wm{font-size:20px !important}
   .lcd .sym{min-width:0}.lcd .big{font-size:36px}.lcd .lab{font-size:13px;letter-spacing:2px;padding:4px 9px}
   .statclu{padding:0 10px}.statclu .row:first-child{display:none}.bandkeys{padding:0 8px}}
+/* ============ MOBILE POLISH — demo (≤760px) ============
+   Demo chrome differs from the site pages (no topstrip/masthead/newsnav) — the
+   fixed demo bar compacts to two slim rows and carries the same JS-free
+   details-hamburger menu as the site pages; the board keeps its internal scroll
+   (#boardwrap), the explain drawer becomes a full-width sheet, and the tour card
+   stacks inside the viewport. Desktop ≥761px untouched; board JS untouched. */
+@media(max-width:760px){
+  /* demo bar: brand + chip on row 1, back-link + short CTA + hamburger on row 2 */
+  #demobar{flex:0 0 auto;flex-wrap:wrap;gap:4px 6px;padding:6px 12px}
+  #demobar>svg{width:18px;height:18px}
+  #demobar .wm{font-size:16px}
+  .db-mode{display:none}
+  .db-chip{margin-left:auto;font-size:8px;letter-spacing:1px;padding:3px 6px}
+  #demobar .sp{flex:0 0 100%;height:0}
+  .db-back{display:inline-flex;align-items:center;min-height:44px;font-size:9.5px;letter-spacing:1.2px;padding:0 2px}
+  .db-key{min-height:44px;margin-left:auto;font-size:10px;letter-spacing:1.6px;padding:0 10px}
+  .db-key .db-full{display:none}
+  .db-key .db-short{display:inline}
+  /* JS-free hamburger — same menu as the site pages, anchored to the demo bar */
+  #demobar .mnav{display:block}
+  .mnav summary{list-style:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;cursor:pointer;border:1px solid var(--hair-strong);color:var(--ink-2);font-size:17px;line-height:1;user-select:none}
+  .mnav summary::-webkit-details-marker{display:none}
+  .mnav summary:hover{color:var(--key);border-color:var(--key)}
+  .mnav[open] summary{background:var(--raise);color:var(--key)}
+  .mnav-panel{position:absolute;left:0;right:0;top:100%;background:#000;border-bottom:1px solid var(--hair-strong);box-shadow:0 18px 30px rgba(0,0,0,.55)}
+  .mnav-panel a{display:flex;align-items:center;min-height:48px;padding:0 18px;font-family:var(--mono);font-size:12px;letter-spacing:1.5px;color:var(--ink-2);text-decoration:none;border-top:1px solid var(--hair)}
+  .mnav-panel a:hover{color:var(--key);background:var(--selrow)}
+  .mnav-panel a[aria-current="page"]{color:var(--ink);box-shadow:inset 2px 0 0 var(--berry)}
+  /* board tap targets ≥44px (the board renders at desktop scale inside #boardwrap) */
+  .ph{height:auto;min-height:30px}
+  .btn.sm{min-height:44px;min-width:44px;justify-content:center}
+  .bandkeys{flex-direction:row;align-items:center}
+  /* board: internal scroll only — the page itself never scrolls */
+  #boardwrap{-webkit-overflow-scrolling:touch}
+  /* explain drawer: full-width sheet (demo bar is no longer a fixed 47px) */
+  #drawer{top:0;width:100%;max-width:100%}
+  /* tour: card pins edge-to-edge and stacks; hotspot labels narrow */
+  .tour-card{left:12px;right:12px;bottom:12px;transform:none;flex-direction:column;align-items:stretch;gap:8px;padding:12px 14px}
+  .tour-card .t{font-size:16px;white-space:normal}
+  .tour-card .s{max-width:none}
+  .tour-card .btn{align-self:flex-start;min-height:44px}
+  .hs{gap:6px}
+  .hs .hs-n{width:24px;height:24px}
+  .hs .hs-l{max-width:210px;font-size:11px}
+}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </head>
@@ -301,8 +348,32 @@ a.btn{text-decoration:none}
   <span class="db-chip">SIMULATED DATA · NOT LIVE</span>
   <span class="sp"></span>
   <a class="db-back" href="index.html">← BACK TO THE SITE</a>
-  <a class="db-key" href="https://app.newsberri.com">START 7-DAY TRIAL</a>
+  <a class="db-key" href="https://app.newsberri.com"><span class="db-full">START 7-DAY TRIAL</span><span class="db-short">START TRIAL</span></a>
+  <details class="mnav">
+    <summary aria-label="Menu"><span aria-hidden="true">☰</span></summary>
+    <div class="mnav-panel">
+      <a href="index.html">HOME</a>
+      <a href="how-it-works.html">HOW IT WORKS</a>
+      <a href="pricing.html">PRICING</a>
+      <a href="pricing.html">COMPARE TIERS</a>
+      <a href="demo.html" aria-current="page">TRY THE DEMO</a>
+      <a href="https://app.newsberri.com">SIGN IN</a>
+    </div>
+  </details>
 </header>
+<script>
+/* mnav close (progressive enhancement only — with JS off, summary still toggles) */
+(function(){
+  var d=document.querySelector("details.mnav");if(!d)return;
+  d.addEventListener("click",function(e){
+    var t=e.target;
+    while(t&&t!==d){if(t.tagName==="A"){d.removeAttribute("open");return;}t=t.parentNode;}
+  });
+  document.addEventListener("click",function(e){
+    if(d.hasAttribute("open")&&!d.contains(e.target))d.removeAttribute("open");
+  });
+})();
+</script>
 
 <!-- ===== BOARD (min-width 1024, scrolls inside itself below that) ===== -->
 <div id="boardwrap">
