@@ -381,17 +381,9 @@ html.js .exdrawer.open{display:flex}
 @media (max-width:760px){
   body{font-size:16px}
   .wrap{padding:0 18px}
-  /* topstrip: one tiny centered compliance line */
-  .topstrip{flex-direction:row;justify-content:center;text-align:center;gap:0;padding-top:4px;padding-bottom:4px;font-size:8.5px;letter-spacing:1.2px;line-height:1.2}
-  .topstrip span{margin:0 !important}
-  /* masthead: one inline row — mark 26px + nameplate 30px; dek/dateline are desktop-only */
-  .masthead{padding-top:8px;padding-bottom:8px;line-height:1}
-  .masthead::before{display:none}
-  .masthead .nameplate{gap:10px;vertical-align:top}
-  .masthead .nameplate .wordmark{font-size:30px}
-  .masthead .mark-lg svg{width:26px}
-  .masthead .dek,.masthead .dateline{display:none}
-  .rule-scotch{height:3px;border-top-width:2px}
+  /* V2.0: everything above the sticky nav dies on mobile — the page starts at the
+     nav (compliance line + risk disclosures stay in the footer, byte-untouched) */
+  .topstrip,.topstrip+.rule,.masthead,.rule-scotch{display:none}
   /* sticky nav: brand + short key CTA + JS-free hamburger; desktop links/actions hidden */
   .newsnav .wrap{flex-wrap:nowrap;gap:10px;min-height:48px;padding-top:0;padding-bottom:0}
   .newsnav .brand{gap:7px}
@@ -418,18 +410,18 @@ html.js .exdrawer.open{display:flex}
   .snip .bd{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .snip .ph{height:auto;min-height:30px;padding-top:3px;padding-bottom:3px;flex-wrap:wrap;line-height:1.2}
 }
-/* ============ MOBILE POLISH — index (≤760px) — V1.9 breathing room ============ */
+/* ============ MOBILE POLISH — index (≤760px) — V2.0 cuts + space ============ */
 @media (max-width:760px){
   body{line-height:1.6}
   .wrap{padding-left:22px;padding-right:22px}
-  .sec{padding-top:80px}
+  .sec{padding-top:96px}
   .sectitle{font-size:clamp(27px,8vw,40px)}
   .secsub{margin-bottom:32px;font-size:16.5px}
-  .hero{padding:32px 0 0}
+  .hero{padding:40px 0 0}
   .hero>div:first-child{min-height:0}
-  .hero h1{font-size:clamp(34px,10.5vw,48px);margin-bottom:18px}
-  .hero .lede{font-size:17px;margin-bottom:30px}
-  .hero-fig{margin-top:44px}
+  .hero h1{font-size:clamp(34px,10.5vw,48px);margin-bottom:22px}
+  .hero .lede{font-size:17px;margin-bottom:34px}
+  .hero-fig{margin-top:52px}
   .hero-fig::before{left:-14px;right:-14px}
   .cta-row{flex-direction:column;align-items:stretch;gap:14px}
   .cta-big,.cta-demo{display:block;width:100%;text-align:center;padding:16px 18px;font-size:12.5px}
@@ -437,20 +429,24 @@ html.js .exdrawer.open{display:flex}
   .stats{grid-template-columns:1fr 1fr;gap:28px 12px;margin-top:64px}
   .stat{padding:0}
   .beats{margin-top:64px}
-  .beat+.beat{margin-top:44px}
+  .beat+.beat{margin-top:52px}
   .riskline{margin-top:64px}
-  .snip .bd{padding:20px}
-  .svc{gap:28px;padding:64px 0 0}
+  .snip .bd{padding:22px}
+  .svc{gap:28px;padding:76px 0 0}
   .svc .fig,.transp-grid .fig{max-width:none}
-  .transp-grid{gap:44px}
-  .gbar{margin-top:64px}
-  .vpan{padding:22px 20px}
-  .tryband{margin-top:80px;padding:80px 0 84px}
+  .transp-grid{gap:52px}
+  .gbar{margin-top:76px}
+  .vpan{padding:22px}
+  .tryband{margin-top:96px;padding:96px 0 100px}
   .tryband h2{font-size:clamp(28px,8vw,40px)}
-  .tryband .cta-row{margin-bottom:44px}
-  .earlyband{margin-top:80px}
-  .qa+.qa{margin-top:44px}
-  .colophon{margin-top:80px}
+  .tryband .cta-row{margin-bottom:0}
+  .earlyband{margin-top:96px}
+  .qa+.qa{margin-top:52px}
+  .colophon{margin-top:112px}
+  /* V2.0 index cuts — CSS-only hides; DOM + JS untouched, desktop keeps all */
+  .tryband .bandsnip{display:none}
+  .transp-grid .fig{display:none}
+  .vs .vpan:not(.us) .vline{display:none}
   /* tap targets ≥44px */
   .wrow[role="button"],.calrow[role="button"]{min-height:44px}
   .crow2{min-height:44px}

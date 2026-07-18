@@ -303,6 +303,26 @@ img,svg{max-width:100%}
   .cta-row .btn-key,.cta-row .btn-brk{display:block;width:100%;text-align:center;padding:15px 12px}
   .colophon{margin-top:80px}
 }
+/* ============ V2.0 MOBILE CUTS (≤760px) — page starts at the sticky nav + more air ============ */
+@media (max-width:760px){
+  /* 1 · everything above the sticky nav dies (the compliance line stays in the footer) */
+  .topstrip,.topstrip+.rule,.masthead,.rule-scotch{display:none}
+  /* 2 · more space: 96px section rhythm, 52px stacked gaps, panel padding ≥22px */
+  .sec{padding-top:96px}
+  .sec[aria-labelledby="map-h"]{padding-top:96px !important} /* inline 30px is desktop-only */
+  .lead{padding-top:40px}
+  .lead h1{margin-bottom:22px}
+  .l-side,.st-fig{margin-top:52px}
+  .st-fig{gap:52px}
+  .twobox{gap:52px}
+  .bigfig{padding:22px 22px 16px}
+  .panelfig{padding:22px}
+  .grchip{padding:22px}
+  .stdbox{padding:24px 22px 20px}
+  .snip .bd{padding:22px}
+  .tryband{margin-top:96px}
+  .colophon{margin-top:112px}
+}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
   html{scroll-behavior:auto}

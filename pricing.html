@@ -315,6 +315,22 @@ img,svg{max-width:100%}
   .cta-row .btn-key,.cta-row .btn-brk{display:block;width:100%;text-align:center;padding:15px 12px}
   .colophon{margin-top:80px}
 }
+/* ============ V2.0 MOBILE CUTS (≤760px) — page starts at the sticky nav + more air ============ */
+@media (max-width:760px){
+  /* 1 · everything above the sticky nav dies (the compliance line stays in the footer) */
+  .topstrip,.topstrip+.rule,.masthead,.rule-scotch{display:none}
+  /* 2 · more space: 96px section rhythm, 52px stacked gaps, panel padding ≥22px */
+  .sec{padding-top:96px}
+  .pagehead{padding-top:56px} /* hero keeps its tighter seat under the same-sources strip */
+  .pagehead h1{margin-bottom:22px}
+  .plans{gap:52px}
+  .atcta{margin-top:52px;padding:22px}
+  .plan{padding:26px 22px 22px}
+  .fp-item{padding:26px 22px}
+  .qa{padding:30px 0 22px} /* FAQ items 52px apart */
+  .tryband{margin-top:96px}
+  .colophon{margin-top:112px}
+}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
   html{scroll-behavior:auto}
