@@ -178,7 +178,7 @@ img,svg{max-width:100%}
 .ledtable td{border-bottom:1px solid var(--hair);padding:11px 10px;font-size:14.5px;color:var(--ink-2);vertical-align:top}
 .ledtable td.num{font-family:var(--mono);font-size:11px;letter-spacing:.5px;white-space:nowrap;color:var(--ink);font-variant-numeric:tabular-nums}
 .ledtable td b{color:var(--ink);font-weight:600}
-/* two honest boxes */
+/* the two step-8 boxes */
 .twobox{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:8px}
 .stdbox{border:1px solid var(--hair-strong);background:var(--panel);padding:26px 26px 20px;min-width:0}
 .stdbox h3{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:1px;text-transform:uppercase;margin:0 0 10px;text-align:center}
@@ -187,7 +187,6 @@ img,svg{max-width:100%}
 .stdbox li{border-top:1px solid var(--hair);padding:10px 0;font-size:15px;color:var(--ink-2)}
 .stdbox li:first-child{border-top:0}
 .stdbox li b{color:var(--ink)}
-.stdbox .micro{display:block;text-align:center;margin-top:14px}
 /* ============ CTA BAND (tryband, from index.html) ============ */
 .tryband{margin-top:84px;position:relative;border-top:1px solid var(--hair-strong);border-bottom:1px solid var(--hair-strong);background:var(--panel);text-align:center;padding:64px 0 68px;overflow:hidden}
 .tryband::before{content:"";position:absolute;inset:0;pointer-events:none;
@@ -197,8 +196,6 @@ img,svg{max-width:100%}
 .tryband p{color:var(--ink-2);max-width:600px;margin:0 auto 28px;position:relative}
 .tryband .cta-row{justify-content:center;margin-bottom:0}
 .cta-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
-.trust{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--ink-3);padding:26px 0 0;font-variant-numeric:tabular-nums;position:relative}
-.tryband .trust{max-width:none;margin:0 auto}
 /* ============ FOOTER (copy verbatim on every page) ============ */
 .colophon{border-top:1px solid var(--hair-strong);margin-top:80px;padding:40px 0 34px;position:relative}
 .colophon::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;
@@ -269,38 +266,42 @@ img,svg{max-width:100%}
   .snip .bd{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .snip .ph{height:auto;min-height:30px;padding-top:3px;padding-bottom:3px;flex-wrap:wrap;line-height:1.2}
 }
-/* ============ MOBILE POLISH — how-it-works (≤760px) ============ */
+/* ============ MOBILE POLISH — how-it-works (≤760px) · V1.9 breathing room ============ */
 @media (max-width:760px){
-  .sec{padding-top:56px}
+  body{line-height:1.6}
+  .wrap{padding-left:22px;padding-right:22px}
+  .sec{padding-top:80px}
+  .sec[aria-labelledby="map-h"]{padding-top:80px !important} /* inline 30px is desktop-only */
   .sectitle{font-size:clamp(27px,8vw,40px)}
   .secsub{margin-bottom:32px;font-size:16.5px}
   .lead,.stage{display:block}
   .lead{padding:32px 0 6px}
-  .lead h1{font-size:clamp(34px,10.5vw,48px)}
-  .lead .lede{font-size:17px}
-  .pullline{font-size:19px;margin-top:20px}
+  .lead h1{font-size:clamp(34px,10.5vw,48px);margin-bottom:18px}
+  .lead .lede{font-size:17px;margin-bottom:18px}
+  .pullline{font-size:19px;margin-top:24px}
   .l-copy,.st-copy{padding-right:0}
-  .l-side,.st-fig{border-left:0;padding-left:0;margin-top:26px;padding-top:22px;border-top:1px solid var(--hair)}
-  .st-fig{display:flex}
+  .l-side,.st-fig{border-left:0;padding-left:0;margin-top:44px;padding-top:24px;border-top:1px solid var(--hair)}
+  .st-fig{display:flex;gap:44px}
   /* sidebar index -> horizontal scroll chip row under the lede */
   .mindex{display:flex;gap:8px;padding:2px 0 6px}
   .mindex li{border-top:0;flex:none}
   .mindex a{border:1px solid var(--hair-strong);min-height:44px;align-items:center;gap:8px;padding:0 13px;white-space:nowrap}
-  .l-note{margin-top:16px}
+  .l-note{margin-top:20px}
   /* step figures full width; SVGs keep aspect; the wide map + ledger scroll in their own shell */
-  .bigfig{margin-top:22px;padding:16px 14px 12px}
+  .bigfig{margin-top:24px;padding:20px 20px 16px}
   .bigfig .scrollx svg{min-width:720px}
-  .panelfig{padding:14px}
+  .panelfig{padding:20px}
   .ledtable{min-width:430px}
   .ledtable th,.ledtable td{padding-left:8px;padding-right:8px}
-  .grchip{padding:14px}
-  .twobox{gap:20px}
-  .stdbox{padding:22px 18px 16px}
-  .tryband{margin-top:64px}
+  .grchip{padding:20px}
+  .twobox{gap:44px}
+  .stdbox{padding:24px 20px 20px}
+  .tryband{margin-top:80px}
   .tryband h2{font-size:clamp(28px,8vw,40px)}
-  .cta-row{flex-direction:column;align-items:stretch;gap:12px}
+  .tryband p{margin-bottom:30px}
+  .cta-row{flex-direction:column;align-items:stretch;gap:14px}
   .cta-row .btn-key,.cta-row .btn-brk{display:block;width:100%;text-align:center;padding:15px 12px}
-  .colophon{margin-top:64px}
+  .colophon{margin-top:80px}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
@@ -400,10 +401,9 @@ All backend/mechanics content for the site lives on THIS page only.
   <div class="wrap inner">
     <div class="lead">
       <div class="l-copy">
-        <span class="eychip">THE FULL STORY — NOTHING HELD BACK</span>
         <h1 id="lead-h">Here's exactly <span class="grad-text">how the read is made</span>.</h1>
         <p class="lede">The sources go in. One read comes out. This page walks everything in between — how a headline becomes a score, how the score firms up, how it turns into the number beside your chart, and how the calendar makes sure a scheduled release never sneaks up on you.</p>
-        <p class="lede">If you only take away two things, make it these: <b>every score is made once, on our servers</b>, so everyone sees the same read at the same moment. And <b>we never sit on a headline</b> — you can read a story the second it crosses the feed, before we've scored it.</p>
+        <p class="lede">Two rules govern all of it: <b>every score is made once, on our servers</b>, so everyone sees the same read at the same moment. And <b>we never sit on a headline</b> — you can read a story the second it crosses the feed, before we've scored it.</p>
         <blockquote class="pullline">The method is the product. So here it is — all of it.<small>MOCK DATA IN EVERY FIGURE BELOW · NEVER A MARKET PRICE</small></blockquote>
       </div>
       <aside class="l-side" aria-label="What's on this page">
@@ -419,7 +419,7 @@ All backend/mechanics content for the site lives on THIS page only.
           <li><a href="#record"><span>THE TRACK RECORD</span><span class="pg">07</span></a></li>
           <li><a href="#standards"><span>WHAT WE DON'T DO</span><span class="pg">08</span></a></li>
         </ol></div>
-        <p class="l-note">Wondering what it costs? Every tier gets the same sources, the same speed, all 42 contracts. <a href="pricing.html">Compare tiers →</a></p>
+        <p class="l-note">Every tier gets the same sources, the same speed, all 42 contracts. <a href="pricing.html">Compare tiers →</a></p>
       </aside>
     </div>
   </div>
@@ -480,7 +480,7 @@ All backend/mechanics content for the site lives on THIS page only.
         <text x="596" y="266" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-faint)">EVERYONE GETS THE SAME READ, AT THE SAME MOMENT</text>
       </svg>
       </div></div>
-      <figcaption class="snipcap"><span class="figtag">THE WHOLE PIPELINE, ONE PICTURE</span>The dashed path on top is the headline coming straight to you — you see it the instant it crosses, before we've read it. The solid path is the meaning being made: read once on our servers, confirmed by a second source, rolled into one number per contract, and sent to everyone at the same moment. The calendar (step 5) and the squawk (step 6) sit beside this pipeline, not inside it.</figcaption>
+      <figcaption class="snipcap">The calendar (step 5) and the squawk (step 6) work beside this pipeline, not inside it.</figcaption>
     </figure>
   </div>
 </section>
@@ -493,8 +493,8 @@ All backend/mechanics content for the site lives on THIS page only.
     <div class="stage">
       <div class="st-copy">
         <p><b>NewsBerri listens to live news feeds around the clock</b> — 24 hours a day, five days a week. The moment a headline crosses any of them, it shows up on your tape marked <b>provisional</b>. There's no queue and no hold while the AI thinks; you can read the story before we have.</p>
-        <p>Provisional isn't an apology — it's just an honest label. It means <b>“we see it, we haven't read it yet.”</b> The row already carries its timestamp and its source, with a small PROV chip sitting exactly where the score is about to land. Most headlines wear the label for well under a minute.</p>
-        <p>Why several sources instead of one big one? Mostly coverage — stories break in different places. But there's a second reason that pays off in step 3: <b>you can't confirm a story with only one source</b>, and confirmation is a big part of how the read earns your trust.</p>
+        <p>Provisional is a label, not an apology. It means <b>“we see it, we haven't read it yet.”</b> The row already carries its timestamp and its source, with a PROV chip where the score is about to land. Most headlines wear the label for well under a minute.</p>
+        <p>Why several sources instead of one big one? Coverage, mostly — stories break in different places. The second reason pays off in step 3: <b>you can't confirm a story with only one source</b>.</p>
       </div>
       <div class="st-fig">
         <figure class="fig">
@@ -519,7 +519,6 @@ All backend/mechanics content for the site lives on THIS page only.
               </div>
             </div>
           </div>
-          <figcaption class="snipcap"><span class="figtag">SECONDS OLD, READABLE ALREADY</span>Two headlines that just crossed. The PROV chip is us saying <b>“it's on the feed — the read is on its way.”</b> Mock data, like every figure on this page.</figcaption>
         </figure>
       </div>
     </div>
@@ -534,8 +533,8 @@ All backend/mechanics content for the site lives on THIS page only.
     <div class="stage">
       <div class="st-copy">
         <p>Next, <b>an LLM reads the story</b> — the whole story, not a keyword match — and scores it for each contract it touches. Three judgments, every time: <b>direction</b>, on a −100 to +100 sentiment scale; <b>impact</b>, how much this kind of story tends to matter; and <b>confidence</b>, how sure the read is. The same headline can be bad news for the Nasdaq and fine news for gold, so every contract gets its own line.</p>
-        <p>Each score is made <b>once, on our servers</b>, and then sent to everyone at the same time. It's not recomputed per person, not tilted toward your positions, not softened to keep you comfortable. Everyone looking at NQ sees the same read at the same moment — which is exactly what makes it worth looking at.</p>
-        <p>And because a number is a summary, not an argument, the reasoning stays attached. Tap <b>✦ Explain</b> on any scored story and you get the why, in plain language: what the story says, why it scored the way it did, and what that means for the contract you're looking at.</p>
+        <p>Each score is made <b>once, on our servers</b>, and then sent to everyone at the same time. It's not recomputed per person, not tilted toward your positions, not softened to keep you comfortable. Everyone looking at NQ sees the same read at the same moment.</p>
+        <p>And because a number is a summary, not an argument, the reasoning stays attached. Tap <b>✦ Explain</b> on any scored story and you get the why: what the story says, why it scored the way it did, and what that means for the contract you're looking at.</p>
       </div>
       <div class="st-fig">
         <figure class="fig">
@@ -560,7 +559,7 @@ All backend/mechanics content for the site lives on THIS page only.
             <li><b>5 — CONFIDENCE.</b> HOW SURE THE READ IS OF ITSELF.</li>
             <li><b>6 — STAGE.</b> PROVISIONAL → SCORED → CORROBORATED.</li>
           </ul>
-          <figcaption class="snipcap"><span class="figtag">THE SAME WHEAT STORY, 37 SECONDS LATER</span>The row from step 1, with its score caught up in place. Every part of the read is on the row — nothing hides in a tooltip.</figcaption>
+          <figcaption class="snipcap"><span class="figtag">THE SAME WHEAT STORY, 37 SECONDS LATER</span>Every part of the read sits on the row — nothing hides in a tooltip.</figcaption>
         </figure>
       </div>
     </div>
@@ -575,8 +574,8 @@ All backend/mechanics content for the site lives on THIS page only.
     <div class="stage">
       <div class="st-copy">
         <p>One source carrying a story is a report. Two sources carrying it is about as close to a fact as a fast tape gets. So when <b>a second source confirms a headline</b>, we don't print it again — the row you already have firms up in place, and its label changes to <b>corroborated</b>.</p>
-        <p>That means every headline on the tape sits at one of three stages, and the label always tells you which: <b>provisional</b> (“it just crossed — we see it, we haven't read it yet”), <b>scored</b> (“we've read it, and here's what we think it means”), and <b>corroborated</b> (“a second source agrees it actually happened”). No row ever pretends to more certainty than it has.</p>
-        <p>And when a story never finds a second source? It stays visibly single-sourced, and its confidence stays modest. That's the tape's polite way of saying <b>“maybe.”</b></p>
+        <p>That means every headline on the tape sits at one of three stages, and the label always tells you which: <b>provisional</b> (“we see it, we haven't read it yet”), <b>scored</b> (“we've read it — here's what we think it means”), and <b>corroborated</b> (“a second source agrees it happened”). No row ever pretends to more certainty than it has.</p>
+        <p>When a story never finds a second source, it stays visibly single-sourced and its confidence stays modest. That's the tape saying <b>“maybe.”</b></p>
       </div>
       <div class="st-fig">
         <figure class="fig">
@@ -609,7 +608,7 @@ All backend/mechanics content for the site lives on THIS page only.
               </div>
             </div>
           </div>
-          <figcaption class="snipcap"><span class="figtag">SHOWN AS THREE ROWS SO YOU CAN SEE THE LABELS</span>On your actual tape this is <b>one row that firms up in place</b> — provisional, then scored, then corroborated. Nothing duplicates, nothing gets rewritten.</figcaption>
+          <figcaption class="snipcap"><span class="figtag">SHOWN AS THREE ROWS SO YOU CAN SEE THE LABELS</span>On your tape this is <b>one row that firms up in place</b>.</figcaption>
         </figure>
       </div>
     </div>
@@ -624,8 +623,8 @@ All backend/mechanics content for the site lives on THIS page only.
     <div class="stage">
       <div class="st-copy">
         <p>Individual stories come and go; the index is the running mood. For every contract, <b>the recent scored stories roll up into a single number</b>, weighted by freshness — a story from five minutes ago counts a lot, one from fifty minutes ago barely registers. The result answers a simple question: <b>what does the news look like for this contract, right now?</b></p>
-        <p>That happens for <b>42 contracts across 7 asset classes</b> — equity index, rates, energy, metals, agriculture, FX and crypto — with sector and asset-class rollups above them, and every plan gets all of it. When a contract's number turns genuinely decisive, it gets a plain-words label like STRONG BEAR — and from that moment the call sits on the public track record (step 7), where it'll be resolved against whatever actually happens next.</p>
-        <p>One thing worth repeating, because it governs everything here: every number on this page is <b>sentiment, on a −100 to +100 scale</b>. None of it is ever a market price, and none of it ever tells you what to do.</p>
+        <p>That happens for <b>42 contracts across 7 asset classes</b> — equity index, rates, energy, metals, agriculture, FX and crypto — with sector and asset-class rollups above them, and every plan gets all of it. When a contract's number turns decisive, it gets a plain-words label like STRONG BEAR — and from that moment the call sits on the public track record (step 7), where it'll be resolved against whatever actually happens next.</p>
+        <p>Every number on this page is <b>sentiment, on a −100 to +100 scale</b>. None of it is ever a market price, and none of it ever tells you what to do.</p>
       </div>
       <div class="st-fig">
         <figure class="panelfig">
@@ -646,7 +645,6 @@ All backend/mechanics content for the site lives on THIS page only.
             <path d="M96 72 L91 60 L101 60 Z" fill="var(--ink)"/>
             <text x="60" y="116" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1" fill="var(--ink-2)">ZW −57 · READS “STRONG BEAR” (MOCK)</text>
           </svg>
-          <figcaption class="snipcap"><span class="figtag">WHEN A NUMBER EARNS A LABEL</span>Labels only appear at genuinely decisive levels. In between, the number speaks for itself and we keep the adjectives to ourselves.</figcaption>
         </figure>
         <figure class="panelfig">
           <svg viewBox="0 0 560 120" role="img" aria-label="Bars of decreasing height showing that newer stories carry more weight in the index, and stories older than about an hour carry almost none.">
@@ -665,9 +663,7 @@ All backend/mechanics content for the site lives on THIS page only.
             <text x="396" y="108" font-family="Martian Mono,monospace" font-size="9" fill="var(--ink-faint)">~1H AGO</text>
             <text x="470" y="108" font-family="Martian Mono,monospace" font-size="9" fill="var(--ink-faint)">STORY AGE →</text>
           </svg>
-          <figcaption class="snipcap"><span class="figtag">A ROUGHLY ONE-HOUR MEMORY</span>Fresh stories dominate; old ones fade out. The index describes the tape as it stands, not as it stood an hour ago.</figcaption>
         </figure>
-        <p class="micro" style="border-top:1px solid var(--hair-strong);padding-top:10px;margin:0">EQUITY INDEX · RATES · ENERGY · METALS · AGRICULTURE · FX · CRYPTO — 42 CONTRACTS, ON EVERY TIER</p>
       </div>
     </div>
   </div>
@@ -683,7 +679,7 @@ All backend/mechanics content for the site lives on THIS page only.
     <div class="stage">
       <div class="st-copy">
         <p>Everything so far reacts to news that already happened. The calendar works ahead of it. <b>Every scheduled release that touches your contracts is on it</b> — CPI, auctions, jobless claims — and for each one, the what-ifs are written in advance: what a stronger-than-expected number would likely mean for your contract, what a weaker one would. When the release lands, the meaning is already waiting for it.</p>
-        <p>Then the <b>Guardrail</b> gives you a heads-up three times on the way in. <b>ARMED means the release is 30 minutes out</b> — the terminal is already watching it for you. HOT at ten means it's getting close. LIVE at two means it's about to happen. Each step brings a message on screen, a notification, and a spoken callout, so a release shouldn't arrive unannounced no matter where you're looking. And if your prop firm has rules about trading through releases, <b>Topstep's and Apex's are on screen next to the countdown</b>, so following them on time is straightforward.</p>
+        <p>Then the <b>Guardrail</b> gives you a heads-up three times on the way in. <b>ARMED means the release is 30 minutes out</b> — the terminal is already watching it for you. HOT at ten means it's getting close. LIVE at two means it's about to happen. Each step brings a message on screen, a notification, and a spoken callout, so a release never arrives unannounced, no matter where you're looking. And if your prop firm has rules about trading through releases, <b>Topstep's and Apex's are on screen next to the countdown</b>, so following them on time is straightforward.</p>
         <p>The chip carries one small piece of history too, always in the same plain format — <b>HIST ±0.1% TYP 15M (N=15)</b>: how this release has typically behaved, for how long, across how many past occurrences. It's the only backward-looking number we allow ourselves, and it's there so you can decide how much to care before the countdown runs out.</p>
       </div>
       <div class="st-fig">
@@ -703,10 +699,9 @@ All backend/mechanics content for the site lives on THIS page only.
             <text x="352" y="86" font-family="Martian Mono,monospace" font-size="8.5" letter-spacing="1" fill="var(--ink-faint)">SPOKEN HEADS-UP</text>
             <text x="30" y="110" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-3)">THREE HEADS-UPS BEFORE EVERY MAPPED RELEASE</text>
           </svg>
-          <figcaption class="snipcap"><span class="figtag">THIRTY, TEN, AND TWO MINUTES OUT</span>Each step is a little louder than the last, and the last one is spoken — so a scheduled release is never the first you hear of it.</figcaption>
         </figure>
         <figure class="panelfig">
-          <svg viewBox="0 0 560 150" role="img" aria-label="A what-if tree: a scheduled release branches into beat, in-line, and miss outcomes, each with a plain-language read written before the number exists.">
+          <svg viewBox="0 0 560 150" role="img" aria-label="A what-if tree: a scheduled release branches into beat, in-line, and miss outcomes, each with a read written before the number exists.">
             <rect x="24" y="56" width="120" height="38" fill="var(--well)" stroke="var(--hair-strong)"/>
             <text x="38" y="73" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1" fill="var(--ink)">THE RELEASE</text>
             <text x="38" y="87" font-family="Martian Mono,monospace" font-size="8" letter-spacing="1" fill="var(--ink-3)">MAPPED PER CONTRACT</text>
@@ -721,7 +716,6 @@ All backend/mechanics content for the site lives on THIS page only.
             <text x="388" y="79" font-family="Martian Mono,monospace" font-size="8" letter-spacing="1" fill="var(--ink-faint)">→ READ ALREADY WRITTEN</text>
             <text x="388" y="127" font-family="Martian Mono,monospace" font-size="8" letter-spacing="1" fill="var(--ink-faint)">→ READ ALREADY WRITTEN</text>
           </svg>
-          <figcaption class="snipcap"><span class="figtag">THE WHAT-IFS, WRITTEN AHEAD</span>Each branch's read is drafted before the number exists — so you're deciding what to do, not decoding what just happened.</figcaption>
         </figure>
         <div class="grchip" role="img" aria-label="Mock Guardrail chip: CPI at 8:30 ET, hot, nine minutes forty-two seconds to the release; the historical note reads HIST plus or minus 0.1 percent, typical 15 minutes, N equals 15; Topstep and Apex event rules shown on screen.">
           <div class="gr-row"><span class="gr-ev">CPI · 08:30 ET</span><span class="timeflag">HOT · T−09:42</span></div>
@@ -741,8 +735,8 @@ All backend/mechanics content for the site lives on THIS page only.
     <div class="stage">
       <div class="st-copy">
         <p>Trading floors have kept a squawk box on for decades — a voice reading the news out loud so nobody has to stare at the tape. NewsBerri builds that voice into the terminal: <b>headlines above your chosen importance level are read aloud</b> as they land and as they firm up, in one calm sentence that includes the read — what happened, and what it means for the contract.</p>
-        <p>The bar is yours to set. Keep it high and the squawk only speaks when something genuinely matters; open it up and it quietly narrates the working day. Either way, <b>you'll hear the headline even when you're not looking</b> — eyes on your platform, ears on the news.</p>
-        <p>The Guardrail borrows the same voice for its two-minute callout. Between the two of them, nothing on the calendar or the tape should land on you cold.</p>
+        <p>The bar is yours to set. Keep it high and the squawk only speaks when something matters; open it up and it quietly narrates the working day. Either way, <b>you'll hear the headline even when you're not looking</b> — eyes on your platform, ears on the news.</p>
+        <p>The Guardrail borrows the same voice for its two-minute callout. Between the two of them, nothing on the calendar or the tape lands on you cold.</p>
       </div>
       <div class="st-fig">
         <figure class="panelfig">
@@ -761,7 +755,6 @@ All backend/mechanics content for the site lives on THIS page only.
             <text x="352" y="44" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1" fill="var(--ink-2)">YOUR BAR</text>
             <text x="200" y="118" font-family="Martian Mono,monospace" font-size="9" letter-spacing="1.5" fill="var(--ink-3)">ONLY WHAT CLEARS YOUR BAR GETS SPOKEN</text>
           </svg>
-          <figcaption class="snipcap"><span class="figtag">YOU SET THE BAR</span>Above it, the terminal speaks. Below it, the tape stays text. You decide how chatty your desk is.</figcaption>
         </figure>
         <p class="spokenq" aria-label="Example of a spoken squawk line"><b>“Gold — central-bank reserve buying picks up. Read on GC: sentiment plus forty-seven, corroborated, two sources.”</b><br>— THE SQUAWK, READING A SCORED ROW ALOUD (MOCK)</p>
       </div>
@@ -777,8 +770,8 @@ All backend/mechanics content for the site lives on THIS page only.
     <div class="stage">
       <div class="st-copy">
         <p>A tool that grades its own homework in private isn't worth much, so we don't. <b>Whenever the read turns decisive enough to earn a label, that call is logged publicly the moment it's made</b> — contract, label, timestamp — and later resolved against what actually happened next.</p>
-        <p>Misses stay on the record next to the hits. Nothing gets quietly deleted, reworded, or resolved generously after the fact. And the record stays <b>qualitative on purpose</b> — we don't compute an accuracy percentage about ourselves, because a number you calculate about yourself is really just an advertisement. Read the ledger and make up your own mind; that's the whole idea.</p>
-        <p><b>And the ledger is public from the first call</b> — nothing curated, nothing held back. Open it whenever you like and check the calls against what actually happened. It's a record you can verify for yourself, not a number you have to trust.</p>
+        <p>Misses stay on the record next to the hits. Nothing gets quietly deleted, reworded, or resolved generously after the fact. And the record stays <b>qualitative on purpose</b> — we don't compute an accuracy percentage about ourselves, because a number you calculate about yourself is an advertisement. Read the ledger and make up your own mind.</p>
+        <p><b>The ledger is public from the first call</b> — nothing curated, nothing held back. It's a record you can check, not a number you have to trust.</p>
       </div>
       <div class="st-fig">
         <figure class="panelfig">
@@ -794,7 +787,6 @@ All backend/mechanics content for the site lives on THIS page only.
             </tbody>
           </table>
           </div></div>
-          <figcaption class="snipcap"><span class="figtag">THE RECORD, AS ANYONE CAN READ IT</span>Illustrative rows, not the live ledger. No percentages, no pruning. The second row is the honest part — and the reason the other rows mean anything.</figcaption>
         </figure>
       </div>
     </div>
@@ -804,9 +796,9 @@ All backend/mechanics content for the site lives on THIS page only.
 <!-- ==================== STEP 8 · WHAT WE DON'T DO / IF SOMETHING BREAKS ==================== -->
 <section class="sec" id="standards" aria-labelledby="standards-h">
   <div class="wrap inner">
-    <span class="eychip">STEP 8 · THE FINE PRINT, UP FRONT</span>
+    <span class="eychip">STEP 8 · WHAT WE DON'T DO</span>
     <h2 class="sectitle" id="standards-h">What we deliberately don't do</h2>
-    <p class="secsub">Two lists that matter as much as anything above: the things we've chosen to leave out on purpose, and what happens on the bad days.</p>
+    <p class="secsub">The features we refuse to build — and how the system behaves on a bad day.</p>
     <div class="twobox">
       <article class="stdbox" aria-labelledby="dont-h">
         <h3 id="dont-h">You won't find here</h3>
@@ -814,20 +806,18 @@ All backend/mechanics content for the site lives on THIS page only.
         <ul>
           <li><b>No market prices, no charts, no candlesticks.</b> Your trading platform already does price, beautifully. We sit beside it and handle the meaning — we never repeat its job.</li>
           <li><b>No buy or sell calls.</b> We tell you what a story means for a contract. What you do about it is entirely, permanently yours.</li>
-          <li><b>No promised outcomes.</b> The Guardrail gives you a heads-up before every scheduled release and puts your firm's rules on screen. It helps you decide on time — that's the honest limit of what any tool can do.</li>
+          <li><b>No promised outcomes.</b> The Guardrail gives you a heads-up before every scheduled release and puts your firm's rules on screen. It helps you decide on time — that's the limit of what any tool can do.</li>
           <li><b>No manufactured applause.</b> No invented testimonials, no decorative percentages. The public track record above is the only scoreboard we keep.</li>
         </ul>
-        <span class="micro">LEFT OUT ON PURPOSE — NOT BY OVERSIGHT</span>
       </article>
       <article class="stdbox" aria-labelledby="breaks-h">
         <h3 id="breaks-h">If something breaks</h3>
         <hr class="std-rule">
         <ul>
           <li><b>Headlines keep flowing.</b> If one source stalls, the others keep going. If the scoring itself has a bad moment, stories still arrive — marked provisional, exactly like step 1.</li>
-          <li><b>You'll see the problem honestly.</b> A stretch with more PROV chips than usual is the system telling you the truth about what it knows, not hiding a fault.</li>
+          <li><b>You'll see the problem.</b> A stretch with more PROV chips than usual is the system showing you what it knows, not hiding a fault.</li>
           <li><b>Nothing is back-filled.</b> When scoring catches up, labels advance in place — provisional to scored to corroborated. They're never quietly rewritten to look like we knew all along.</li>
         </ul>
-        <span class="micro">HOW THE BAD DAYS WORK — WORTH KNOWING BEFORE ONE</span>
       </article>
     </div>
   </div>
@@ -836,15 +826,12 @@ All backend/mechanics content for the site lives on THIS page only.
 <!-- ==================== CTA BAND ==================== -->
 <section class="tryband" aria-labelledby="final-h">
   <div class="wrap" style="position:relative">
-    <span class="eychip">THAT'S THE WHOLE MACHINE</span>
     <h2 id="final-h">Now watch it <span class="grad-text">run</span></h2>
     <p>The demo is the full terminal on simulated data — click around, open the explanations, hear the squawk speak. Or take the real thing for seven days and judge the method by what it shows you.</p>
     <div class="cta-row">
       <a class="btn-key" href="https://app.newsberri.com">START YOUR 7-DAY TRIAL</a>
       <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
     </div>
-    <p style="position:relative;font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--ink-3);margin:-14px 0 26px">7-day trial · cancel anytime, self-serve · we email you before it renews</p>
-    <p class="trust">42 CONTRACTS · 7 ASSET CLASSES · LIVE NEWS SOURCES · PUBLIC TRACK RECORD FROM DAY ONE</p>
     <p style="position:relative;max-width:600px;margin:20px auto 0;padding-top:18px;border-top:1px solid var(--hair);font-size:13px;line-height:1.6;color:var(--ink-2)">Futures trading carries a substantial risk of loss and isn't right for everyone. NewsBerri is informational only — no advice, no recommendations, no profit claims.</p>
   </div>
 </section>

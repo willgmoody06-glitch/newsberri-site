@@ -87,9 +87,6 @@ img,svg{max-width:100%}
 /* ============ SECTION FURNITURE (from index) ============ */
 .sec{position:relative;padding:76px 0 0}
 .sec .inner{position:relative}
-.eychip{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:2px;color:#fff;background:var(--grad);padding:5px 12px;margin-bottom:14px}
-.eychip.vio{background:rgba(139,92,246,.13);color:var(--vio-ink);border:1px solid rgba(139,92,246,.45)}
-.eychip.ras{background:rgba(232,51,110,.12);color:var(--ras-ink);border:1px solid rgba(232,51,110,.45)}
 .sectitle{font-family:var(--display);font-weight:800;font-size:clamp(32px,3.6vw,48px);letter-spacing:1px;text-transform:uppercase;line-height:1.02;margin:0 0 14px}
 .secsub{color:var(--ink-2);font-size:17.5px;max-width:720px;margin:0 0 30px}
 .secsub b{color:var(--ink);font-weight:600}
@@ -108,7 +105,7 @@ img,svg{max-width:100%}
 .samesource::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
   background:linear-gradient(90deg,transparent,rgba(232,51,110,.55) 25%,rgba(139,92,246,.55) 75%,transparent)}
 .samesource .inner{position:relative}
-.samesource .big{font-size:19px;color:var(--ink);max-width:840px;margin:0 auto 12px;line-height:1.5}
+.samesource .big{font-size:19px;color:var(--ink);max-width:840px;margin:0 auto;line-height:1.5}
 .samesource .big b{font-weight:600}
 /* ============ PAGE HEADER ============ */
 .pagehead{padding:56px 0 0}
@@ -213,9 +210,7 @@ img,svg{max-width:100%}
 .tryband h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,4vw,54px);line-height:1;letter-spacing:1px;text-transform:uppercase;margin:0 0 14px}
 .tryband p{color:var(--ink-2);max-width:600px;margin:0 auto 28px;position:relative}
 .cta-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
-.tryband .cta-row{justify-content:center;margin-bottom:20px}
-.trust{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--ink-3);padding:26px 0 0;font-variant-numeric:tabular-nums;position:relative}
-.tryband .trust{max-width:none;margin:0 auto}
+.tryband .cta-row{justify-content:center;margin-bottom:0}
 /* ============ FOOTER (copied verbatim from index) ============ */
 .colophon{border-top:1px solid var(--hair-strong);margin-top:80px;padding:40px 0 34px;position:relative}
 .colophon::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;
@@ -285,36 +280,40 @@ img,svg{max-width:100%}
   .snip .bd{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .snip .ph{height:auto;min-height:30px;padding-top:3px;padding-bottom:3px;flex-wrap:wrap;line-height:1.2}
 }
-/* ============ MOBILE POLISH — pricing (≤760px) ============ */
+/* ============ MOBILE POLISH — pricing (≤760px) · V1.9 breathing room ============ */
 @media (max-width:760px){
-  .sec{padding-top:56px}
+  body{line-height:1.6}
+  .wrap{padding-left:22px;padding-right:22px}
+  .sec{padding-top:80px}
   .sectitle{font-size:clamp(27px,8vw,40px)}
-  .secsub{margin-bottom:24px;font-size:16.5px}
+  .secsub{margin-bottom:26px;font-size:16.5px}
   .samesource{padding:24px 0 26px}
   .samesource .big{font-size:17px}
-  .pagehead{padding-top:40px}
-  .pagehead h1{font-size:clamp(34px,10.5vw,48px)}
+  .pagehead{padding-top:56px}
+  .pagehead h1{font-size:clamp(34px,10.5vw,48px);margin-bottom:18px}
   /* billing toggle: full-width, ≥44px targets */
   .billrow{flex-direction:column;align-items:stretch;gap:10px;margin:10px 0 4px}
   .billtoggle{display:flex;width:100%}
   .bt-opt{flex:1;justify-content:center;min-height:44px;padding:11px 8px;text-align:center}
-  /* tier cards stack Core → Pro → Desk */
-  .plans{grid-template-columns:1fr;gap:18px;margin-top:28px}
-  .plan{padding:24px 18px 20px}
+  /* tier cards stack Core → Pro → Desk with 44px of air between */
+  .plans{grid-template-columns:1fr;gap:44px;margin-top:32px}
+  .plan{padding:26px 20px 22px}
   .plan .cta,.btn-ghosted{padding:15px 24px}
-  .atcta{padding:18px 16px}
+  .atcta{margin-top:44px;padding:20px}
   /* matrix + cost table scroll inside their own shells (see .scrollx wrappers) */
   .scrollx .cost{min-width:640px;max-width:none}
-  .cost-foot{padding-top:10px}
-  /* honest-billing boxes + FAQ stack */
+  .cost-foot{padding-top:12px}
+  /* honest-billing boxes + FAQ stack with room to breathe */
   .queries,.fineprint{display:block}
+  .fp-item{padding:26px 20px}
   .fp-item+.fp-item{border-left:0;border-top:1px solid var(--hair)}
+  .qa{padding:26px 0 18px}
   /* CTA band */
-  .tryband{margin-top:64px;padding:56px 0 60px}
+  .tryband{margin-top:80px;padding:80px 0 84px}
   .tryband h2{font-size:clamp(28px,8vw,40px)}
-  .cta-row{flex-direction:column;align-items:stretch;gap:12px}
+  .cta-row{flex-direction:column;align-items:stretch;gap:14px}
   .cta-row .btn-key,.cta-row .btn-brk{display:block;width:100%;text-align:center;padding:15px 12px}
-  .colophon{margin-top:64px}
+  .colophon{margin-top:80px}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
@@ -415,18 +414,15 @@ is the Desk card's "details coming from the founders".
 <!-- ==================== 1 · THE SAME-SOURCES STRIP — above everything ==================== -->
 <section class="samesource" aria-label="The every-tier rule">
   <div class="wrap inner">
-    <span class="eychip">SAME SOURCES, SAME SPEED, EVERY TIER</span>
-    <p class="big">Every tier gets the same speed and the same coverage — <b>all 42 contracts, every source, the moment they move</b>. Paid tiers add platform and AI depth, never faster data.</p>
-    <p class="micro" style="margin:0">42 CONTRACTS · 7 ASSET CLASSES · LIVE NEWS SOURCES — ON EVERY PLAN</p>
+    <p class="big">Every tier gets the same speed and the same coverage — <b>all 42 contracts, every source, the moment they move</b>.</p>
   </div>
 </section>
 
 <!-- ==================== 2 · PAGE HEADER + THE THREE TIERS ==================== -->
 <section class="sec wash-hero pagehead" aria-labelledby="pricing-h">
   <div class="wrap inner">
-    <span class="eychip">PRICING</span>
     <h1 id="pricing-h">Pay for depth, <span class="grad-text">never for the news</span>.</h1>
-    <p class="secsub">Most terminals charge more to show you more of the news. We don't. Every tier gets every contract and all the news at full speed. Upgrading buys you <b>more platform around the read</b>, not permission to see the news.</p>
+    <p class="secsub">Most terminals charge more to show you more of the news. We don't. Upgrading buys you <b>more platform around the read</b>.</p>
 
     <div class="billrow">
       <span class="micro billrow-lab">BILLED</span>
@@ -483,7 +479,7 @@ is the Desk card's "details coming from the founders".
         <p class="price">$—</p>
         <p class="price-alt micro" aria-hidden="true">&nbsp;</p>
         <span class="preview-chip">DETAILS COMING FROM THE FOUNDERS</span>
-        <p class="blurb">The column is here; the contents aren't. We'd rather leave it blank than guess.</p>
+        <p class="blurb">The column is here; the contents aren't. We don't guess.</p>
         <ul class="manifest" aria-label="Desk tier contents not yet announced">
           <li>—</li>
           <li>—</li>
@@ -501,20 +497,18 @@ is the Desk card's "details coming from the founders".
 
     <div class="atcta">
       <p class="reassure">7-DAY TRIAL<span class="sep">·</span>CARD REQUIRED<span class="sep">·</span>CANCEL ANYTIME, SELF-SERVE<span class="sep">·</span>WE EMAIL YOU BEFORE IT RENEWS<span class="sep">·</span>FOUNDING MEMBERS KEEP THEIR PRICE FOR LIFE</p>
-      <p class="earlyaccess"><b>Consistent pricing:</b> the rate you join at is yours for life. You also get a direct line to the people building it — what you ask for shapes what we build next.</p>
+      <p class="earlyaccess">You get a direct line to the people building it — <b>what you ask for shapes what we build next</b>.</p>
       <p class="risknote">Futures trading carries a substantial risk of loss and isn't right for everyone. NewsBerri is informational only — no advice, no recommendations, no profit claims.</p>
     </div>
 
-    <p class="plans-foot">PRICES IN USD · YEARLY BILLING WORKS OUT TO TWO MONTHS FREE</p>
+    <p class="plans-foot">PRICES IN USD</p>
   </div>
 </section>
 
 <!-- ==================== 3 · THE COMPARISON TABLE ==================== -->
 <section class="sec wash-vio" aria-labelledby="matrix-h">
   <div class="wrap inner">
-    <span class="eychip vio">LINE BY LINE</span>
     <h2 class="sectitle" id="matrix-h">The tiers, side by side</h2>
-    <p class="secsub">The detailed version of the pricing grid: what's in each tier, row by row.</p>
     <div class="scrollx-fade">
     <div class="tablewrap scrollx">
       <table class="matrix">
@@ -529,7 +523,7 @@ is the Desk card's "details coming from the founders".
         </thead>
         <tbody>
           <tr>
-            <td>The live tape, three speeds<small>ALL 42 CONTRACTS · 7 ASSET CLASSES · SECTOR READS — EVERY TIER</small></td>
+            <td>The live tape, three speeds</td>
             <td class="val">✓ FULL</td><td class="val procol">✓ FULL</td><td class="val ghostcol">—</td>
           </tr>
           <tr>
@@ -594,9 +588,8 @@ is the Desk card's "details coming from the founders".
 <!-- ==================== 4 · THE INSTITUTIONAL COST BLOCK ==================== -->
 <section class="sec wash-ras" aria-labelledby="cost-h">
   <div class="wrap inner">
-    <span class="eychip ras">THE GOING RATE</span>
     <h2 class="sectitle" id="cost-h">What this desk costs elsewhere</h2>
-    <p class="secsub">You could assemble this desk the traditional way — trading floors have for decades. If what you want is <b>the news, read for your trade</b>, here's what the two roads go for.</p>
+    <p class="secsub">You could assemble this desk the traditional way — trading floors have for decades. Here's what the two roads go for.</p>
     <div class="scrollx-fade">
     <div class="scrollx">
     <div class="cost" role="table" aria-label="Published list pricing for named institutional services compared with NewsBerri Core and Pro">
@@ -618,13 +611,12 @@ is the Desk card's "details coming from the founders".
 <!-- ==================== 5 · HONEST BILLING ==================== -->
 <section class="sec" aria-labelledby="billing-h">
   <div class="wrap inner">
-    <span class="eychip">DON'T ACCIDENTALLY LET A TRIAL BILL YOU</span>
     <h2 class="sectitle" id="billing-h">How your free trial works</h2>
-    <p class="secsub">The stuff other pricing pages bury in a footnote. We'd rather you read it before you sign up than discover it after.</p>
+    <p class="secsub">The stuff other pricing pages bury in a footnote.</p>
     <div class="fineprint">
       <div class="fp-item">
         <h3>The trial</h3>
-        <p>Seven days on the tier of your choice, card required. Feel free to use it exactly like you normally would.</p>
+        <p>Seven days on the tier of your choice, card required. Use it exactly like you normally would.</p>
       </div>
       <div class="fp-item">
         <h3>The reminder</h3>
@@ -632,7 +624,7 @@ is the Desk card's "details coming from the founders".
       </div>
       <div class="fp-item">
         <h3>Cancelling</h3>
-        <p>Anytime, self-serve, from your account. No retention chat, no phone call. It takes about as long as reading this box.</p>
+        <p>Anytime, self-serve, from your account. No retention chat, no phone call.</p>
       </div>
       <div class="fp-item">
         <h3>Founding pricing</h3>
@@ -645,13 +637,8 @@ is the Desk card's "details coming from the founders".
 <!-- ==================== 6 · BILLING FAQ ==================== -->
 <section class="sec" aria-labelledby="faq-h">
   <div class="wrap inner">
-    <span class="eychip">FAIR QUESTIONS</span>
     <h2 class="sectitle" id="faq-h">Billing questions</h2>
     <div class="queries">
-      <div class="qa">
-        <h3>How does the trial work?</h3>
-        <p>You get the full product for seven days, card required up front. We email you a reminder before it converts, so paying is always your call — never a surprise charge.</p>
-      </div>
       <div class="qa">
         <h3>Can I switch tiers or cancel later?</h3>
         <p>Both, anytime, self-serve from your account. Upgrades take effect right away, and if you cancel you keep access until the end of what you've already paid for.</p>
@@ -662,7 +649,7 @@ is the Desk card's "details coming from the founders".
       </div>
       <div class="qa">
         <h3>Is yearly really two months free?</h3>
-        <p>Pretty much. $190 a year against $19 a month saves you two months' worth, and the same math holds for Pro at $390. No other catch to it.</p>
+        <p>Yes. $190 a year against $19 a month saves you two months' worth, and the same math holds for Pro at $390.</p>
       </div>
     </div>
   </div>
@@ -670,14 +657,12 @@ is the Desk card's "details coming from the founders".
 <!-- ==================== CTA BAND ==================== -->
 <section class="tryband" aria-labelledby="final-h">
   <div class="wrap" style="position:relative">
-    <span class="eychip">SEVEN DAYS, THE WHOLE THING</span>
     <h2 id="final-h">Start with <span class="grad-text">the entire desk</span></h2>
-    <p>Core or Pro, you get every contract and every source from the first minute. There's a reminder before you're ever charged, and cancelling takes a couple of clicks.</p>
+    <p>Core or Pro, you get every contract and every source from the first minute.</p>
     <div class="cta-row">
       <a class="btn-key" href="https://app.newsberri.com">START YOUR 7-DAY TRIAL</a>
       <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
     </div>
-    <p class="trust">42 CONTRACTS · 7 ASSET CLASSES · LIVE NEWS SOURCES · PUBLIC TRACK RECORD FROM DAY ONE</p>
   </div>
 </section>
 </main>
