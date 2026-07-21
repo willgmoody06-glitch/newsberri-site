@@ -421,10 +421,10 @@ All backend/mechanics content for the site lives on THIS page only.
   <div class="wrap inner">
     <div class="lead">
       <div class="l-copy">
-        <h1 id="lead-h">Here's exactly <span class="grad-text">how the read is made</span>.</h1>
-        <p class="lede">The sources go in. One read comes out. This page walks everything in between — how a headline becomes a score, how the score firms up, how it turns into the number beside your chart, and how the calendar makes sure a scheduled release never sneaks up on you.</p>
-        <p class="lede">Two rules govern all of it: <b>every score is made once, on our servers</b>, so everyone sees the same read at the same moment. And <b>we never sit on a headline</b> — you can read a story the second it crosses the feed, before we've scored it.</p>
-        <blockquote class="pullline">The method is the product. So here it is — all of it.<small>EVERY FIGURE BELOW IS AN EXAMPLE &middot; NEVER A MARKET PRICE</small></blockquote>
+        <h1 id="lead-h">How <span class="grad-text">the read is made</span>.</h1>
+        <p class="lede">Sources go in, one read comes out. This page covers what happens in between: how a headline becomes a score, how that score firms up, how it becomes the number next to your chart, and how the calendar flags a scheduled release before it lands.</p>
+        <p class="lede">Two rules govern all of it: <b>every score is made once, on our servers</b>, so everyone sees the same read at the same moment; and <b>headlines are never held back</b> — you can read a story the second it crosses the feed, before we've scored it.</p>
+        <blockquote class="pullline">The method is the product. All of it is on this page.<small>EVERY FIGURE BELOW IS AN EXAMPLE &middot; NEVER A MARKET PRICE</small></blockquote>
       </div>
       <aside class="l-side" aria-label="What's on this page">
         <h2>What's on this page</h2>
@@ -449,7 +449,7 @@ All backend/mechanics content for the site lives on THIS page only.
 <section class="sec" aria-labelledby="map-h" style="padding-top:30px">
   <div class="wrap inner">
     <span class="eychip">THE MAP</span>
-    <h2 class="sectitle" id="map-h">Live sources in, one read out</h2>
+    <h2 class="sectitle" id="map-h">From live sources to one read</h2>
     <figure class="bigfig">
       <div class="scrollx-fade"><div class="scrollx">
       <svg viewBox="0 0 960 290" role="img" aria-label="Diagram of the whole pipeline: live news sources feed the scoring step, where an AI reads each story once on our servers; a second source confirms the story and the score firms up; everything rolls into one index number per contract; the result goes to every subscriber at the same moment. A dashed path above shows that headlines reach you provisionally the instant they cross, before any scoring.">
@@ -512,9 +512,9 @@ All backend/mechanics content for the site lives on THIS page only.
     <h2 class="sectitle" id="sources-h">It starts with the sources</h2>
     <div class="stage">
       <div class="st-copy">
-        <p><b>NewsBerri listens to live news feeds around the clock</b> — 24 hours a day, five days a week. The moment a headline crosses any of them, it shows up on your tape marked <b>provisional</b>. There's no queue and no hold while the AI thinks; you can read the story before we have.</p>
-        <p>Provisional is a label, not an apology. It means <b>“we see it, we haven't read it yet.”</b> The row already carries its timestamp and its source, with a PROV chip where the score is about to land. Most headlines wear the label for well under a minute.</p>
-        <p>Why several sources instead of one big one? Coverage, mostly — stories break in different places. The second reason pays off in step 3: <b>you can't confirm a story with only one source</b>.</p>
+        <p><b>NewsBerri monitors live news feeds 24 hours a day, five days a week.</b> The moment a headline crosses any of them, it shows up on your tape marked <b>provisional</b>. There's no queue and no hold for scoring; you can read the story before we have.</p>
+        <p>Provisional means just what it says: <b>we see the story, we haven't read it yet.</b> The row already carries its timestamp and its source, with a PROV chip where the score is about to land. Most headlines wear the label for well under a minute.</p>
+        <p>We use several sources instead of one big one for two reasons. First, coverage — stories break in different places. Second, confirmation: <b>you can't confirm a story with a single source</b> (that's step 3).</p>
       </div>
       <div class="st-fig">
         <figure class="fig">
@@ -549,12 +549,12 @@ All backend/mechanics content for the site lives on THIS page only.
 <section class="sec vio" id="scoring" aria-labelledby="scoring-h">
   <div class="wrap inner">
     <span class="eychip vio">STEP 2 · THE SCORING STEP</span>
-    <h2 class="sectitle" id="scoring-h">An AI actually reads the story</h2>
+    <h2 class="sectitle" id="scoring-h">An AI reads the story</h2>
     <div class="stage">
       <div class="st-copy">
-        <p>Next, <b>an LLM reads the story</b> — the whole story, not a keyword match — and scores it for each contract it touches. Three judgments, every time: <b>direction</b>, on a −100 to +100 sentiment scale; <b>impact</b>, how much this kind of story tends to matter; and <b>confidence</b>, how sure the read is. The same headline can be bad news for the Nasdaq and fine news for gold, so every contract gets its own line.</p>
-        <p>Each score is made <b>once, on our servers</b>, and then sent to everyone at the same time. It's not recomputed per person, not tilted toward your positions, not softened to keep you comfortable. Everyone looking at NQ sees the same read at the same moment.</p>
-        <p>And because a number is a summary, not an argument, the reasoning stays attached. Tap <b>✦ Explain</b> on any scored story and you get the why: what the story says, why it scored the way it did, and what that means for the contract you're looking at.</p>
+        <p>Next, <b>an LLM reads the whole story</b>, not just keywords, and scores it for each contract it touches. Three judgments, every time: <b>direction</b>, on a −100 to +100 sentiment scale; <b>impact</b>, how much this kind of story tends to matter; and <b>confidence</b>, how sure the read is. The same headline can be bad news for the Nasdaq and fine news for gold, so every contract gets its own line.</p>
+        <p>Each score is made <b>once, on our servers</b>, and then sent to everyone at the same time. It isn't recomputed per person, tilted toward your positions, or softened to keep you comfortable. Everyone looking at NQ sees the same read at the same moment.</p>
+        <p>A score only summarizes, so the reasoning behind it stays attached. Tap <b>✦ Explain</b> on any scored story and you get the why: what the story says, why it scored the way it did, and what that means for the contract you're looking at.</p>
       </div>
       <div class="st-fig">
         <figure class="fig">
@@ -576,10 +576,10 @@ All backend/mechanics content for the site lives on THIS page only.
             <li><b>2 — THE CONTRACT.</b> SCORED PER CONTRACT, NOT PER STORY.</li>
             <li><b>3 — DIRECTION.</b> SENTIMENT, −100 TO +100. NEVER A PRICE.</li>
             <li><b>4 — IMPACT.</b> HOW MUCH THIS KIND OF STORY TENDS TO MATTER.</li>
-            <li><b>5 — CONFIDENCE.</b> HOW SURE THE READ IS OF ITSELF.</li>
+            <li><b>5 — CONFIDENCE.</b> HOW SURE THE READ IS.</li>
             <li><b>6 — STAGE.</b> PROVISIONAL → SCORED → CORROBORATED.</li>
           </ul>
-          <figcaption class="snipcap"><span class="figtag">THE SAME WHEAT STORY, 37 SECONDS LATER</span>Every part of the read sits on the row — nothing hides in a tooltip.</figcaption>
+          <figcaption class="snipcap"><span class="figtag">THE SAME WHEAT STORY, 37 SECONDS LATER</span>Every part of the read is on the row, not hidden in a tooltip.</figcaption>
         </figure>
       </div>
     </div>
@@ -593,9 +593,9 @@ All backend/mechanics content for the site lives on THIS page only.
     <h2 class="sectitle" id="second-h">A second source makes it solid</h2>
     <div class="stage">
       <div class="st-copy">
-        <p>One source carrying a story is a report. Two sources carrying it is about as close to a fact as a fast tape gets. So when <b>a second source confirms a headline</b>, we don't print it again — the row you already have firms up in place, and its label changes to <b>corroborated</b>.</p>
-        <p>That means every headline on the tape sits at one of three stages, and the label always tells you which: <b>provisional</b> (“we see it, we haven't read it yet”), <b>scored</b> (“we've read it — here's what we think it means”), and <b>corroborated</b> (“a second source agrees it happened”). No row ever pretends to more certainty than it has.</p>
-        <p>When a story never finds a second source, it stays visibly single-sourced and its confidence stays modest. That's the tape saying <b>“maybe.”</b></p>
+        <p>A story from a single source is just one source's report. When a second source carries the same story, that's about as confirmed as a fast tape gets. So when <b>a second source confirms a headline</b>, we don't print it again — the row you already have firms up in place, and its label changes to <b>corroborated</b>.</p>
+        <p>That means every headline on the tape sits at one of three stages, and the label always tells you which: <b>provisional</b> (“we see it, we haven't read it yet”), <b>scored</b> (“we've read it — here's what we think it means”), and <b>corroborated</b> (“a second source agrees it happened”). The stage label never claims more certainty than the story has.</p>
+        <p>When a story never picks up a second source, it stays visibly single-sourced and its confidence stays modest. It's <b>scored, but never corroborated</b>.</p>
       </div>
       <div class="st-fig">
         <figure class="fig">
@@ -695,11 +695,11 @@ All backend/mechanics content for the site lives on THIS page only.
 <section class="sec ras wash-ras" id="calendar" aria-labelledby="calendar-h">
   <div class="wrap inner">
     <span class="eychip ras">STEP 5 · THE CALENDAR &amp; GUARDRAIL</span>
-    <h2 class="sectitle" id="calendar-h">The calendar sees releases coming</h2>
+    <h2 class="sectitle" id="calendar-h">The calendar tracks releases in advance</h2>
     <div class="stage">
       <div class="st-copy">
-        <p>Everything so far reacts to news that already happened. The calendar works ahead of it. <b>Every scheduled release that touches your contracts is on it</b> — CPI, auctions, jobless claims — and for each one, the what-ifs are written in advance: what a stronger-than-expected number would likely mean for your contract, what a weaker one would. When the release lands, the meaning is already waiting for it.</p>
-        <p>Then the <b>Guardrail</b> gives you a heads-up three times on the way in. <b>ARMED means the release is 30 minutes out</b> — the terminal is already watching it for you. HOT at ten means it's getting close. LIVE at two means it's about to happen. Each step brings a message on screen, a notification, and a spoken callout, so a release never arrives unannounced, no matter where you're looking. And if your prop firm has rules about trading through releases, <b>Topstep's and Apex's are on screen next to the countdown</b>, so following them on time is straightforward.</p>
+        <p>Everything so far reacts to news that already happened. The calendar works ahead of it. <b>Every scheduled release that touches your contracts is on it</b> — CPI, auctions, jobless claims — and for each one, the what-ifs are written in advance: what a stronger-than-expected number would likely mean for your contract, what a weaker one would. When the release lands, the read for it is already written.</p>
+        <p>Then the <b>Guardrail</b> gives you a heads-up three times on the way in. <b>ARMED means the release is 30 minutes out</b> and the countdown has started. HOT at ten means it's getting close. LIVE at two means it's about to happen. Each step brings a message on screen, a notification, and a spoken callout, so you get the heads-up even if you're looking at another contract. And if your prop firm has rules about trading through releases, <b>Topstep's and Apex's are on screen next to the countdown</b>, so following them on time is straightforward.</p>
         <p>The chip carries one small piece of history too, always in the same plain format — <b>HIST ±0.1% TYP 15M (N=15)</b>: how this release has typically behaved, for how long, across how many past occurrences. It's the only backward-looking number we allow ourselves, and it's there so you can decide how much to care before the countdown runs out.</p>
       </div>
       <div class="st-fig">
@@ -755,8 +755,8 @@ All backend/mechanics content for the site lives on THIS page only.
     <div class="stage">
       <div class="st-copy">
         <p>Trading floors have kept a squawk box on for decades — a voice reading the news out loud so nobody has to stare at the tape. NewsBerri builds that voice into the terminal: <b>headlines above your chosen importance level are read aloud</b> as they land and as they firm up, in one calm sentence that includes the read — what happened, and what it means for the contract.</p>
-        <p>The bar is yours to set. Keep it high and the squawk only speaks when something matters; open it up and it quietly narrates the working day. Either way, <b>you'll hear the headline even when you're not looking</b> — eyes on your platform, ears on the news.</p>
-        <p>The Guardrail borrows the same voice for its two-minute callout. Between the two of them, nothing on the calendar or the tape lands on you cold.</p>
+        <p>The bar is yours to set. Keep it high and the squawk only speaks when something matters; open it up and it quietly narrates the working day. Either way, <b>you'll hear the headline even when your eyes are on your trading platform</b>.</p>
+        <p>The Guardrail uses the same voice for its two-minute callout. Between them, the calendar and the tape both reach you out loud, not only on screen.</p>
       </div>
       <div class="st-fig">
         <figure class="panelfig">
@@ -789,9 +789,9 @@ All backend/mechanics content for the site lives on THIS page only.
     <h2 class="sectitle" id="record-h">We keep score in public</h2>
     <div class="stage">
       <div class="st-copy">
-        <p>A tool that grades its own homework in private isn't worth much, so we don't. <b>Whenever the read turns decisive enough to earn a label, that call is logged publicly the moment it's made</b> — contract, label, timestamp — and later resolved against what actually happened next.</p>
-        <p>Misses stay on the record next to the hits. Nothing gets quietly deleted, reworded, or resolved generously after the fact. And the record stays <b>qualitative on purpose</b> — we don't compute an accuracy percentage about ourselves, because a number you calculate about yourself is an advertisement. Read the ledger and make up your own mind.</p>
-        <p><b>The ledger is public from the first call</b> — nothing curated, nothing held back. It's a record you can check, not a number you have to trust.</p>
+        <p>A private track record is easy to flatter, so ours is public. <b>Whenever the read turns decisive enough to earn a label, that call is logged publicly the moment it's made</b> — contract, label, timestamp — and later resolved against what actually happened next.</p>
+        <p>Misses stay on the record next to the hits. Nothing is quietly deleted or reworded, and no miss gets a kinder result after the fact. The record stays <b>qualitative on purpose</b>: we don't publish an accuracy percentage about ourselves, because a self-graded number isn't proof of anything. Read the ledger and make up your own mind.</p>
+        <p><b>The ledger is public from the very first call.</b> You can read all of it and check any call against what actually happened.</p>
       </div>
       <div class="st-fig">
         <figure class="panelfig">
@@ -818,16 +818,16 @@ All backend/mechanics content for the site lives on THIS page only.
   <div class="wrap inner">
     <span class="eychip">STEP 8 · WHAT WE DON'T DO</span>
     <h2 class="sectitle" id="standards-h">What we deliberately don't do</h2>
-    <p class="secsub">The features we refuse to build — and how the system behaves on a bad day.</p>
+    <p class="secsub">The features we've chosen not to build, and how the system behaves on a bad day.</p>
     <div class="twobox">
       <article class="stdbox" aria-labelledby="dont-h">
         <h3 id="dont-h">You won't find here</h3>
         <hr class="std-rule">
         <ul>
-          <li><b>No market prices, no charts, no candlesticks.</b> Your trading platform already does price, beautifully. We sit beside it and handle the meaning — we never repeat its job.</li>
-          <li><b>No buy or sell calls.</b> We tell you what a story means for a contract. What you do about it is entirely, permanently yours.</li>
-          <li><b>No promised outcomes.</b> The Guardrail gives you a heads-up before every scheduled release and puts your firm's rules on screen. It helps you decide on time — that's the limit of what any tool can do.</li>
-          <li><b>No manufactured applause.</b> No invented testimonials, no decorative percentages. The public track record above is the only scoreboard we keep.</li>
+          <li><b>No market prices, no charts, no candlesticks.</b> Your trading platform already handles price. We sit beside it and handle the meaning; we don't repeat its job.</li>
+          <li><b>No buy or sell calls.</b> We tell you what a story means for a contract. What you do about it is yours.</li>
+          <li><b>No promised outcomes.</b> The Guardrail gives you a heads-up before every scheduled release and puts your firm's rules on screen. It helps you act on time; it can't tell you how that turns out.</li>
+          <li><b>No fake social proof.</b> No invented testimonials, no decorative percentages. The public track record above is the only scoreboard we keep.</li>
         </ul>
       </article>
       <article class="stdbox" aria-labelledby="breaks-h">
@@ -846,7 +846,7 @@ All backend/mechanics content for the site lives on THIS page only.
 <!-- ==================== CTA BAND ==================== -->
 <section class="tryband" aria-labelledby="final-h">
   <div class="wrap" style="position:relative">
-    <h2 id="final-h">Now watch it <span class="grad-text">run</span></h2>
+    <h2 id="final-h">See it <span class="grad-text">run</span></h2>
     <p>The demo is the full terminal on simulated data — click around, open the explanations, hear the squawk speak. Or take the real thing for seven days and judge the method by what it shows you.</p>
     <div class="cta-row">
       <a class="btn-key" href="signin.html">START YOUR 7-DAY TRIAL</a>
