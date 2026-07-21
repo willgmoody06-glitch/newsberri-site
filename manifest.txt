@@ -3,3 +3,7 @@ how-it-works.html
 pricing.html
 demo.html
 signin.html
+terms.html
+privacy.html
+refunds.html
+disclaimer.html
