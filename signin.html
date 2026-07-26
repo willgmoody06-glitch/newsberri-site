@@ -319,6 +319,20 @@ button.btn-key{cursor:pointer}
   /* 3 · the right viz column hides — the card is the page */
   .viz{display:none}
 }
+/* ===== band system, matching the redesigned pages (subset — this page has no hero,
+   no plans and no feature rows, so only the section furniture is carried over) ===== */
+.topstrip,.topstrip+.rule,.masthead,.rule-scotch{display:none}
+.band{position:relative;padding:96px 0;isolation:isolate}
+.band>.wrap{position:relative;z-index:2}
+.band-raise{background:#0a0d11}
+.band-fade::before{content:"";position:absolute;left:0;right:0;top:0;height:min(70%,620px);
+  z-index:0;pointer-events:none;background:linear-gradient(180deg,#10161d,rgba(0,0,0,0) 100%)}
+.band-seam::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;z-index:3;
+  background:linear-gradient(90deg,transparent,rgba(232,51,110,.5) 28%,rgba(139,92,246,.5) 72%,transparent)}
+.band-glow{overflow:visible}
+.band-glow>.glow{position:absolute;inset:-30% 0 -20%;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 58% at 50% 42%,rgba(166,79,198,.16),transparent 72%)}
+@media (max-width:760px){.band{padding:72px 0}}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
   html{scroll-behavior:auto}
@@ -380,12 +394,12 @@ column's terminal snippet is the app's true skin (no gradients inside).
     </a>
     <div class="links">
       <a href="index.html">HOME</a>
+      <a href="app.html">THE APP</a>
       <a href="how-it-works.html">HOW IT WORKS</a>
       <a href="pricing.html">PRICING</a>
     </div>
     <div class="actions">
       <a class="signin" href="signin.html">SIGN IN</a>
-      <a class="btn-brk" href="pricing.html">COMPARE TIERS</a>
       <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
       <a class="btn-key" href="signin.html">START 7-DAY TRIAL</a>
     </div>
@@ -394,6 +408,7 @@ column's terminal snippet is the app's true skin (no gradients inside).
       <summary aria-label="Menu"><span aria-hidden="true">☰</span></summary>
       <div class="mnav-panel">
         <a href="index.html">HOME</a>
+        <a href="app.html">THE APP</a>
         <a href="how-it-works.html">HOW IT WORKS</a>
         <a href="pricing.html">PRICING</a>
         <a href="pricing.html">COMPARE TIERS</a>
@@ -418,7 +433,8 @@ column's terminal snippet is the app's true skin (no gradients inside).
 </script>
 
 <main id="main">
-<section class="auth-sec" aria-labelledby="signin-h">
+<section class="auth-sec band band-fade band-seam band-glow" aria-labelledby="signin-h">
+  <span class="glow" aria-hidden="true"></span>
   <div class="wrap">
     <!-- deliberately NOT reveal-gated (.rv): navigation must never be invisible -->
     <p class="backrow"><a class="btn-brk" href="index.html">← BACK TO THE SITE</a></p>

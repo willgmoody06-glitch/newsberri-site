@@ -327,6 +327,12 @@ a.btn{text-decoration:none}
   .hs .hs-n{width:24px;height:24px}
   .hs .hs-l{max-width:210px;font-size:11px}
 }
+/* The overhaul CSS block is deliberately NOT pasted here.
+   This page is the demo terminal: a fixed-height app shell (body{overflow:hidden}),
+   no masthead, no marketing bands, no .ovhero. Every selector in that block matched
+   nothing, so it was ~31% of this file in dead weight. Chrome parity on this page is
+   the nav link set and #demobar, not the band system. See website/UI_RULES.md 8. */
+@keyframes slidein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </head>
@@ -353,9 +359,9 @@ a.btn{text-decoration:none}
     <summary aria-label="Menu"><span aria-hidden="true">☰</span></summary>
     <div class="mnav-panel">
       <a href="index.html">HOME</a>
+      <a href="app.html">THE APP</a>
       <a href="how-it-works.html">HOW IT WORKS</a>
       <a href="pricing.html">PRICING</a>
-      <a href="pricing.html">COMPARE TIERS</a>
       <a href="demo.html" aria-current="page">TRY THE DEMO</a>
       <a href="signin.html">SIGN IN</a>
     </div>
@@ -526,14 +532,14 @@ a.btn{text-decoration:none}
     NQ:{name:"NASDAQ-100 E-MINI",idx:-34,conf:58,fresh:84,flow:82,stories:14,
       risk:68,vol:74,riskD:"Δ1H <b style='color:var(--bear)'>+9</b> · PK <b>74</b>",volD:"Δ1H <b style='color:var(--bear)'>+6</b> · PK <b>78</b>",
       swing:61,evtRisk:77,trend30:["UPTREND","bull"],evt:{txt:"10-YR AUCTION 18M",hot:1},guard:1,
-      ai:"Hot June core CPI re-prices the front end and knocks duration-heavy tech; Waller's “bump, not a trend” pushback is capping the downside for now.",
-      drv:["Core CPI +0.35% m/m — shelter and services re-accelerate","Waller: June print “a bump, not a trend” — still sees two cuts","1:00 PM 10-yr auction is the next duration test after the hot print"],
+      ai:"Hot June core CPI re-prices the front end and knocks duration-heavy tech; a Fed governor's “bump, not a trend” pushback is capping the downside for now.",
+      drv:["Core CPI +0.35% m/m — shelter and services re-accelerate","A Fed governor: June print “a bump, not a trend” — still sees two cuts","1:00 PM 10-yr auction is the next duration test after the hot print"],
       tp:{open:6,pre:1,shock:-41,now:-34,ph:0},
       squawk:"NewsBerri squawk demo. Impact 92. CPI hotter than forecast — core re-accelerating, shelter firm. Read on N Q: strong bear. Sentiment minus 34, confidence 58 percent. Ten year auction in 18 minutes."},
     ES:{name:"S&P 500 E-MINI",idx:-28,conf:55,fresh:80,flow:74,stories:11,
       risk:61,vol:66,riskD:"Δ1H <b style='color:var(--bear)'>+7</b> · PK <b>66</b>",volD:"Δ1H <b style='color:var(--bear)'>+4</b> · PK <b>70</b>",
       swing:54,evtRisk:70,trend30:["UPTREND","bull"],evt:{txt:"10-YR AUCTION 18M",hot:1},guard:1,
-      ai:"Same CPI story, less concentration: the broad index carries the front-end repricing while defensive sectors cushion the read. Waller's pushback caps the bear case here too.",
+      ai:"Same CPI story, less concentration: the broad index carries the front-end repricing while defensive sectors cushion the read. The governor's pushback caps the bear case here too.",
       drv:["Core CPI +0.35% m/m — services re-accelerate","Breadth negative on the day's scored flow; defensives resilient","10-yr auction is the next catalyst for the index read"],
       tp:{open:5,pre:1,shock:-35,now:-28,ph:1.2},
       squawk:"NewsBerri squawk demo. Impact 92. CPI hotter than forecast. Read on E S: bear. Sentiment minus 28, confidence 55 percent."},
@@ -547,15 +553,15 @@ a.btn{text-decoration:none}
     GC:{name:"GOLD",idx:24,conf:51,fresh:71,flow:52,stories:6,
       risk:41,vol:44,riskD:"Δ1H <b>−2</b> · PK <b>49</b>",volD:"Δ1H <b>+1</b> · PK <b>50</b>",
       swing:39,evtRisk:41,trend30:["UPTREND","bull"],evt:{txt:"CORE PPI 1D 18H",hot:0},guard:0,
-      ai:"A hot print usually fights gold, but the hedging bid is winning today: ETF inflows extend a five-session run and Waller's two-cut path keeps the read constructive.",
-      drv:["Fifth straight session of gold ETF net inflows — fund-flow trackers","Waller keeps two cuts on the table despite the hot print","Sticky-inflation hedge demand offsets the real-rate impulse"],
+      ai:"A hot print usually fights gold, but the hedging bid is winning today: ETF inflows extend a five-session run and a Fed governor's two-cut path keeps the read constructive.",
+      drv:["Fifth straight session of gold ETF net inflows — fund-flow trackers","A Fed governor keeps two cuts on the table despite the hot print","Sticky-inflation hedge demand offsets the real-rate impulse"],
       tp:{open:2,pre:4,shock:18,now:24,ph:3.4},
       squawk:"NewsBerri squawk demo. Impact 41. Gold E T F inflows extend to a fifth straight session. Read on G C: bull. Sentiment plus 24, confidence 51 percent."},
     ZN:{name:"10-YR T-NOTE",idx:-22,conf:60,fresh:78,flow:69,stories:9,
       risk:66,vol:69,riskD:"Δ1H <b style='color:var(--bear)'>+8</b> · PK <b>71</b>",volD:"Δ1H <b style='color:var(--bear)'>+5</b> · PK <b>72</b>",
       swing:57,evtRisk:81,trend30:["DOWNTREND","bear"],evt:{txt:"10-YR AUCTION 18M",hot:1},guard:1,
       ai:"The front end is doing the work: supercore re-acceleration keeps pressure on notes into the 1:00 PM auction — the cleanest event risk of the afternoon.",
-      drv:["Core services ex-shelter +0.42% m/m — the sticky detail","10-yr auction 18 minutes out — Guardrail armed","Logan: balance-sheet runoff “well calibrated” — no surprise there"],
+      drv:["Core services ex-shelter +0.42% m/m — the sticky detail","10-yr auction 18 minutes out — Guardrail armed","A regional Fed president: balance-sheet runoff “well calibrated” — no surprise there"],
       tp:{open:3,pre:0,shock:-30,now:-22,ph:4.6},
       squawk:"NewsBerri squawk demo. Impact 81. Core services inflation re-accelerates. Read on Z N: bear. Sentiment minus 22, confidence 60 percent. Ten year auction in 18 minutes — Guardrail armed."},
     ZW:{name:"CHICAGO WHEAT",idx:6,conf:33,fresh:42,flow:18,stories:2,
@@ -573,10 +579,10 @@ a.btn{text-decoration:none}
      ex:"A supply-chain trade outlet reports lead times for AI server racks stretching to 40 weeks. The story is on the tape as provisional — one source, not yet scored — so it carries no read. If a second source corroborates, a scored per-contract impact on NQ would follow and upgrade in place."},
     {imp:81,hl:"BLS detail: core services ex-shelter +0.42% m/m — 3-month annualized 3.9%",src:"feed",t:"9m",cor:2,loud:1,imps:[["NQ",-34],["ES",-28],["ZN",-22]],more:3,
      ex:"The supercore detail is the sticky part of the June print: services inflation ex-shelter re-accelerated on the month. That keeps the rate impulse alive beyond the headline number, which is why the bear read extends across rate-sensitive equity index and treasury contracts. Corroborated by two sources — confidence is high."},
-    {imp:47,hl:"Dallas Fed's Logan: balance-sheet runoff “well calibrated”",src:"official",t:"1h",imps:[["ZN",6],["ZB",5]],rel:["ZN"],
-     ex:"Logan signaled no change to the pace of balance-sheet runoff, removing one tail scenario for the treasury market ahead of the afternoon auction. The read is mildly supportive for duration but small — this is calibration language, not new policy."},
-    {imp:74,hl:"Fed's Waller: June print “a bump, not a trend” — still sees two cuts this year",src:"official",t:"2h",imps:[["NQ",18],["ES",15],["GC",12]],
-     ex:"Waller pushed back on the hot print within two hours, framing it as noise rather than a trend change and keeping two cuts on his path. That is the main force capping the bear read in equity index contracts this afternoon. Scored modestly bullish — one governor's view set against a hot print."},
+    {imp:47,hl:"A regional Fed president: balance-sheet runoff “well calibrated”",src:"official",t:"1h",imps:[["ZN",6],["ZB",5]],rel:["ZN"],
+     ex:"The A regional Fed president signaled no change to the pace of balance-sheet runoff, removing one tail scenario for the treasury market ahead of the afternoon auction. The read is mildly supportive for duration but small — this is calibration language, not new policy."},
+    {imp:74,hl:"Fed governor: June print “a bump, not a trend” — still sees two cuts this year",src:"official",t:"2h",imps:[["NQ",18],["ES",15],["GC",12]],
+     ex:"The governor pushed back on the hot print within two hours, framing it as noise rather than a trend change and keeping two cuts on his path. That is the main force capping the bear read in equity index contracts this afternoon. Scored modestly bullish — one governor's view set against a hot print."},
     {imp:34,hl:"EIA: crude inventories draw 2.1M bbl vs 1.4M consensus",src:"official",t:"3h",imps:[["CL",21],["RB",14]],
      ex:"The weekly EIA report showed a larger-than-expected crude draw with product demand holding firm. The bullish read on CL reflects the supply-side surprise — it runs independent of the CPI story dominating the rest of the tape."},
     {imp:41,hl:"Gold ETF flows: fifth straight session of net inflows — fund-flow trackers",src:"web",t:"3h",imps:[["GC",16],["SI",9]],

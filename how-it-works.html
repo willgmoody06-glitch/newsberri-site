@@ -323,6 +323,420 @@ img,svg{max-width:100%}
   .tryband{margin-top:96px}
   .colophon{margin-top:112px}
 }
+/* =====================================================================
+   OVERHAUL LAYER — centre-focused architecture, section bands,
+   hero background elements. Everything below is additive; the locked
+   brand tokens above are untouched. Loaded last so it wins the cascade.
+   ===================================================================== */
+
+/* ---------- 0 · THE PAGE NOW STARTS AT THE NAV ----------
+   The newspaper masthead competed with a full-bleed centred hero for the
+   same job (say the name, big). Topstep-style: nav, then hero, nothing above.
+   Mobile already did this since V2.0 — this just extends it to desktop. */
+.topstrip,.topstrip+.rule,.masthead,.rule-scotch{display:none}
+
+/* ---------- 1 · CENTRE-FOCUSED SECTION FURNITURE ---------- */
+.ctr{text-align:center}
+.ctr .sectitle{margin-left:auto;margin-right:auto;max-width:20ch}
+.ctr .secsub{margin-left:auto;margin-right:auto;max-width:60ch;text-align:center}
+.ctr .eychip{margin-left:auto;margin-right:auto}
+.ctr .cta-row{justify-content:center}
+.eybrow{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--ink-faint);margin:0 0 16px}
+.sectitle-xl{font-family:var(--display);font-weight:800;font-size:clamp(38px,5vw,68px);
+  letter-spacing:1px;text-transform:uppercase;line-height:.98;margin:0 0 20px}
+
+/* ---------- 2 · BAND SYSTEM (the Topstep move: black / raised-grey / washed) ---------- */
+.band{position:relative;padding:128px 0;isolation:isolate}
+.band>.wrap{position:relative;z-index:2}
+.band-raise{background:#0a0d11}
+.band-deep{background:#05070a}
+/* the signature top-fade: a grey haze bleeding out of the section's top edge */
+.band-fade::before{content:"";position:absolute;left:0;right:0;top:0;height:min(70%,620px);
+  z-index:0;pointer-events:none;background:linear-gradient(180deg,#10161d,rgba(0,0,0,0) 100%)}
+.band-fade-vio::before{background:linear-gradient(180deg,#141024,rgba(0,0,0,0) 100%)}
+.band-fade-ras::before{background:linear-gradient(180deg,#201018,rgba(0,0,0,0) 100%)}
+/* hairline seam between bands, tinted with the brand gradient */
+.band-seam::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;z-index:3;
+  background:linear-gradient(90deg,transparent,rgba(232,51,110,.5) 28%,rgba(139,92,246,.5) 72%,transparent)}
+/* overflow:hidden sliced the bloom off at the section edge, so it read as a
+   hard-edged rectangle instead of a glow. The band no longer clips and the layer
+   is inset negatively so it can bleed past the seam; body{overflow-x:clip} is what
+   still stops horizontal page scroll. */
+.band-glow{overflow:visible}
+/* vertical bleed only: -10% on the sides pushed the layer past the viewport and
+   reintroduced horizontal page scroll. The sideways "cut off" was never the glow —
+   it was the group washes being confined to the 1320px .wrap, fixed separately. */
+.band-glow>.glow{position:absolute;inset:-30% 0 -20%;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 58% at 50% 42%,rgba(166,79,198,.16),transparent 72%)}
+
+/* ---------- 3 · HERO: full-bleed, centred, with a live background element ---------- */
+.ovhero{position:relative;min-height:min(92vh,880px);display:flex;align-items:center;
+  justify-content:center;text-align:center;overflow:hidden;padding:120px 0 96px;isolation:isolate}
+.ovhero-in{position:relative;z-index:3;max-width:1000px;margin:0 auto;padding:0 32px}
+.ovhero h1{font-family:var(--display);font-weight:800;font-size:clamp(44px,7.2vw,104px);
+  line-height:.94;letter-spacing:.5px;text-transform:uppercase;margin:0 0 24px}
+.ovhero .lede{font-size:clamp(17px,1.5vw,21px);color:var(--ink-2);margin:0 auto 40px;max-width:56ch}
+.ovhero .cta-row{justify-content:center}
+.ovhero .undercta{margin:26px 0 0;font-family:var(--mono);font-size:10.5px;letter-spacing:2px;
+  color:var(--ink-faint);text-transform:uppercase}
+/* the scrim that keeps the headline legible over any background mode */
+.ovhero::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse 62% 58% at 50% 42%,rgba(0,0,0,.86),rgba(0,0,0,.55) 55%,rgba(0,0,0,.2) 78%,transparent),
+             linear-gradient(180deg,rgba(0,0,0,.9),transparent 22%,transparent 62%,#000 98%)}
+/* the tape is bright enough now that the default scrim doesn't reach the sub-CTA
+   line — this one is taller and drops lower so the whole copy block sits clean */
+.ovhero[data-bg="tape"]::after{
+  background:radial-gradient(ellipse 60% 66% at 50% 47%,rgba(0,0,0,.92),rgba(0,0,0,.66) 52%,rgba(0,0,0,.26) 76%,transparent),
+             linear-gradient(180deg,rgba(0,0,0,.9),transparent 20%,transparent 60%,#000 98%)}
+.ovbg{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.ovbg>*{display:none}
+[data-bg="tape"]     .ovbg .m-tape{display:grid}
+[data-bg="terminal"] .ovbg .m-term{display:block}
+[data-bg="ambient"]  .ovbg .m-amb{display:block}
+/* ambient is the shared base wash — always on under the other modes */
+[data-bg="tape"] .ovbg .m-amb,[data-bg="terminal"] .ovbg .m-amb{display:block;opacity:.55}
+
+/* -- mode A · LIVE TAPE: headlines drifting up behind the hero --
+   Four dense columns at a tight gutter: the wall of news IS the picture, so
+   dead space between columns just reads as empty. */
+.m-tape{position:absolute;inset:-8% 0;grid-template-columns:repeat(4,1fr);gap:9px;
+  padding:0 14px;opacity:.72;
+  -webkit-mask-image:radial-gradient(ellipse 74% 68% at 50% 50%,transparent 10%,#000 58%);
+          mask-image:radial-gradient(ellipse 74% 68% at 50% 50%,transparent 10%,#000 58%)}
+.m-tape .col{display:flex;flex-direction:column;gap:7px;will-change:transform}
+.trow{border:1px solid var(--hair-strong);background:rgba(15,19,23,.94);padding:8px 10px;
+  display:flex;gap:8px;align-items:flex-start}
+.trow .tsig{flex:none;width:3px;align-self:stretch;background:var(--hair-strong)}
+.trow.up .tsig{background:var(--bull);box-shadow:0 0 9px rgba(0,230,118,.7)}
+.trow.dn .tsig{background:var(--bear);box-shadow:0 0 9px rgba(255,23,68,.7)}
+.trow .thl{margin:0;font-size:12px;line-height:1.3;color:var(--ink);font-weight:600}
+.trow .tmeta{display:flex;gap:6px;align-items:center;margin-top:4px;font-family:var(--mono);
+  font-size:8px;letter-spacing:.6px;color:var(--ink-3);text-transform:uppercase}
+.trow .tscore{font-family:var(--mono);font-size:8.5px;font-weight:700;padding:1px 5px;
+  background:color-mix(in srgb,currentColor,transparent 84%);border:1px solid color-mix(in srgb,currentColor,transparent 66%)}
+
+/* -- mode B · TERMINAL: the real cockpit layout, tilted, fading up into the headline --
+   In this mode the hero re-composes: the copy rides high in clean black and the
+   product owns the lower half, so the two never sit on top of each other. */
+/* Width note: the dash must fit ENTIRELY inside the viewport — no clipped first or
+   last column. .termplane scales about its bottom centre, so the painted width is
+   this width x that scale: 112% x .88 = 98.6% of the hero. Use % not vw — vw
+   counts the scrollbar the hero does not have, which overhangs the left edge.
+   The px cap is deliberately high so large screens get a full-bleed dash too. */
+.m-term{position:absolute;left:50%;bottom:22px;width:min(2200px,112%);transform:translateX(-50%);
+  perspective:2400px;opacity:1;
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.32) 0%,rgba(0,0,0,.62) 30%,#000 58%,#000 100%);
+          mask-image:linear-gradient(180deg,rgba(0,0,0,.32) 0%,rgba(0,0,0,.62) 30%,#000 58%,#000 100%)}
+/* the copy sits in the upper half but centred within it, not pinned to the top */
+.ovhero[data-bg="terminal"]{align-items:flex-start;min-height:min(98vh,960px);padding-bottom:0}
+.ovhero[data-bg="terminal"] .ovhero-in{padding-top:clamp(70px,12vh,150px)}
+/* the product is right there — the "click around" nudge would only land on top of it */
+.ovhero[data-bg="terminal"] .undercta{display:none}
+/* a lighter scrim: it only has to protect the copy at the top, not drown the product */
+.ovhero[data-bg="terminal"]::after{
+  background:radial-gradient(ellipse 62% 50% at 50% 36%,rgba(0,0,0,.93),rgba(0,0,0,.72) 58%,rgba(0,0,0,.3) 84%,transparent),
+             linear-gradient(180deg,rgba(0,0,0,.94),transparent 34%,transparent 86%,#000 99%)}
+/* one tilted plane holds both the ribbon and the dash, so they read as one screen */
+.termplane{transform:rotateX(12deg) scale(.88);transform-origin:50% 100%}
+.termgrid{display:grid;grid-template-columns:1.05fr 1.5fr 1fr;gap:14px}
+.termgrid .tcol{display:flex;flex-direction:column;gap:14px;min-width:0}
+.termgrid .snip{box-shadow:0 26px 60px rgba(0,0,0,.7)}
+.termgrid .snip .bd{max-height:none}
+
+/* the ribbon under the dash: headlines crossing, each already carrying its score.
+   Now that the dash fits the viewport, the ribbon simply matches its width. */
+.termticker{border:1px solid var(--hair-strong);background:var(--panel-2);height:34px;
+  display:flex;align-items:center;overflow:hidden;margin:14px auto 0;position:relative;
+  width:88%}
+.termticker .tt-tag{flex:none;display:flex;align-items:center;gap:7px;height:100%;padding:0 12px;
+  background:var(--raise);border-right:1px solid var(--hair-strong);font-family:var(--display);
+  font-weight:700;font-size:12px;letter-spacing:2.2px;color:var(--ink-2);z-index:2}
+.termticker .tt-tag .led{width:6px;height:6px;background:var(--bull);flex:none;
+  box-shadow:0 0 7px 1px rgba(0,230,118,.7)}
+.termticker .tt-win{flex:1;overflow:hidden;position:relative;height:100%}
+.termticker .tt-track{display:flex;align-items:center;gap:0;height:100%;width:max-content;will-change:transform}
+.termticker .tt-item{display:flex;align-items:center;gap:8px;padding:0 20px;white-space:nowrap;
+  border-right:1px solid var(--hair)}
+.termticker .tt-item span{font-family:var(--grot);font-weight:600;font-size:12px;color:var(--ink-2)}
+.termticker .tt-sim{flex:none;align-self:stretch;display:flex;align-items:center;padding:0 12px;
+  background:var(--raise);border-left:1px solid var(--hair-strong);font-family:var(--mono);
+  font-size:8px;letter-spacing:1.3px;color:var(--ink-faint);text-transform:uppercase;z-index:2}
+.termticker .tt-item b{font-family:var(--mono);font-size:9px;font-weight:700;padding:1px 5px;
+  background:color-mix(in srgb,currentColor,transparent 86%);border:1px solid color-mix(in srgb,currentColor,transparent 70%)}
+
+/* TOP STORIES: same arrival behaviour as the tape, ranked instead of timestamped */
+.trow-top{display:grid;grid-template-columns:22px 1fr;gap:9px;padding:8px 2px;
+  border-bottom:1px solid var(--hair)}
+.trow-top:last-child{border-bottom:0}
+.trow-top .tk{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--ink-faint);
+  letter-spacing:.5px;padding-top:1px}
+.trow-top.fresh{animation:rowin .42s cubic-bezier(.2,.7,.2,1) both}
+.trow-top.fresh .tk{color:var(--ras-ink)}
+
+/* a row landing in the live feed: slides in provisional, then flips to scored */
+.termgrid .wrow.fresh{animation:rowin .42s cubic-bezier(.2,.7,.2,1) both}
+/* scoped to .fresh so the five rows already in the markup are never dimmed —
+   only the rows the script lands go through the provisional-then-scored state */
+.termgrid .wrow.fresh .pv-only,.trow-top.fresh .pv-only{color:var(--amber);
+  border:1px solid color-mix(in srgb,var(--amber),transparent 55%);
+  padding:0 4px;font-size:7.5px;letter-spacing:1px;font-family:var(--mono);animation:pp 1.2s ease-in-out infinite}
+.termgrid .wrow.fresh.scored .pv-only,.trow-top.fresh.scored .pv-only{display:none}
+.termgrid .wrow.fresh:not(.scored) .sc-only,.trow-top.fresh:not(.scored) .sc-only{display:none}
+.termgrid .wrow.fresh.scored .sc-only,.trow-top.fresh.scored .sc-only{display:inline-flex}
+.termgrid .wrow.fresh:not(.scored) .wimp{border-style:dashed;color:var(--ink-faint)}
+.termcap{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:4;
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--ink-faint);text-transform:uppercase}
+
+/* -- mode C · AMBIENT: drifting aurora + faint instrument grid -- */
+.m-amb{position:absolute;inset:-15%}
+.m-amb .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5}
+.m-amb .b1{left:2%;top:4%;width:52%;height:62%;background:radial-gradient(circle,rgba(232,51,110,.5),transparent 68%)}
+.m-amb .b2{right:0%;top:0%;width:56%;height:66%;background:radial-gradient(circle,rgba(139,92,246,.5),transparent 68%)}
+.m-amb .b3{left:26%;bottom:-14%;width:50%;height:56%;background:radial-gradient(circle,rgba(166,79,198,.42),transparent 70%)}
+.m-amb .grid{position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(ellipse 70% 70% at 50% 45%,#000,transparent 72%);
+          mask-image:radial-gradient(ellipse 70% 70% at 50% 45%,#000,transparent 72%)}
+
+/* ---------- 4 · STATS BAND (centred, ruled) ---------- */
+.ovstats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--hair);
+  border-bottom:1px solid var(--hair)}
+.ovstats .stat{padding:34px 20px;text-align:center;border-left:1px solid var(--hair)}
+.ovstats .stat:first-child{border-left:0}
+.ovstats .stat .sk{margin-top:11px}
+
+/* ---------- 5 · PRICING BLOCK (sits directly under the hero) ----------
+   This is the section people came to read, so it gets roughly double the
+   presence of a normal band: taller cards, bigger prices, bigger type. */
+.band-pricing{padding:168px 0 176px}
+.band-pricing .sectitle-xl{font-size:clamp(46px,6.2vw,88px)}
+.band-pricing .secsub{font-size:19.5px;max-width:66ch;margin-bottom:72px}
+.ovplans{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;max-width:1360px;margin:0 auto;text-align:left}
+.ovplan{border:1px solid var(--hair-strong);background:var(--panel);padding:52px 44px 46px;
+  display:flex;flex-direction:column;min-width:0;position:relative}
+.ovplan .pname{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:3px;
+  text-transform:uppercase;margin:0 0 4px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ovplan .pprice{font-family:var(--display);font-weight:800;font-size:clamp(64px,6.6vw,96px);
+  line-height:1;letter-spacing:1px;margin:22px 0 4px;font-variant-numeric:tabular-nums}
+.ovplan .pprice sub{font-family:var(--mono);font-size:.2em;letter-spacing:2px;color:var(--ink-3);
+  vertical-align:baseline;bottom:0;margin-left:6px}
+.ovplan .palt{font-family:var(--mono);font-size:11px;letter-spacing:1.6px;color:var(--ink-faint);
+  text-transform:uppercase;margin:0 0 34px}
+.ovplan ul{list-style:none;margin:0 0 40px;padding:0;display:flex;flex-direction:column;gap:14px}
+.ovplan li{font-size:16.5px;line-height:1.5;color:var(--ink-2);padding-left:24px;position:relative}
+.ovplan li::before{content:"—";position:absolute;left:0;top:0;font-family:var(--mono);font-size:11px;
+  color:var(--ink-faint)}
+.ovplan .pcta .btn-key{padding:19px 24px;font-size:13px}
+.plans-note{font-size:11px}
+.ovplan li b{color:var(--ink);font-weight:600}
+.ovplan li.plus::before{content:"+";color:var(--ras-ink)}
+.ovplan .pcta{margin-top:auto}
+.ovplan .pcta .btn-key,.ovplan .pcta .btn-brk{display:block;text-align:center;width:100%}
+.ovplan.feat{border:1px solid transparent;border-image:var(--grad) 1;
+  background:linear-gradient(160deg,rgba(232,51,110,.09),rgba(139,92,246,.10)),var(--panel);
+  box-shadow:0 0 40px rgba(166,79,198,.16)}
+/* Desk is a real third tier, not an afterthought — it reads quieter because it
+   has no price yet, not because it's dimmed out */
+.ovplan.ghost{background:var(--panel-2);border-color:var(--hair)}
+.ovplan.ghost .pprice{color:var(--ink-3);font-size:clamp(40px,4vw,54px)}
+.ovplan.ghost li{color:var(--ink-3)}
+.popchip{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:1.4px;color:#fff;
+  background:var(--grad);padding:4px 8px;text-transform:uppercase}
+.soonchip{font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:1.4px;
+  color:var(--ink-faint);border:1px solid var(--hair-strong);padding:3px 7px;text-transform:uppercase}
+.plans-note{font-family:var(--mono);font-size:10px;letter-spacing:1.6px;color:var(--ink-faint);
+  text-transform:uppercase;text-align:center;margin:26px 0 0}
+
+/* ---------- 6 · WHY BAND — the argument, at full volume ----------
+   This band carries the whole reason to switch, so it is the loudest thing
+   on the page after the hero: oversized eyebrow, headline bigger than the
+   hero's own section titles, and reason cards you can read across a room. */
+.band-why{padding:176px 0 168px}
+/* the two lines swapped rank: the question is the headline now, and the claim
+   that answers it sits above it as a kicker — small, but bigger than the old eyebrow */
+.band-why .why-kicker{font-family:var(--display);font-weight:800;font-size:clamp(19px,2vw,24px);
+  letter-spacing:2.5px;text-transform:uppercase;color:var(--ink-2);margin:0 0 20px;line-height:1.1}
+.band-why .sectitle-xl{font-size:clamp(52px,7.6vw,108px);max-width:none;margin-bottom:28px}
+.band-why .secsub{font-size:21px;max-width:64ch;margin-bottom:68px}
+.whygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);
+  border:1px solid var(--hair);max-width:1300px;margin:0 auto;text-align:left}
+.whycell{background:#07090c;padding:52px 42px 48px}
+.whycell .wn{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:3px;margin:0 0 24px}
+.whycell h3{font-family:var(--display);font-weight:800;font-size:clamp(26px,2.5vw,34px);letter-spacing:1px;
+  text-transform:uppercase;margin:0 0 16px;line-height:1.02}
+.whycell p{margin:0;font-size:17px;line-height:1.5;color:var(--ink-2)}
+/* the bill comparison reads bigger too — it is the proof under the claim */
+.band-why .vs{max-width:1000px}
+.band-why .vpan{padding:38px 40px}
+.band-why .vline{font-size:17.5px;padding:12px 0}
+.band-why .vline .va{font-size:13px}
+.band-why .vtotal b{font-size:clamp(30px,3.4vw,46px)}
+.band-why .voffer{font-size:clamp(36px,4vw,58px)}
+.band-why .vnote{font-size:17px}
+
+/* ---------- 7 · APP-PAGE TEASER (product shot band) ---------- */
+.teaser{max-width:1080px;margin:0 auto;position:relative}
+.teaser .shell{border:1px solid var(--hair-strong);background:var(--panel);padding:14px;
+  box-shadow:0 30px 70px rgba(0,0,0,.6)}
+.teaser .shellbar{display:flex;align-items:center;gap:7px;padding:0 2px 12px}
+.teaser .shellbar i{width:8px;height:8px;background:var(--hair-strong);flex:none}
+.teaser .shellbar span{margin-left:auto;font-family:var(--mono);font-size:8.5px;letter-spacing:1.6px;
+  color:var(--ink-faint);text-transform:uppercase}
+.teaser .tgrid{display:grid;grid-template-columns:1fr 1.35fr;gap:12px}
+.teaser .tgrid>div{display:flex;flex-direction:column;gap:12px;min-width:0}
+
+/* ---------- 7.5 · FAQ — COLLAPSIBLE, LAST BAND ON THE PAGE ----------
+   <details>/<summary>, so it works with JS off and gets keyboard + screen
+   reader behaviour for free. No ARIA to keep in sync, no state to manage. */
+.band-faq{padding:128px 0 136px}
+.faqlist{max-width:900px;margin:44px auto 0;text-align:left;
+  border-top:1px solid var(--hair-strong)}
+.faq{border-bottom:1px solid var(--hair-strong)}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:20px;
+  padding:26px 4px;min-height:44px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary span{flex:1;font-family:var(--display);font-weight:800;font-size:clamp(19px,2vw,25px);
+  letter-spacing:.6px;text-transform:uppercase;line-height:1.1;color:var(--ink)}
+.faq summary i{flex:none;position:relative;width:16px;height:16px}
+/* a plus that becomes a minus — two rules, one rotates away */
+.faq summary i::before,.faq summary i::after{content:"";position:absolute;background:var(--ink-3);
+  transition:transform .2s ease,background .2s ease}
+.faq summary i::before{left:0;right:0;top:7px;height:2px}
+.faq summary i::after{top:0;bottom:0;left:7px;width:2px}
+.faq summary:hover span{color:var(--key)}
+.faq summary:hover i::before,.faq summary:hover i::after{background:var(--ras-2)}
+.faq[open] summary i::after{transform:scaleY(0)}
+.faq[open] summary span{color:var(--key)}
+.faqbody{padding:0 44px 28px 4px}
+.faqbody p{margin:0;font-size:16.5px;line-height:1.6;color:var(--ink-2);max-width:70ch}
+
+/* ---------- 9 · MOTION for the new background modes ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .m-tape .col{animation:tapeup linear infinite}
+  .m-tape .c1{animation-duration:46s}
+  .m-tape .c2{animation-duration:62s;animation-direction:reverse}
+  .m-tape .c3{animation-duration:54s}
+  .m-tape .c4{animation-duration:70s;animation-direction:reverse}
+  .m-amb .b1{animation:blob1 22s ease-in-out infinite alternate}
+  .m-amb .b2{animation:blob2 27s ease-in-out infinite alternate}
+  .m-amb .b3{animation:blob3 19s ease-in-out infinite alternate}
+  .m-term .termplane{animation:termrise 1.1s cubic-bezier(.2,.7,.2,1) both}
+  .faq[open] .faqbody{animation:slidein .24s ease}
+  .termticker .tt-track{animation:ttscroll 44s linear infinite}
+  .termgrid .lcdmini .big{animation:scorepulse 4.5s ease-in-out infinite}
+  .termgrid .met .track i{animation:confdrift 7s ease-in-out infinite alternate}
+}
+@keyframes tapeup{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,-50%,0)}}
+@keyframes blob1{from{transform:translate3d(-4%,-3%,0) scale(1)}to{transform:translate3d(5%,4%,0) scale(1.14)}}
+@keyframes blob2{from{transform:translate3d(4%,2%,0) scale(1.1)}to{transform:translate3d(-5%,-4%,0) scale(1)}}
+@keyframes blob3{from{transform:translate3d(-3%,3%,0) scale(1.06)}to{transform:translate3d(4%,-3%,0) scale(1)}}
+/* opacity + `translate` only: animating `transform` here used to pin the plane
+   and silently defeat every breakpoint that sets its own tilt/scale */
+@keyframes termrise{from{opacity:0;translate:0 6%}to{opacity:1;translate:0 0}}
+@keyframes ttscroll{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+@keyframes rowin{from{opacity:0;transform:translateY(-14px);background:rgba(255,145,0,.10)}
+                 to{opacity:1;transform:none;background:transparent}}
+@keyframes scorepulse{0%,100%{text-shadow:0 0 9px color-mix(in srgb,currentColor,transparent 45%)}
+                      50%{text-shadow:0 0 18px color-mix(in srgb,currentColor,transparent 20%)}}
+@keyframes confdrift{from{width:52%}to{width:64%}}
+
+/* ---------- 10 · RESPONSIVE for the overhaul layer ---------- */
+@media (max-width:1000px){
+  .ovplans{grid-template-columns:1fr;max-width:520px}
+  .whygrid{grid-template-columns:1fr}
+  .ovstats{grid-template-columns:1fr 1fr}
+  .ovstats .stat:nth-child(3){border-left:0}
+  .ovstats .stat:nth-child(-n+2){border-bottom:1px solid var(--hair)}
+  .teaser .tgrid{grid-template-columns:1fr}
+  .m-tape{grid-template-columns:repeat(2,1fr)}
+  .m-tape .c3,.m-tape .c4{display:none}
+}
+/* Short desktop viewports: the hero is min(98vh,960px) so it shrinks with the
+   window, but the dash does not — without this the CTA row lands on the crisp
+   part of the dash at ~800px tall. */
+@media (min-width:761px) and (max-height:900px){
+  .m-term .termplane{transform:rotateX(11deg) scale(.74)}
+  .ovhero[data-bg="terminal"] .ovhero-in{padding-top:clamp(24px,5vh,64px)}
+  .termticker{width:74%}
+}
+@media (max-width:760px){
+  .band{padding:88px 0}
+  /* the enlarged bands come back to a phone-sane rhythm without losing their rank */
+  .band-pricing{padding:104px 0 108px}
+  .band-pricing .secsub{font-size:17px;margin-bottom:44px}
+  .band-why{padding:108px 0 100px}
+  .band-why .eybrow{font-size:11px;letter-spacing:3.5px}
+  .band-why .secsub{font-size:17.5px;margin-bottom:44px}
+  .band-why .vpan{padding:24px 22px}
+  .band-why .vline{font-size:16px}
+  .band-faq{padding:96px 0 100px}
+  .ovplan{padding:34px 26px 30px}
+  .ovplan .pprice{font-size:clamp(48px,15vw,64px)}
+  .ovplan li{font-size:15.5px}
+  .whycell{padding:32px 24px 30px}
+  .whycell p{font-size:15.5px}
+  .faqlist{margin-top:32px}
+  .faq summary{padding:22px 2px;gap:14px}
+  .faqbody{padding:0 28px 24px 2px}
+  .faqbody p{font-size:15.5px}
+  .ovhero{min-height:0;padding:72px 0 64px}
+  .ovhero-in{padding:0 22px}
+  .ovhero h1{font-size:clamp(34px,11vw,52px);margin-bottom:18px}
+  .ovhero .lede{font-size:16.5px;margin-bottom:30px}
+  .ovhero .cta-row{flex-direction:column;align-items:stretch;gap:12px}
+  .ovstats .stat{padding:24px 12px}
+  .m-tape{grid-template-columns:1fr;opacity:.42}
+  .m-tape .c2,.m-tape .c3,.m-tape .c4{display:none}
+  /* terminal is the shipped hero, so a phone gets a real dash that fits, not a
+     190vw slab bleeding off both edges. One column: the feed and the ranked cut. */
+  .ovhero[data-bg="terminal"]{min-height:86vh;padding-bottom:0}
+  .ovhero[data-bg="terminal"] .ovhero-in{padding-top:8px}
+  .m-term{width:98%;opacity:1;bottom:12px}
+  .m-term .termplane{transform:rotateX(8deg) scale(.98)}
+  .termgrid{grid-template-columns:1fr}
+  .termgrid .tcol:first-child,.termgrid .tcol:last-child{display:none}
+  /* one list on a phone: the feed. TOP STORIES would double the dash height. */
+  .termgrid .tcol .snip:nth-child(2){display:none}
+  .termticker{width:98%;height:30px}
+  .termticker .tt-tag{display:none}
+  .teaser .shell{padding:8px}
+}
+/* =====================================================================
+   PAGE-SPECIFIC OVERHAUL BITS — how it works. Sits after the shared
+   block so it can re-house this page's own artifacts inside the bands.
+   ===================================================================== */
+/* the centred lead band that replaces the old two-column .lead */
+.band-lead{padding:96px 0 104px}
+.band-lead .lede{font-size:18.5px;color:var(--ink-2);margin:0 auto 18px;max-width:62ch}
+.band-lead .lede b{color:var(--ink);font-weight:600}
+.band-lead .pullline{max-width:780px;margin:34px auto 0;text-align:center}
+.band-lead .mindex{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+  margin:40px auto 0;max-width:1060px;padding:0}
+.band-lead .mindex li{border-top:0;flex:none}
+.band-lead .mindex a{border:1px solid var(--hair-strong);background:var(--panel);gap:12px;
+  min-height:44px;align-items:center;padding:0 14px}
+.band-lead .mindex a:hover{border-color:var(--key)}
+.band-lead .l-note{border-top:0;margin:26px auto 0;padding-top:0;max-width:62ch;text-align:center}
+/* centred headers, left-aligned bodies — the artifacts must not inherit text-align */
+.band.ctr .stage,.band.ctr .twobox,.band.ctr .bigfig,.band.ctr .mindex a{text-align:left}
+.band .stage{max-width:1220px;margin:34px auto 0;padding:0}
+.band .bigfig{max-width:1120px;margin:34px auto 0}
+.band .twobox{max-width:1120px;margin:34px auto 0}
+/* the group tint the old .sec.vio / .sec.ras carried on the figure tops */
+.band.vio .panelfig{border-top:3px solid rgba(139,92,246,.45)}
+.band.ras .panelfig{border-top:3px solid rgba(232,51,110,.42)}
+@media (max-width:760px){
+  .band-lead{padding:56px 0 72px}
+  .band-lead .mindex{gap:8px;margin-top:32px}
+  .band .stage,.band .bigfig,.band .twobox{margin-top:28px}
+}
+/* keyframes the overhaul block depends on. ov-home/ov-app inherit these from the
+   index stylesheet; pages built from other templates do not, so they ship here too.
+   Without them .faq[open] and the PROV chip reference animations that do not exist. */
+@keyframes slidein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
   html{scroll-behavior:auto}
@@ -378,12 +792,12 @@ All backend/mechanics content for the site lives on THIS page only.
     </a>
     <div class="links">
       <a href="index.html">HOME</a>
+      <a href="app.html">THE APP</a>
       <a href="how-it-works.html" aria-current="page">HOW IT WORKS</a>
       <a href="pricing.html">PRICING</a>
     </div>
     <div class="actions">
       <a class="signin" href="signin.html">SIGN IN</a>
-      <a class="btn-brk" href="pricing.html">COMPARE TIERS</a>
       <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
       <a class="btn-key" href="signin.html">START 7-DAY TRIAL</a>
     </div>
@@ -392,9 +806,9 @@ All backend/mechanics content for the site lives on THIS page only.
       <summary aria-label="Menu"><span aria-hidden="true">☰</span></summary>
       <div class="mnav-panel">
         <a href="index.html">HOME</a>
+        <a href="app.html">THE APP</a>
         <a href="how-it-works.html" aria-current="page">HOW IT WORKS</a>
         <a href="pricing.html">PRICING</a>
-        <a href="pricing.html">COMPARE TIERS</a>
         <a href="demo.html">TRY THE DEMO</a>
         <a href="signin.html">SIGN IN</a>
       </div>
@@ -416,40 +830,37 @@ All backend/mechanics content for the site lives on THIS page only.
 </script>
 
 <main id="main">
-<!-- ==================== LEAD ==================== -->
-<section class="sec wash-hero" aria-labelledby="lead-h" style="padding-top:0">
-  <div class="wrap inner">
-    <div class="lead">
-      <div class="l-copy">
-        <h1 id="lead-h">How <span class="grad-text">the read is made</span>.</h1>
-        <p class="lede">Sources go in, one read comes out. This page covers what happens in between: how a headline becomes a score, how that score firms up, how it becomes the number next to your chart, and how the calendar flags a scheduled release before it lands.</p>
-        <p class="lede">Two rules govern all of it: <b>every score is made once, on our servers</b>, so everyone sees the same read at the same moment; and <b>headlines are never held back</b> — you can read a story the second it crosses the feed, before we've scored it.</p>
-        <blockquote class="pullline">The method is the product. All of it is on this page.<small>EVERY FIGURE BELOW IS AN EXAMPLE &middot; NEVER A MARKET PRICE</small></blockquote>
-      </div>
-      <aside class="l-side" aria-label="What's on this page">
-        <h2>What's on this page</h2>
-        <p class="micro">EIGHT STOPS, TOP TO BOTTOM</p>
-        <div class="scrollx-fade"><ol class="mindex scrollx">
-          <li><a href="#sources"><span>THE SOURCES</span><span class="pg">01</span></a></li>
-          <li><a href="#scoring"><span>THE SCORING STEP</span><span class="pg">02</span></a></li>
-          <li><a href="#second"><span>A SECOND SOURCE</span><span class="pg">03</span></a></li>
-          <li><a href="#index"><span>ONE NUMBER PER CONTRACT</span><span class="pg">04</span></a></li>
-          <li><a href="#calendar"><span>THE CALENDAR &amp; GUARDRAIL</span><span class="pg">05</span></a></li>
-          <li><a href="#squawk"><span>THE SQUAWK</span><span class="pg">06</span></a></li>
-          <li><a href="#record"><span>THE TRACK RECORD</span><span class="pg">07</span></a></li>
-          <li><a href="#standards"><span>WHAT WE DON'T DO</span><span class="pg">08</span></a></li>
-        </ol></div>
-        <p class="l-note">Every tier gets the same sources, the same speed, all 42 contracts. <a href="pricing.html">Compare tiers →</a></p>
-      </aside>
-    </div>
+<!-- ==================== BAND 1 · LEAD ==================== -->
+<section class="band band-fade band-lead ctr" aria-labelledby="lead-h">
+  <div class="wrap">
+    <span class="eybrow">THE METHOD</span>
+    <h1 class="sectitle-xl" id="lead-h">How <span class="grad-text">the read is made</span>.</h1>
+    <p class="lede">Sources go in, one read comes out. This page covers what happens in between: how a headline becomes a score, how that score firms up, how it becomes the number next to your chart, and how the calendar flags a scheduled release before it lands.</p>
+    <p class="lede">Two rules govern all of it: <b>every score is made once, on our servers</b>, so everyone sees the same read at the same moment; and <b>headlines are never held back</b> — you can read a story the second it crosses the feed, before we've scored it.</p>
+    <blockquote class="pullline">The method is the product. All of it is on this page.<small>EVERY FIGURE BELOW IS AN EXAMPLE &middot; NEVER A MARKET PRICE</small></blockquote>
+    <nav aria-label="What's on this page">
+      <p class="micro" style="margin:44px 0 0">EIGHT STOPS, TOP TO BOTTOM</p>
+      <ol class="mindex" style="margin-top:16px">
+        <li><a href="#sources"><span>THE SOURCES</span><span class="pg">01</span></a></li>
+        <li><a href="#scoring"><span>THE SCORING STEP</span><span class="pg">02</span></a></li>
+        <li><a href="#second"><span>A SECOND SOURCE</span><span class="pg">03</span></a></li>
+        <li><a href="#index"><span>ONE NUMBER PER CONTRACT</span><span class="pg">04</span></a></li>
+        <li><a href="#calendar"><span>THE CALENDAR &amp; GUARDRAIL</span><span class="pg">05</span></a></li>
+        <li><a href="#squawk"><span>THE SQUAWK</span><span class="pg">06</span></a></li>
+        <li><a href="#record"><span>THE TRACK RECORD</span><span class="pg">07</span></a></li>
+        <li><a href="#standards"><span>WHAT WE DON'T DO</span><span class="pg">08</span></a></li>
+      </ol>
+    </nav>
+    <p class="l-note">Every tier gets the same sources, the same speed, all 42 contracts. <a href="pricing.html">Compare tiers →</a></p>
   </div>
 </section>
 
-<!-- ==================== THE MAP — one picture, the whole thing ==================== -->
-<section class="sec" aria-labelledby="map-h" style="padding-top:30px">
-  <div class="wrap inner">
-    <span class="eychip">THE MAP</span>
-    <h2 class="sectitle" id="map-h">From live sources to one read</h2>
+<!-- ==================== BAND 2 · THE MAP — one picture, the whole thing ==================== -->
+<section class="band band-raise band-fade band-seam ctr" aria-labelledby="map-h">
+  <div class="wrap">
+    <span class="eybrow">THE MAP</span>
+    <h2 class="sectitle-xl" id="map-h">From live sources to one read</h2>
+    <p class="secsub">The eight steps below open up each stage of it.</p>
     <figure class="bigfig">
       <div class="scrollx-fade"><div class="scrollx">
       <svg viewBox="0 0 960 290" role="img" aria-label="Diagram of the whole pipeline: live news sources feed the scoring step, where an AI reads each story once on our servers; a second source confirms the story and the score firms up; everything rolls into one index number per contract; the result goes to every subscriber at the same moment. A dashed path above shows that headlines reach you provisionally the instant they cross, before any scoring.">
@@ -506,10 +917,10 @@ All backend/mechanics content for the site lives on THIS page only.
 </section>
 
 <!-- ==================== STEP 1 · THE SOURCES ==================== -->
-<section class="sec vio wash-vio" id="sources" aria-labelledby="sources-h">
-  <div class="wrap inner">
-    <span class="eychip vio">STEP 1 · THE SOURCES</span>
-    <h2 class="sectitle" id="sources-h">It starts with the sources</h2>
+<section class="band vio band-fade band-fade-vio band-seam ctr" id="sources" aria-labelledby="sources-h">
+  <div class="wrap">
+    <span class="eybrow">STEP 1 · THE SOURCES</span>
+    <h2 class="sectitle-xl" id="sources-h">It starts with the sources</h2>
     <div class="stage">
       <div class="st-copy">
         <p><b>NewsBerri monitors live news feeds 24 hours a day, five days a week.</b> The moment a headline crosses any of them, it shows up on your tape marked <b>provisional</b>. There's no queue and no hold for scoring; you can read the story before we have.</p>
@@ -546,10 +957,10 @@ All backend/mechanics content for the site lives on THIS page only.
 </section>
 
 <!-- ==================== STEP 2 · THE SCORING STEP ==================== -->
-<section class="sec vio" id="scoring" aria-labelledby="scoring-h">
-  <div class="wrap inner">
-    <span class="eychip vio">STEP 2 · THE SCORING STEP</span>
-    <h2 class="sectitle" id="scoring-h">An AI reads the story</h2>
+<section class="band vio band-raise band-fade band-fade-vio band-seam ctr" id="scoring" aria-labelledby="scoring-h">
+  <div class="wrap">
+    <span class="eybrow">STEP 2 · THE SCORING STEP</span>
+    <h2 class="sectitle-xl" id="scoring-h">An AI reads the story</h2>
     <div class="stage">
       <div class="st-copy">
         <p>Next, <b>an LLM reads the whole story</b>, not just keywords, and scores it for each contract it touches. Three judgments, every time: <b>direction</b>, on a −100 to +100 sentiment scale; <b>impact</b>, how much this kind of story tends to matter; and <b>confidence</b>, how sure the read is. The same headline can be bad news for the Nasdaq and fine news for gold, so every contract gets its own line.</p>
@@ -587,10 +998,10 @@ All backend/mechanics content for the site lives on THIS page only.
 </section>
 
 <!-- ==================== STEP 3 · A SECOND SOURCE ==================== -->
-<section class="sec vio wash-vio" id="second" aria-labelledby="second-h">
-  <div class="wrap inner">
-    <span class="eychip vio">STEP 3 · A SECOND SOURCE</span>
-    <h2 class="sectitle" id="second-h">A second source makes it solid</h2>
+<section class="band vio band-deep band-fade band-fade-vio band-seam ctr" id="second" aria-labelledby="second-h">
+  <div class="wrap">
+    <span class="eybrow">STEP 3 · A SECOND SOURCE</span>
+    <h2 class="sectitle-xl" id="second-h">A second source makes it solid</h2>
     <div class="stage">
       <div class="st-copy">
         <p>A story from a single source is just one source's report. When a second source carries the same story, that's about as confirmed as a fast tape gets. So when <b>a second source confirms a headline</b>, we don't print it again — the row you already have firms up in place, and its label changes to <b>corroborated</b>.</p>
@@ -636,10 +1047,10 @@ All backend/mechanics content for the site lives on THIS page only.
 </section>
 
 <!-- ==================== STEP 4 · ONE NUMBER PER CONTRACT ==================== -->
-<section class="sec vio" id="index" aria-labelledby="index-h">
-  <div class="wrap inner">
-    <span class="eychip vio">STEP 4 · ONE NUMBER PER CONTRACT</span>
-    <h2 class="sectitle" id="index-h">Everything rolls up into one number</h2>
+<section class="band vio band-raise band-fade band-fade-vio band-seam ctr" id="index" aria-labelledby="index-h">
+  <div class="wrap">
+    <span class="eybrow">STEP 4 · ONE NUMBER PER CONTRACT</span>
+    <h2 class="sectitle-xl" id="index-h">Everything rolls up into one number</h2>
     <div class="stage">
       <div class="st-copy">
         <p>Individual stories come and go; the index is the running mood. For every contract, <b>the recent scored stories roll up into a single number</b>, weighted by freshness — a story from five minutes ago counts a lot, one from fifty minutes ago barely registers. The result answers a simple question: <b>what does the news look like for this contract, right now?</b></p>
@@ -689,13 +1100,12 @@ All backend/mechanics content for the site lives on THIS page only.
   </div>
 </section>
 
-<hr class="hair-grad wrap" style="margin-top:72px">
 
 <!-- ==================== STEP 5 · THE CALENDAR & GUARDRAIL ==================== -->
-<section class="sec ras wash-ras" id="calendar" aria-labelledby="calendar-h">
-  <div class="wrap inner">
-    <span class="eychip ras">STEP 5 · THE CALENDAR &amp; GUARDRAIL</span>
-    <h2 class="sectitle" id="calendar-h">The calendar tracks releases in advance</h2>
+<section class="band ras band-fade band-fade-ras band-seam ctr" id="calendar" aria-labelledby="calendar-h">
+  <div class="wrap">
+    <span class="eybrow">STEP 5 · THE CALENDAR &amp; GUARDRAIL</span>
+    <h2 class="sectitle-xl" id="calendar-h">The calendar tracks releases in advance</h2>
     <div class="stage">
       <div class="st-copy">
         <p>Everything so far reacts to news that already happened. The calendar works ahead of it. <b>Every scheduled release that touches your contracts is on it</b> — CPI, auctions, jobless claims — and for each one, the what-ifs are written in advance: what a stronger-than-expected number would likely mean for your contract, what a weaker one would. When the release lands, the read for it is already written.</p>
@@ -748,10 +1158,10 @@ All backend/mechanics content for the site lives on THIS page only.
 </section>
 
 <!-- ==================== STEP 6 · THE SQUAWK ==================== -->
-<section class="sec ras" id="squawk" aria-labelledby="squawk-h">
-  <div class="wrap inner">
-    <span class="eychip ras">STEP 6 · THE SQUAWK</span>
-    <h2 class="sectitle" id="squawk-h">The squawk says it out loud</h2>
+<section class="band ras band-raise band-fade band-fade-ras band-seam ctr" id="squawk" aria-labelledby="squawk-h">
+  <div class="wrap">
+    <span class="eybrow">STEP 6 · THE SQUAWK</span>
+    <h2 class="sectitle-xl" id="squawk-h">The squawk says it out loud</h2>
     <div class="stage">
       <div class="st-copy">
         <p>Trading floors have kept a squawk box on for decades — a voice reading the news out loud so nobody has to stare at the tape. NewsBerri builds that voice into the terminal: <b>headlines above your chosen importance level are read aloud</b> as they land and as they firm up, in one calm sentence that includes the read — what happened, and what it means for the contract.</p>
@@ -783,10 +1193,10 @@ All backend/mechanics content for the site lives on THIS page only.
 </section>
 
 <!-- ==================== STEP 7 · THE TRACK RECORD ==================== -->
-<section class="sec ras wash-ras" id="record" aria-labelledby="record-h">
-  <div class="wrap inner">
-    <span class="eychip ras">STEP 7 · THE TRACK RECORD</span>
-    <h2 class="sectitle" id="record-h">We keep score in public</h2>
+<section class="band ras band-deep band-fade band-fade-ras band-seam ctr" id="record" aria-labelledby="record-h">
+  <div class="wrap">
+    <span class="eybrow">STEP 7 · THE TRACK RECORD</span>
+    <h2 class="sectitle-xl" id="record-h">We keep score in public</h2>
     <div class="stage">
       <div class="st-copy">
         <p>A private track record is easy to flatter, so ours is public. <b>Whenever the read turns decisive enough to earn a label, that call is logged publicly the moment it's made</b> — contract, label, timestamp — and later resolved against what actually happened next.</p>
@@ -814,10 +1224,10 @@ All backend/mechanics content for the site lives on THIS page only.
 </section>
 
 <!-- ==================== STEP 8 · WHAT WE DON'T DO / IF SOMETHING BREAKS ==================== -->
-<section class="sec" id="standards" aria-labelledby="standards-h">
-  <div class="wrap inner">
-    <span class="eychip">STEP 8 · WHAT WE DON'T DO</span>
-    <h2 class="sectitle" id="standards-h">What we deliberately don't do</h2>
+<section class="band band-raise band-fade band-seam ctr" id="standards" aria-labelledby="standards-h">
+  <div class="wrap">
+    <span class="eybrow">STEP 8 · WHAT WE DON'T DO</span>
+    <h2 class="sectitle-xl" id="standards-h">What we deliberately don't do</h2>
     <p class="secsub">The features we've chosen not to build, and how the system behaves on a bad day.</p>
     <div class="twobox">
       <article class="stdbox" aria-labelledby="dont-h">
@@ -843,11 +1253,13 @@ All backend/mechanics content for the site lives on THIS page only.
   </div>
 </section>
 
-<!-- ==================== CTA BAND ==================== -->
-<section class="tryband" aria-labelledby="final-h">
-  <div class="wrap" style="position:relative">
-    <h2 id="final-h">See it <span class="grad-text">run</span></h2>
-    <p>The demo is the full terminal on simulated data — click around, open the explanations, hear the squawk speak. Or take the real thing for seven days and judge the method by what it shows you.</p>
+<!-- ==================== BAND 11 · CLOSING CTA ==================== -->
+<section class="band band-fade band-seam band-glow ctr" aria-labelledby="final-h">
+  <span class="glow" aria-hidden="true"></span>
+  <div class="wrap">
+    <span class="eybrow">THE METHOD, RUNNING</span>
+    <h2 class="sectitle-xl" id="final-h">See it <span class="grad-text">run</span></h2>
+    <p class="secsub">The demo is the full terminal on simulated data — click around, open the explanations, hear the squawk speak. Or take the real thing for seven days and judge the method by what it shows you.</p>
     <div class="cta-row">
       <a class="btn-key" href="signin.html">START YOUR 7-DAY TRIAL</a>
       <a class="btn-brk" href="demo.html">TRY THE DEMO</a>

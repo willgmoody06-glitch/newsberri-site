@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NewsBerri — The news, read for your trade</title>
-<meta name="description" content="NewsBerri analyzes live news feeds and tells you what every headline means for the futures you trade — with alerts before and after big releases. Informational only — not trading advice.">
+<title>NewsBerri — Inside the terminal</title>
+<meta name="description" content="Inside the NewsBerri terminal: the live tape, the contract board, ✦ Explain, the calendar, the Event Guardrail, squawk and alerts, and the public record. Informational only — not trading advice.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Ccircle cx='26.1' cy='19.5' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='37.9' cy='19.5' r='6.5' fill='%2300e676'/%3E%3Ccircle cx='19.7' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='32' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='44.3' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='21.3' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='42.7' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='26.7' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='37.3' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='58.1' r='6' fill='%238f1029'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -493,16 +493,9 @@ html.js .exdrawer.open{display:flex}
 /* hairline seam between bands, tinted with the brand gradient */
 .band-seam::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;z-index:3;
   background:linear-gradient(90deg,transparent,rgba(232,51,110,.5) 28%,rgba(139,92,246,.5) 72%,transparent)}
-/* overflow:hidden sliced the bloom off at the section edge, so it read as a
-   hard-edged rectangle instead of a glow. The band no longer clips and the layer
-   is inset negatively so it can bleed past the seam; body{overflow-x:clip} is what
-   still stops horizontal page scroll. */
-.band-glow{overflow:visible}
-/* vertical bleed only: -10% on the sides pushed the layer past the viewport and
-   reintroduced horizontal page scroll. The sideways "cut off" was never the glow —
-   it was the group washes being confined to the 1320px .wrap, fixed separately. */
-.band-glow>.glow{position:absolute;inset:-30% 0 -20%;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 70% 58% at 50% 42%,rgba(166,79,198,.16),transparent 72%)}
+.band-glow{overflow:hidden}
+.band-glow>.glow{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 900px 420px at 50% 0%,rgba(166,79,198,.13),transparent 70%)}
 
 /* ---------- 3 · HERO: full-bleed, centred, with a live background element ---------- */
 .ovhero{position:relative;min-height:min(92vh,880px);display:flex;align-items:center;
@@ -838,6 +831,111 @@ html.js .exdrawer.open{display:flex}
   .termticker .tt-tag{display:none}
   .teaser .shell{padding:8px}
 }
+/* =====================================================================
+   APP-PAGE EXTRAS — only this page uses these.
+   ===================================================================== */
+/* the hero sits a little lower here: the terminal is the subject, not the wash */
+.ovhero-app{min-height:min(86vh,820px)}
+.ovhero-app .lede{max-width:60ch}
+
+
+
+/* the panels keep their group tints but lose the old top margin —
+   the band already supplies the rhythm */
+/* only the bar that opens the band loses its top margin; every later group bar keeps
+   the 96px that separates it from the panel above */
+.band .gvio>.gbar{margin-top:0}
+.band .gvio,.band .gras{scroll-margin-top:80px}
+.svc{scroll-margin-top:80px}
+
+@media (max-width:1000px){
+}
+@media (max-width:760px){
+}
+/* =====================================================================
+   APP PAGE ROUND 2 — feature cards, platform strip, glow containment.
+   Loaded after the shared block, so it wins where the two disagree.
+   ===================================================================== */
+
+/* ---- glow containment ----
+   .band-glow set overflow:hidden, which sliced its own radial off at the section
+   edge — the glow read as a hard-edged rectangle instead of a bloom. The band no
+   longer clips; the glow layer is inset negatively so it can bleed past the seam,
+   and the page (not the section) is what stops horizontal scroll. */
+.band-glow{overflow:visible}
+.band-glow>.glow{inset:-30% 0 -20%;
+  background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(166,79,198,.16),transparent 72%)}
+.band-fade::before,.band-glow>.glow{will-change:auto}
+main{overflow-x:clip}
+
+
+/* the last feature needs room before the next band starts */
+.gras .svc:last-of-type{padding-bottom:112px}
+
+/* ---- TWO VIEW MODES ---- */
+.viewmodes{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1180px;margin:0 auto;text-align:left}
+.vmode{border:1px solid var(--hair-strong);background:var(--panel);padding:22px 22px 24px;
+  display:flex;flex-direction:column;gap:18px;min-width:0}
+.vm-art{position:relative;height:168px;background:var(--well);border:1px solid var(--well-line);
+  overflow:hidden;flex:none}
+.vm-chart{position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,transparent 0 26px,rgba(255,255,255,.035) 26px 27px),
+             repeating-linear-gradient(0deg,transparent 0 22px,rgba(255,255,255,.03) 22px 23px)}
+/* the overlay: a narrow strip riding on top of the platform underneath */
+.vm-overlay{position:absolute;right:14px;top:18px;bottom:18px;width:44%;background:var(--panel-2);
+  border:1px solid var(--hair-strong);box-shadow:-8px 10px 26px rgba(0,0,0,.65);
+  display:flex;flex-direction:column;gap:7px;padding:8px}
+.vm-full{position:absolute;inset:12px;background:var(--panel-2);border:1px solid var(--hair-strong);
+  display:flex;flex-direction:column;gap:7px;padding:8px}
+.vm-bar{height:7px;background:var(--grad);opacity:.85;flex:none}
+.vm-row{height:11px;background:rgba(255,255,255,.08);flex:none}
+.vm-row.short{width:62%}
+.vm-grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:6px}
+.vm-grid i{background:rgba(255,255,255,.07)}
+.vm-txt .vm-k{font-family:var(--mono);font-size:9.5px;letter-spacing:2px;color:var(--ras-ink);margin:0 0 8px}
+.vm-txt h3{font-family:var(--display);font-weight:800;font-size:21px;letter-spacing:1px;
+  text-transform:uppercase;margin:0 0 9px;line-height:1.05}
+.vm-txt p{margin:0;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.vm-note{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--ink-faint);
+  text-transform:uppercase;margin:20px 0 0}
+
+/* ---- DOWNLOAD: pick your desktop build ----
+   Radio-driven, no JS: the inputs are visually hidden but still focusable, so arrow
+   keys move between them and the whole thing works with scripting off. */
+.dlpick{margin-top:44px}
+.dlr{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.dl-seg{display:inline-flex;gap:4px;padding:5px;border:1px solid var(--hair-strong);background:var(--panel-2)}
+.dl-seg label{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  min-height:44px;padding:12px 26px;cursor:pointer;font-family:var(--mono);font-size:12px;
+  font-weight:700;letter-spacing:2px;color:var(--ink-3);transition:background .16s ease,color .16s ease}
+.dl-seg label svg{width:15px;height:15px}
+.dl-seg label:hover{color:var(--key)}
+#os-win:checked ~ .dl-seg label[for="os-win"],
+#os-mac:checked ~ .dl-seg label[for="os-mac"]{background:var(--key);color:var(--key-ink)}
+/* the inputs are off-screen, so the focus ring has to be drawn on the control itself */
+.dlr:focus-visible ~ .dl-seg{outline:2px solid var(--key);outline-offset:3px}
+#os-win:checked ~ .dl-row .dl-mac{display:none}
+#os-mac:checked ~ .dl-row .dl-win{display:none}
+
+.dl-row{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:center;margin-top:22px}
+.btn-dl{display:inline-flex;align-items:center;gap:11px;
+  background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:13px;font-weight:700;
+  letter-spacing:2px;padding:17px 26px;border:1px solid var(--key);box-shadow:var(--key-glow)}
+.btn-dl svg{width:17px;height:17px}
+.btn-dl:hover{box-shadow:0 0 16px rgba(232,51,110,.45),0 0 30px rgba(139,92,246,.4)}
+.dl-note{font-family:var(--mono);font-size:10.5px;letter-spacing:1.4px;color:var(--ink-faint);
+  text-transform:uppercase;margin:20px 0 0}
+.dl-note b{color:var(--ink-2);font-weight:700}
+
+@media (max-width:1000px){
+  .viewmodes{grid-template-columns:1fr;max-width:560px}
+}
+@media (max-width:760px){
+  .dl-seg{width:100%}
+  .dl-seg label{flex:1;padding:12px 14px}
+  .gras .svc:last-of-type{padding-bottom:88px}
+  .btn-dl{width:100%;justify-content:center}
+}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
   html{scroll-behavior:auto}
@@ -888,8 +986,8 @@ html.js .exdrawer.open{display:flex}
       <span class="wordmark">News<b>Berri</b></span>
     </a>
     <div class="links">
-      <a href="index.html" aria-current="page">HOME</a>
-      <a href="app.html">THE APP</a>
+      <a href="index.html">HOME</a>
+      <a href="app.html" aria-current="page">THE APP</a>
       <a href="how-it-works.html">HOW IT WORKS</a>
       <a href="pricing.html">PRICING</a>
     </div>
@@ -902,8 +1000,8 @@ html.js .exdrawer.open{display:flex}
     <details class="mnav">
       <summary aria-label="Menu"><span aria-hidden="true">☰</span></summary>
       <div class="mnav-panel">
-        <a href="index.html" aria-current="page">HOME</a>
-        <a href="app.html">THE APP</a>
+        <a href="index.html">HOME</a>
+        <a href="app.html" aria-current="page">THE APP</a>
         <a href="how-it-works.html">HOW IT WORKS</a>
         <a href="pricing.html">PRICING</a>
         <a href="demo.html">TRY THE DEMO</a>
@@ -928,329 +1026,333 @@ html.js .exdrawer.open{display:flex}
 
 <main id="main">
 
-<!-- ==================== 1 · HERO — CENTRED, WITH A LIVE BACKGROUND ==================== -->
-<section class="ovhero" id="ovhero" data-bg="terminal" aria-labelledby="hero-h">
-
-  <!-- background element · three modes, switchable in the panel bottom-right -->
+<!-- ==================== 1 · HERO ==================== -->
+<section class="ovhero ovhero-app" id="ovhero" data-bg="tape" aria-labelledby="hero-h">
   <div class="ovbg" aria-hidden="true">
-
-    <!-- mode C (also the shared base wash under A and B) -->
     <div class="m-amb">
       <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
       <span class="grid"></span>
     </div>
-
-    <!-- mode A · the tape: headlines scoring themselves, drifting past -->
+    <!-- revolving sources: columns are filled by script and duplicated so the
+         -50% keyframe wraps with no seam and no empty run -->
     <div class="m-tape" id="mTape">
       <div class="col c1"></div><div class="col c2"></div><div class="col c3"></div><div class="col c4"></div>
-    </div>
-
-    <!-- mode B · the terminal: the working layout, tilted up out of the fold -->
-    <div class="m-term">
-      <div class="termplane">
-      <div class="termgrid">
-        <div class="tcol">
-          <div class="snip">
-            <div class="ph"><span class="led live"></span>CONTRACT BOARD</div>
-            <div class="bd">
-              <div class="crow2"><span class="sym">NQ</span><span class="nm">Nasdaq-100 E-mini</span><span class="cbar"><i class="c-bear" style="background:var(--bear);right:50%;width:17%"></i></span><span class="idx c-bear">−34</span></div>
-              <div class="crow2"><span class="sym">ES</span><span class="nm">S&amp;P 500 E-mini</span><span class="cbar"><i class="c-bear" style="background:var(--bear);right:50%;width:11%"></i></span><span class="idx c-bear">−22</span></div>
-              <div class="crow2"><span class="sym">CL</span><span class="nm">WTI Crude</span><span class="cbar"><i class="c-bull" style="background:var(--bull);left:50%;width:21%"></i></span><span class="idx c-bull">+41</span></div>
-              <div class="crow2"><span class="sym">GC</span><span class="nm">Gold</span><span class="cbar"><i class="c-bull" style="background:var(--bull);left:50%;width:9%"></i></span><span class="idx c-bull">+18</span></div>
-              <div class="crow2"><span class="sym">ZN</span><span class="nm">10-Year Note</span><span class="cbar"><i style="background:var(--neutral);left:50%;width:3%"></i></span><span class="idx c-neu">+5</span></div>
-            </div>
-          </div>
-          <div class="snip">
-            <div class="ph"><span class="led amb"></span>ALERT RULES</div>
-            <div class="bd">
-              <div class="arow"><span class="ak">Trigger</span><span class="av">NQ score crosses ±30</span><span class="ast">ARMED</span></div>
-              <div class="arow"><span class="ak">Trigger</span><span class="av">Keyword: "tariff"</span><span class="ast">ARMED</span></div>
-              <div class="arow"><span class="ak">Guardrail</span><span class="av">T-minus 10 on CPI</span><span class="ast">ARMED</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="tcol">
-          <div class="snip">
-            <div class="ph"><span class="led live"></span>LIVE FEED — ALL SOURCES<span class="ph-r">SENTIMENT · SIMULATED</span></div>
-            <div class="lcdmini">
-              <div class="sym"><b>NQ</b><span>NASDAQ-100 E-MINI · 14 STORIES/1H</span></div>
-              <div class="big c-bear">−34</div>
-              <div class="lab">STRONG BEAR</div>
-              <div class="met" style="flex:1;min-width:110px"><span class="k">CONF</span><div class="track"><i style="background:var(--bull);color:var(--bull);width:58%"></i></div><b>58%</b></div>
-            </div>
-            <div class="bd" id="termFeed" style="padding-top:4px">
-              <div class="wrow"><span class="wsig" style="background:var(--bear)"></span><span class="wimp">41</span><div><p class="whl" style="margin:0">Nvidia server-rack supplier lead times stretch to 40 weeks — trade press</p><div class="wmeta"><span>JUST NOW</span><span>WEB</span><span class="stag">SCORED · 2S</span><span class="iimp c-bear">NQ −12</span><span class="iimp c-bear">ES −8</span></div></div></div>
-              <div class="wrow"><span class="wsig" style="background:var(--bull)"></span><span class="wimp">33</span><div><p class="whl" style="margin:0">EIA crude build lands under the consensus range</p><div class="wmeta"><span>1M AGO</span><span>OFFICIAL</span><span class="stag">SCORED</span><span class="iimp c-bull">CL +19</span></div></div></div>
-              <div class="wrow"><span class="wsig" style="background:var(--hair-strong)"></span><span class="wimp">28</span><div><p class="whl" style="margin:0">ECB sources: December decision still open, no consensus yet</p><div class="wmeta"><span>4M AGO</span><span>WIRE</span><span class="stag">SCORED</span><span class="iimp c-bear">6E −9</span></div></div></div>
-            </div>
-          </div>
-          <div class="snip">
-            <div class="ph"><span class="led live"></span>TOP STORIES<span class="ph-r">RANKED BY IMPACT</span></div>
-            <div class="bd" id="termTop" style="padding-top:4px">
-              <div class="trow-top"><span class="tk">01</span><div><p class="whl" style="margin:0">Core CPI re-accelerates on shelter and services</p><div class="wmeta"><span>OFFICIAL</span><span class="stag">SCORED</span><span class="iimp c-bear">NQ &minus;28</span><span class="iimp c-bear">ES &minus;19</span></div></div></div>
-              <div class="trow-top"><span class="tk">02</span><div><p class="whl" style="margin:0">Refinery outage extends into a second week</p><div class="wmeta"><span>WEB</span><span class="stag">SCORED</span><span class="iimp c-bull">RB +22</span></div></div></div>
-              <div class="trow-top"><span class="tk">03</span><div><p class="whl" style="margin:0">Treasury refunding holds coupon sizes steady</p><div class="wmeta"><span>OFFICIAL</span><span class="stag">SCORED</span><span class="iimp c-bull">ZN +6</span></div></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="tcol">
-          <div class="snip">
-            <div class="ph"><span class="led amb"></span>CALENDAR — T-MINUS</div>
-            <div class="bd">
-              <div class="calrow"><div><div class="cal-t"><span class="car">›</span>CPI · Core m/m</div><div class="cal-sub"><span class="timeflag">HOT</span><span class="symtag">NQ</span><span class="symtag">ES</span><span class="symtag">ZN</span></div></div><div><b class="cdn soon">00:09</b><span class="cd-l">T-MINUS</span></div></div>
-              <div class="calrow"><div><div class="cal-t"><span class="car">›</span>Crude inventories</div><div class="cal-sub"><span class="symtag">CL</span><span class="symtag">RB</span></div></div><div><b class="cdn">02:31</b><span class="cd-l">T-MINUS</span></div></div>
-              <div class="calrow"><div><div class="cal-t"><span class="car">›</span>FOMC minutes</div><div class="cal-sub"><span class="symtag">ES</span><span class="symtag">ZN</span><span class="symtag">GC</span></div></div><div><b class="cdn">06:00</b><span class="cd-l">T-MINUS</span></div></div>
-            </div>
-          </div>
-          <div class="snip">
-            <div class="ph"><span class="led"></span>✦ EXPLAIN</div>
-            <div class="bd">
-              <span class="klab">WHY NQ IS BEARISH</span>
-              <p class="extxt" style="margin-top:7px">Three supply-chain stories inside an hour, all pointing the same way. Only one is corroborated, so confidence is held at 58%.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      </div>
-      <div class="termticker">
-        <span class="tt-tag"><span class="led"></span>CROSSING</span>
-        <span class="tt-win"><span class="tt-track" id="ttTrack">
-          <span class="tt-item"><span>Nvidia server-rack supplier lead times stretch to 40 weeks</span><b class="c-bear">NQ &minus;12</b></span>
-          <span class="tt-item"><span>EIA crude build lands under the consensus range</span><b class="c-bull">CL +19</b></span>
-          <span class="tt-item"><span>ECB sources: December decision still open, no consensus</span><b class="c-bear">6E &minus;9</b></span>
-          <span class="tt-item"><span>US jobless claims fall for a third straight week</span><b class="c-bear">ZN &minus;7</b></span>
-          <span class="tt-item"><span>OPEC+ delegates signal output plan unchanged next quarter</span><b class="c-bull">CL +11</b></span>
-          <span class="tt-item"><span>Nvidia server-rack supplier lead times stretch to 40 weeks</span><b class="c-bear">NQ &minus;12</b></span>
-          <span class="tt-item"><span>EIA crude build lands under the consensus range</span><b class="c-bull">CL +19</b></span>
-          <span class="tt-item"><span>ECB sources: December decision still open, no consensus</span><b class="c-bear">6E &minus;9</b></span>
-          <span class="tt-item"><span>US jobless claims fall for a third straight week</span><b class="c-bear">ZN &minus;7</b></span>
-          <span class="tt-item"><span>OPEC+ delegates signal output plan unchanged next quarter</span><b class="c-bull">CL +11</b></span>
-        </span></span>
-        <span class="tt-sim">ILLUSTRATIVE · SIMULATED</span>
-      </div>
     </div>
   </div>
 
   <div class="ovhero-in">
-    <h1 id="hero-h">Start trading <span class="grad-text">better today.</span></h1>
-    <p class="lede">NewsBerri analyzes live news feeds and tells you what every headline means for the futures you trade — with alerts before and after the big releases.</p>
+    <span class="eychip">INSIDE THE TERMINAL</span>
+    <h1 id="hero-h">The whole desk, <span class="grad-text">on one screen.</span></h1>
     <div class="cta-row">
       <a class="cta-big" href="signin.html">TRY IT NOW — 7-DAY TRIAL</a>
       <a class="cta-demo" href="demo.html">TRY THE DEMO — NO SIGN-UP</a>
     </div>
-    <p class="undercta">42 contracts · 7 asset classes · from $19/mo</p>
+    <p class="undercta">Everything below is the real thing — click around in it</p>
   </div>
 </section>
 
-<!-- ==================== 2 · STATS ==================== -->
-<section class="band band-deep" style="padding:0" aria-label="Product facts">
+
+<!-- ==================== 2 · IT SITS BESIDE YOUR PLATFORM ==================== -->
+<section class="band band-raise band-fade band-seam ctr" aria-labelledby="req-h">
   <div class="wrap">
-    <div class="ovstats rv" data-anim="stats">
-      <div class="stat"><b class="sv"><span class="ct" data-n="42">42</span></b><span class="sk">FUTURES CONTRACTS</span></div>
-      <div class="stat"><b class="sv"><span class="ct" data-n="7">7</span></b><span class="sk">ASSET CLASSES</span></div>
-      <div class="stat"><b class="sv"><span class="ct" data-n="24">24</span><span class="su">/5</span></b><span class="sk">NEWS COVERAGE</span></div>
-      <div class="stat"><b class="sv">$<span class="ct" data-n="19">19</span><span class="su">/MO</span></b><span class="sk">PRICING FROM — EVERY TIER</span></div>
-    </div>
-  </div>
-</section>
+    <span class="eybrow">RUNNING IT</span>
+    <h2 class="sectitle-xl" id="req-h">It sits beside <span class="grad-text">your platform</span></h2>
+    <p class="secsub">NewsBerri isn't trying to replace your charts. It's the other half of the desk — the half that reads. Run it however it fits your screen.</p>
 
-<!-- ==================== 3 · PRICING — DIRECTLY UNDER THE INTRO ==================== -->
-<section class="band band-raise band-fade band-seam band-pricing ctr" aria-labelledby="price-h">
-  <div class="wrap">
-    <span class="eybrow">PICK A PLAN</span>
-    <h2 class="sectitle-xl" id="price-h">Three tiers. <span class="grad-text">Every one gets the whole feed.</span></h2>
-    <p class="secsub">Every contract, every source, on all three. What changes is how far the alerts follow you. Seven days free — card required, cancel in one click.</p>
-
-    <div class="ovplans">
-      <article class="ovplan rv d1" aria-labelledby="p-core">
-        <h3 class="pname" id="p-core">CORE</h3>
-        <p class="pprice">$19<sub>/MO</sub></p>
-        <p class="palt">OR $190 A YEAR — 2 MONTHS FREE</p>
-        <ul>
-          <li><b>All 42 contracts</b> &amp; sector reads — the whole feed</li>
-          <li>The live tape, three speeds — provisional, scored, corroborated</li>
-          <li>Top Stories &amp; the AI Overview of your day</li>
-          <li>The calendar, with beat / in-line / miss scenarios</li>
-          <li>✦ Explain — 15 a day</li>
-          <li>3 alert rules — in-app, audio, browser</li>
-          <li>1 device</li>
-        </ul>
-        <div class="pcta"><a class="btn-key" href="signin.html">START THE TRIAL</a></div>
-      </article>
-
-      <article class="ovplan feat rv d2" aria-labelledby="p-pro">
-        <h3 class="pname" id="p-pro">PRO <span class="popchip">MOST POPULAR</span></h3>
-        <p class="pprice">$39<sub>/MO</sub></p>
-        <p class="palt">OR $390 A YEAR — 2 MONTHS FREE</p>
-        <ul>
-          <li class="plus"><b>Everything in Core</b>, plus:</li>
-          <li>Unlimited ✦ Explain &amp; scenarios</li>
-          <li>The Event Guardrail — ARMED, HOT and LIVE at 30, 10 and 2 minutes out</li>
-          <li>20 alert rules, including push to your phone</li>
-          <li>Discord webhooks &amp; keyword triggers</li>
-          <li>Morning Sift &amp; Away Digest</li>
-          <li>The desktop overlay app · 3 devices · priority support</li>
-        </ul>
-        <div class="pcta"><a class="btn-key" href="signin.html">START THE TRIAL</a></div>
-      </article>
-
-      <article class="ovplan ghost rv d3" aria-labelledby="p-desk">
-        <h3 class="pname" id="p-desk">DESK <span class="soonchip">IN THE WORKS</span></h3>
-        <p class="pprice">Talk to us</p>
-        <p class="palt">FOR SMALL TRADING FLOORS</p>
-        <ul>
-          <li>Seats for a whole desk, one bill</li>
-          <li>Shared layouts &amp; shared alert rules</li>
-          <li>Team-wide accuracy ledger</li>
-          <li>Onboarding for the group</li>
-        </ul>
-        <div class="pcta"><a class="btn-brk" href="mailto:support@newsberri.com">TALK TO US</a></div>
-      </article>
-    </div>
-
-    <p class="plans-note">PRICES IN USD · THE RATE YOU JOIN AT IS YOURS FOR LIFE · <a href="pricing.html" style="color:var(--ink-2);border-bottom:1px solid var(--hair-strong)">FULL COMPARISON →</a></p>
-  </div>
-</section>
-
-<!-- ==================== 4 · WHY — THE INSTITUTIONAL DESK COMPARISON ==================== -->
-<section class="band band-fade-ras band-fade band-why ctr" aria-labelledby="why-h">
-  <div class="wrap">
-    <p class="why-kicker">Same news. <span class="grad-text">Same speed.</span></p>
-    <h2 class="sectitle-xl" id="why-h">Why <span class="grad-text">NewsBerri</span></h2>
-    <p class="secsub">The institutional desk isn't faster than you any more — it's just more expensive. Compare the bills.</p>
-
-    <div class="vs" style="margin:0 auto 64px;text-align:left">
-      <div class="vpan rv d1" data-anim="count" role="group" aria-label="Published institutional desk costs">
-        <p class="vh">THE INSTITUTIONAL DESK</p>
-        <div class="vline"><span>Newsquawk<i class="vscope">Live squawk audio — $199 for one asset class · $399 for all</i></span><span class="va">$199–399 / MO</span></div>
-        <div class="vline"><span>Benzinga Pro<i class="vscope">Stocks-first news terminal</i></span><span class="va">$37–197 / MO</span></div>
-        <div class="vline"><span>Bloomberg Terminal<i class="vscope">The whole institutional desk</i></span><span class="va">≈ $2,400+ / MO</span></div>
-        <div class="vline"><span>An analyst to read the tape</span><span class="va">A SALARY</span></div>
-        <div class="vtotal"><span class="micro">THE MONTHLY BILL</span><b id="vsTotal">≈$3,000+</b></div>
+    <!-- two ways to run it -->
+    <div class="viewmodes">
+      <div class="vmode rv d1">
+        <div class="vm-art" aria-hidden="true">
+          <span class="vm-chart"></span>
+          <span class="vm-overlay">
+            <i class="vm-bar"></i>
+            <i class="vm-row"></i><i class="vm-row short"></i><i class="vm-row"></i>
+          </span>
+        </div>
+        <div class="vm-txt">
+          <p class="vm-k">COMPACT OVERLAY</p>
+          <h3>Floats on top of your charts</h3>
+          <p>A narrow strip that sits over your platform and stays on top. Scores, the tape and the countdown, nothing else — sized so it never covers the thing you're watching. Drag it anywhere, pin it to one contract.</p>
+        </div>
       </div>
-      <div class="vsdiv" aria-hidden="true"><b>VS</b></div>
-      <div class="vpan us rv d2" role="group" aria-label="NewsBerri">
-        <p class="vh">NEWSBERRI</p>
-        <p class="voffer">All of it. <span class="grad-text">From $19/mo.</span></p>
-        <p class="vnote">Same sources, same speed, 42 markets and counting — on every tier.</p>
-        <a class="btn-brk" href="pricing.html" style="margin-top:auto;align-self:flex-start;padding-left:0">COMPARE TIERS →</a>
-      </div>
-    </div>
-    <p class="micro" style="margin:0 0 72px">PUBLISHED LIST PRICING, JULY 2026 — CHECK WITH EACH VENDOR</p>
-
-    <div class="whygrid">
-      <div class="whycell rv d1"><p class="wn grad-text">01</p><h3>News as fast as the big desks</h3><p>The same sources at the same speed — headlines delivered the second they hit, not after someone writes them up.</p></div>
-      <div class="whycell rv d2"><p class="wn grad-text">02</p><h3>Scored for the contract you trade</h3><p>For each market, NewsBerri evaluates how every headline affects it — and tells you why, in a sentence.</p></div>
-      <div class="whycell rv d3"><p class="wn grad-text">03</p><h3>Alerts before and after they hit</h3><p>Heads-ups and audio before scheduled releases, and on major headlines — so a big release never catches you mid-trade.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ==================== 5 · INSIDE THE APP — TEASER FOR THE NEW PAGE ==================== -->
-<section class="band band-raise band-fade band-seam ctr" aria-labelledby="app-h">
-  <div class="wrap">
-    <span class="eybrow">THE TERMINAL</span>
-    <h2 class="sectitle-xl" id="app-h">This is what you <span class="grad-text">actually get.</span></h2>
-    <p class="secsub">One screen, built to sit beside your platform. Every panel on the app page is the real thing — click around in it.</p>
-
-    <div class="teaser rv">
-      <div class="shell">
-        <div class="shellbar"><i></i><i></i><i></i><span>APP.NEWSBERRI.COM</span></div>
-        <div class="tgrid">
-          <div>
-            <div class="snip">
-              <div class="ph"><span class="led live"></span>CONTRACT BOARD</div>
-              <div class="bd">
-                <div class="crow2"><span class="sym">NQ</span><span class="nm">Nasdaq-100 E-mini</span><span class="cbar"><i style="background:var(--bear);right:50%;width:17%"></i></span><span class="idx c-bear">−34</span></div>
-                <div class="crow2"><span class="sym">CL</span><span class="nm">WTI Crude</span><span class="cbar"><i style="background:var(--bull);left:50%;width:21%"></i></span><span class="idx c-bull">+41</span></div>
-                <div class="crow2"><span class="sym">GC</span><span class="nm">Gold</span><span class="cbar"><i style="background:var(--bull);left:50%;width:9%"></i></span><span class="idx c-bull">+18</span></div>
-                <div class="crow2"><span class="sym">ZN</span><span class="nm">10-Year Note</span><span class="cbar"><i style="background:var(--neutral);left:50%;width:3%"></i></span><span class="idx c-neu">+5</span></div>
-              </div>
-            </div>
-            <div class="snip">
-              <div class="ph"><span class="led amb"></span>CALENDAR — T-MINUS</div>
-              <div class="bd">
-                <div class="calrow"><div><div class="cal-t">CPI · Core m/m</div><div class="cal-sub"><span class="timeflag">HOT</span><span class="symtag">NQ</span><span class="symtag">ZN</span></div></div><div><b class="cdn soon">00:09</b><span class="cd-l">T-MINUS</span></div></div>
-                <div class="calrow"><div><div class="cal-t">Crude inventories</div><div class="cal-sub"><span class="symtag">CL</span></div></div><div><b class="cdn">02:31</b><span class="cd-l">T-MINUS</span></div></div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="snip">
-              <div class="ph"><span class="led live"></span>LIVE FEED<span class="ph-r">SENTIMENT · SIMULATED</span></div>
-              <div class="lcdmini">
-                <div class="sym"><b>NQ</b><span>NASDAQ-100 E-MINI · 14 STORIES/1H</span></div>
-                <div class="big c-bear">−34</div>
-                <div class="lab">STRONG BEAR</div>
-              </div>
-              <div class="bd" style="padding-top:4px">
-                <div class="wrow"><span class="wsig" style="background:var(--bear)"></span><span class="wimp">41</span><div><p class="whl" style="margin:0">Nvidia server-rack supplier lead times stretch to 40 weeks</p><div class="wmeta"><span>JUST NOW</span><span class="stag">SCORED · 2S</span><span class="iimp c-bear">NQ −12</span></div></div></div>
-                <div class="wrow"><span class="wsig" style="background:var(--bull)"></span><span class="wimp">33</span><div><p class="whl" style="margin:0">EIA crude build lands under the consensus range</p><div class="wmeta"><span>1M AGO</span><span class="stag">SCORED</span><span class="iimp c-bull">CL +19</span></div></div></div>
-                <div class="wrow"><span class="wsig" style="background:var(--hair-strong)"></span><span class="wimp">28</span><div><p class="whl" style="margin:0">ECB sources: December decision still open, no consensus yet</p><div class="wmeta"><span>4M AGO</span><span class="stag">SCORED</span><span class="iimp c-bear">6E −9</span></div></div></div>
-              </div>
-            </div>
-            <div class="snip">
-              <div class="ph"><span class="led"></span>✦ EXPLAIN</div>
-              <div class="bd"><span class="klab">WHY NQ IS BEARISH</span><p class="extxt" style="margin-top:7px">Three supply-chain stories inside an hour, all pointing the same way. Confidence held at 58% — only one is corroborated so far.</p></div>
-            </div>
-          </div>
+      <div class="vmode rv d2">
+        <div class="vm-art" aria-hidden="true">
+          <span class="vm-full">
+            <i class="vm-bar"></i>
+            <span class="vm-grid"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </span>
+        </div>
+        <div class="vm-txt">
+          <p class="vm-k">FULL VIEW</p>
+          <h3>The whole desk on its own screen</h3>
+          <p>Every panel at once on a second monitor or a spare tab — the board, the tape, Top Stories, the calendar and the Guardrail side by side. Same terminal, same data; you're just giving it the room.</p>
         </div>
       </div>
     </div>
+    <p class="vm-note">Switch between them any time — it's one account, and your layout follows you.</p>
 
-    <div class="cta-row" style="margin-top:48px"><a class="cta-demo" href="app.html">SEE EVERYTHING IN THE APP →</a></div>
-  </div>
-</section>
-
-<!-- ==================== 6 · CLOSING CTA ==================== -->
-<section class="band band-fade band-seam band-glow ctr" aria-labelledby="ea-h">
-  <span class="glow" aria-hidden="true"></span>
-  <div class="wrap">
-    <h2 class="sectitle-xl" id="ea-h">The rate you join at is <span class="grad-text">yours for life.</span></h2>
-    <p class="secsub">Whatever your plan costs when you join is what it costs from then on. You also get a direct line to the people building NewsBerri — what you ask for shapes what ships next.</p>
-    <div class="cta-row">
-      <a class="cta-big" href="signin.html">START THE 7-DAY TRIAL</a>
-      <a class="cta-demo" href="demo.html">TRY THE DEMO FIRST</a>
+    <!-- download: desktop builds are the ones you choose between -->
+    <div class="dlpick">
+      <input class="dlr" type="radio" name="os" id="os-win" checked>
+      <input class="dlr" type="radio" name="os" id="os-mac">
+      <div class="dl-seg" role="group" aria-label="Choose your desktop platform">
+        <label for="os-win">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.2 4.5v6.9H3V5.5Zm0 13L10.2 19.5v-6.8H3v5.8Zm8.6 1.2L21 21V12.7h-9.4v7Zm0-15.4v7h9.4V3l-9.4 1.3Z"/></svg>
+          WINDOWS
+        </label>
+        <label for="os-mac">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.3 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.9-3-.8-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.2 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.2.9-1.2 1.3-2.5 1.3-2.5s-2.5-1-2.5-3.6ZM14.1 5.4c.6-.8 1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3Z"/></svg>
+          MACOS
+        </label>
+      </div>
+      <div class="dl-row">
+        <a class="btn-dl dl-win" href="signin.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
+          DOWNLOAD FOR WINDOWS
+        </a>
+        <a class="btn-dl dl-mac" href="signin.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
+          DOWNLOAD FOR MACOS
+        </a>
+        <a class="cta-demo" href="demo.html">TRY THE DEMO — NO SIGN-UP</a>
+      </div>
     </div>
-    <p class="riskline rv" style="margin:64px auto 0;text-align:left"><span class="rk">Risk</span><span>Futures trading carries a substantial risk of loss and isn't right for everyone. NewsBerri is informational only — no advice, no recommendations, no profit claims.</span></p>
-  </div>
-</section>
+    <p class="dl-note">Both views come with the desktop app. Also on <b>iPhone</b>, <b>Android</b> and in <b>any browser</b> — nothing to install, same account.</p>
 
-<!-- ==================== 7 · FAQ — LAST THING ON THE PAGE, COLLAPSED ==================== -->
-<section class="band band-raise band-fade band-seam band-faq ctr" aria-labelledby="faq-h">
-  <div class="wrap">
-    <span class="eybrow">BEFORE YOU ASK</span>
-    <h2 class="sectitle-xl" id="faq-h">Things people ask us</h2>
-    <div class="faqlist">
-      <details class="faq">
-        <summary><span>Do you tell me what to trade?</span><i aria-hidden="true"></i></summary>
-        <div class="faqbody"><p>No. NewsBerri reads the news and scores what it means for each contract. What you do with that read is yours — we're informational only.</p></div>
-      </details>
-      <details class="faq">
-        <summary><span>Do you show prices or charts?</span><i aria-hidden="true"></i></summary>
-        <div class="faqbody"><p>Never. No price levels, no candlesticks, anywhere. You already have a platform for that — NewsBerri is the half of the desk it doesn't cover.</p></div>
-      </details>
-      <details class="faq">
-        <summary><span>What happens after the 7 days?</span><i aria-hidden="true"></i></summary>
-        <div class="faqbody"><p>You're reminded before the trial ends, and you can cancel in one click. If you stay, the rate you joined at is yours for as long as you keep the plan.</p></div>
-      </details>
-      <details class="faq">
-        <summary><span>Will it run beside my platform?</span><i aria-hidden="true"></i></summary>
-        <div class="faqbody"><p>That's what it's built for. It's a browser terminal on any machine, and Pro adds a desktop overlay that sits on top of your charts.</p></div>
-      </details>
-      <details class="faq">
-        <summary><span>Which tier should I start on?</span><i aria-hidden="true"></i></summary>
-        <div class="faqbody"><p>Core if you want the whole feed at your desk. Pro if you want it watching while you're away from it. Desk is for a floor sharing one bill — talk to us. All three tiers carry every contract and every source.</p></div>
-      </details>
-      <details class="faq">
-        <summary><span>Where do the scores come from?</span><i aria-hidden="true"></i></summary>
-        <div class="faqbody"><p>Every headline is scored once, server-side, against each contract it touches — then the same read goes out to everyone at the same moment. Nobody gets a different number to you.</p></div>
-      </details>
+    <div class="whygrid" style="margin-top:76px">
+      <div class="whycell rv d1"><p class="wn grad-text">01</p><h3>Beside your charts, not over them</h3><p>Run the full view on a second monitor, or float the compact overlay on top of your platform. It's built to be glanced at, not stared at.</p></div>
+      <div class="whycell rv d2"><p class="wn grad-text">02</p><h3>No prices, ever</h3><p>No levels, no candlesticks, anywhere in the product. Your platform already does that job — this one reads the news for the contract you're in.</p></div>
+      <div class="whycell rv d3"><p class="wn grad-text">03</p><h3>Informational only</h3><p>NewsBerri tells you what the news means for a market. It never tells you what to do about it — no advice, no recommendations, no profit claims.</p></div>
     </div>
   </div>
 </section>
+
+<!-- ==================== 3 · THE WORKING PANELS ==================== -->
+<section class="band band-fade band-fade-vio" style="padding-top:104px;padding-bottom:0" aria-labelledby="offer-h">
+  <div class="wrap inner">
+    <div class="ctr" style="margin-bottom:12px">
+      <span class="eybrow">THE REAL THING</span>
+      <h2 class="sectitle-xl" id="offer-h">Every panel below <span class="grad-text">works.</span></h2>
+      <p class="secsub">These aren't screenshots — they're the actual components, running on this page. Click a headline, cycle the guardrail, open a scenario tree.</p>
+    </div>
+    <!-- ———— GROUP 1 · violet ———— -->
+    <div class="gvio">
+      <div class="gbar vio rv"><h3>Understand what's moving the market and why</h3></div>
+
+      <article class="svc rv" id="p-tape">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led live"></span>LIVE FEED<span class="ph-r"><span class="hint">CLICK THE TOP ROW</span></span></div>
+            <div class="bd" style="padding-top:4px">
+              <div class="wrow tape-int" role="button" tabindex="0" aria-pressed="false" aria-label="Score this provisional headline">
+                <span class="wsig"></span>
+                <span class="wimp" aria-hidden="true"></span>
+                <div>
+                  <p class="whl" style="margin:0">Nvidia server-rack supplier lead times stretch to 40 weeks — trade press</p>
+                  <div class="wmeta"><span>40S AGO</span><span>WEB</span>
+                    <span class="provtag pv-only">PROV · AWAITING SCORE</span>
+                    <span class="stag sc-only">SCORED · 2S</span>
+                    <span class="iimp c-bear sc-only">NQ −12</span><span class="iimp c-bear sc-only">ES −8</span>
+                  </div>
+                </div>
+              </div>
+              <div class="wrow">
+                <span class="wsig" style="background:var(--bull)"></span>
+                <span class="wimp">34</span>
+                <div>
+                  <p class="whl" style="margin:0">EIA: crude inventories draw 2.1M bbl vs 1.4M consensus</p>
+                  <div class="wmeta"><span>3H AGO</span><span>OFFICIAL</span><span>SCORED</span><span class="iimp c-bull">CL +21</span><span class="iimp c-bull">RB +14</span></div>
+                </div>
+              </div>
+              <div class="wrow loud">
+                <span class="wsig" style="background:var(--bear)"></span>
+                <span class="wimp">92</span>
+                <div>
+                  <p class="whl" style="margin:0">CPI m/m +0.4% vs +0.3% est — core +0.35%, shelter re-accelerates</p>
+                  <div class="wmeta"><span>5H AGO</span><span>OFFICIAL</span><span>CORROB ×3</span><span class="iimp c-bear">NQ −62</span><span class="iimp c-bear">ES −55</span><span class="iimp more">+4 MORE</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>The live tape, in three steps</h4>
+          <p>Headlines are shown the instant they appear, marked provisional, then score themselves in place. When a second source confirms, the read firms up to corroborated.</p>
+        </div>
+      </article>
+
+      <article class="svc flip rv" id="p-board">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led"></span>CONTRACTS<span class="ph-r">SENTIMENT<span class="hint">PICK A CONTRACT</span></span></div>
+            <div class="lcdmini">
+              <div class="sym"><b id="ctrSym">NQ</b><span id="ctrName">NASDAQ-100 E-MINI</span></div>
+              <div class="big c-bear" id="ctrIdx">−34</div>
+              <div class="lab" id="ctrLab">STRONG BEAR</div>
+              <div class="met" style="flex:1;min-width:110px"><span class="k">CONF</span><div class="track"><i id="ctrConfI" style="background:var(--bull);color:var(--bull);width:58%"></i></div><b id="ctrConfV">58%</b></div>
+            </div>
+            <div class="bd" style="padding-top:4px" id="ctrRail">
+              <div class="crow2 sel" data-sym="NQ" role="button" tabindex="0" aria-pressed="true" aria-label="Show the NQ read"><span class="sym">NQ</span><span class="nm">NASDAQ-100 E-MINI</span><span class="cbar"><i style="background:var(--bear);color:var(--bear);right:50%;width:17%"></i></span><span class="idx c-bear">−34</span></div>
+              <div class="crow2" data-sym="ES" role="button" tabindex="0" aria-pressed="false" aria-label="Show the ES read"><span class="sym">ES</span><span class="nm">S&amp;P 500 E-MINI</span><span class="cbar"><i style="background:var(--bear);color:var(--bear);right:50%;width:14%"></i></span><span class="idx c-bear">−28</span></div>
+              <div class="crow2" data-sym="ZN" role="button" tabindex="0" aria-pressed="false" aria-label="Show the ZN read"><span class="sym">ZN</span><span class="nm">10-YR T-NOTE</span><span class="cbar"><i style="background:var(--bear);color:var(--bear);right:50%;width:11%"></i></span><span class="idx c-bear">−22</span></div>
+              <div class="crow2" data-sym="GC" role="button" tabindex="0" aria-pressed="false" aria-label="Show the GC read"><span class="sym">GC</span><span class="nm">GOLD</span><span class="cbar"><i style="background:var(--bull);color:var(--bull);left:50%;width:12%"></i></span><span class="idx c-bull">+24</span></div>
+              <div class="crow2" data-sym="CL" role="button" tabindex="0" aria-pressed="false" aria-label="Show the CL read"><span class="sym">CL</span><span class="nm">WTI CRUDE OIL</span><span class="cbar"><i style="background:var(--bull);color:var(--bull);left:50%;width:10%"></i></span><span class="idx c-bull">+21</span></div>
+              <div class="crow2" data-sym="ZW" role="button" tabindex="0" aria-pressed="false" aria-label="Show the ZW read"><span class="sym">ZW</span><span class="nm">CHICAGO WHEAT</span><span class="cbar"><i style="background:var(--neutral);color:var(--neutral);left:50%;width:3%"></i></span><span class="idx c-neu">+6</span></div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>A score for all 42 contracts</h4>
+          <p>The same story can be bad for the Nasdaq and good for gold, so every score is per market — 42 of them across 7 asset classes, on every plan.</p>
+        </div>
+      </article>
+
+      <article class="svc rv" id="p-explain">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led"></span>✦ EXPLAIN + AI OVERVIEW<span class="ph-r"><span class="hint">TAP THE HEADLINE</span></span></div>
+            <div class="bd" style="padding-top:4px">
+              <div class="wrow" id="exRow" role="button" tabindex="0" aria-expanded="false" aria-controls="exDrawer" style="border-bottom:0">
+                <span class="wsig" style="background:var(--bull)"></span>
+                <span class="wimp">74</span>
+                <div>
+                  <p class="whl" style="margin:0">Fed governor calls the June print a bump rather than a trend — still sees two cuts this year</p>
+                  <div class="wmeta"><span>2H AGO</span><span>OFFICIAL</span><span class="iimp more">✦ EXPLAIN <span id="exCar">▸</span></span></div>
+                </div>
+              </div>
+              <div class="exdrawer" id="exDrawer">
+                <span class="klab">WHAT IT MEANS</span>
+                <p class="extxt">A Fed governor pushed back on the hot inflation print within two hours, calling it noise rather than a trend change. That's the main thing keeping the bear read on NQ from running further.</p>
+                <span class="klab">SCORED IMPACT — SENTIMENT, NOT PRICE</span>
+                <div class="chiprow"><span class="iimp c-bull">NQ +18</span><span class="iimp c-bull">ES +15</span><span class="iimp c-bull">GC +12</span></div>
+              </div>
+              <div style="border-top:1px solid var(--hair);margin-top:8px;padding:8px 2px 2px">
+                <span class="klab" style="display:block;margin-bottom:4px">AI OVERVIEW — NQ</span>
+                <p class="extxt">Hot June core CPI re-prices the front end and knocks duration-heavy tech; the pushback from the Fed is capping the downside for now.</p>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>✦ Explain + the AI overview</h4>
+          <p>Tap any headline for what the story says and why it scored that way. The AI overview keeps a one-paragraph read of everything currently affecting the market.</p>
+        </div>
+      </article>
+    </div>
+
+    <!-- ———— GROUP 2 · raspberry ———— -->
+    <div class="gras">
+      <div class="gbar ras rv"><h3>Don't get caught out by a headline</h3></div>
+
+      <article class="svc flip rv" id="p-cal">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led amb"></span>ECON CALENDAR<span class="ph-r"><span class="hint">CLICK THE RELEASE</span></span></div>
+            <div class="bd" style="padding-top:4px">
+              <div class="cal-item" id="calItem">
+                <div class="calrow" id="calRow" role="button" tabindex="0" aria-expanded="false" aria-controls="calScen">
+                  <div>
+                    <p class="cal-t" style="margin:0"><span class="car" id="calCar" aria-hidden="true">▸</span>10-Yr Note Auction <span class="timeflag">IMMINENT</span></p>
+                    <div class="cal-sub"><span class="symtag">NQ</span><span class="symtag">ZN</span><span class="symtag">ZB</span><span>+5</span><span>GUARDRAIL ARMED · HIST ±0.1% TYP 15M (N=15)</span></div>
+                  </div>
+                  <div><span class="cdn soon">18m</span><span class="cd-l">TO RELEASE</span></div>
+                </div>
+                <div class="scen" id="calScen">
+                  <div class="sc"><span class="sctag c-bull">STRONG DEMAND</span><span class="sctxt">Duration relief — the bear reads on NQ and ZN likely ease toward neutral within the hour.</span></div>
+                  <div class="sc"><span class="sctag c-neu">IN LINE</span><span class="sctxt">Little new information — this morning's CPI story keeps the wheel.</span></div>
+                  <div class="sc"><span class="sctag c-bear">WEAK DEMAND</span><span class="sctxt">Second leg of the repricing — bear reads extend across rate-sensitive contracts.</span></div>
+                </div>
+              </div>
+              <div class="calrow" style="border-bottom:0">
+                <div>
+                  <p class="cal-t" style="margin:0"><span class="car" aria-hidden="true"> </span>Initial Jobless Claims</p>
+                  <div class="cal-sub"><span class="symtag">NQ</span><span class="symtag">ES</span><span class="symtag">ZB</span><span>FCST <b>232K</b> · PREV <b>228K</b></span></div>
+                </div>
+                <div><span class="cdn">18h 48m</span><span class="cd-l">TO RELEASE</span></div>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>The calendar, with the what-ifs written</h4>
+          <p>Every scheduled release that touches your contract, with all possible outcomes sketched before it happens.</p>
+        </div>
+      </article>
+
+      <article class="svc rv" id="p-guard">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led amb"></span>EVENT GUARDRAIL<span class="ph-r"><span id="grT">CORE CPI · T−28M</span><span class="hint">CLICK THE CHIPS</span></span></div>
+            <div class="bd" style="display:flex;flex-direction:column;gap:11px">
+              <button class="gcycle" id="grCycle" aria-label="Armed, hot, live — advance the Guardrail to its next stage">
+                <span class="schip alert"><b>ARMED</b> T−30</span>
+                <span class="schip dim"><b>HOT</b> T−10</span>
+                <span class="schip dim"><b>LIVE</b> T−2</span>
+              </button>
+              <p class="extxt" id="grCap" aria-live="polite" style="margin:0">ARMED — the release is 30 minutes out, and the countdown has started.</p>
+              <div class="chiprow">
+                <span class="schip">HIST ±0.1% TYP 15M (N=15)</span>
+                <span class="schip">TOPSTEP &amp; APEX EVENT RULES · ON SCREEN</span>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>The Guardrail — a heads-up, three times</h4>
+          <p>ARMED at 30 minutes out, HOT at ten, LIVE at two.</p>
+        </div>
+      </article>
+
+      <article class="svc flip rv" id="p-squawk">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led"></span>SQUAWK + ALERTS<span class="ph-r"><span class="hint">PRESS IT</span></span></div>
+            <div class="bd">
+              <div class="chiprow" style="margin-bottom:8px">
+                <button class="schip sqkey" id="sqBtn" aria-label="Press to hear it — the squawk reads this headline out loud"><b id="sqGlyph">▶</b> PRESS TO HEAR IT</button>
+                <span class="schip">IMPACT 92 · CORROB ×3</span>
+                <span class="schip dim" id="sqHint">READS ALOUD IN YOUR BROWSER</span>
+              </div>
+              <div class="wave" id="sqWave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <p class="spoken" style="margin:0 0 10px">“CPI hotter than forecast — core re-accelerating. Read on NQ: strong bear, sentiment minus 34, confidence 58 percent.”</p>
+              <div class="arow" style="border-top:1px solid var(--hair)"><span class="ak">PUSH</span><span class="av">Guardrail steps + loud headlines → phone</span><span class="ast">ON</span></div>
+              <div class="arow"><span class="ak">DISCORD</span><span class="av">#trading-floor webhook · scored headlines</span><span class="ast">ON</span></div>
+              <div class="arow"><span class="ak">KEYWORD</span><span class="av">“OPEC” · any source, any hour</span><span class="ast">ON</span></div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>The squawk — and alerts wherever you are</h4>
+          <p>Important headlines are read out loud. Push, Discord webhooks, keyword alerts and the desktop overlay carry it past the screen.</p>
+        </div>
+      </article>
+
+      <article class="svc rv" id="p-record">
+        <figure class="fig">
+          <div class="snip">
+            <div class="ph"><span class="led"></span>TRACK RECORD<span class="ph-r">PUBLIC LEDGER<span class="hint">HOVER THE TICKS</span></span></div>
+            <div class="bd">
+              <span class="tr-line">SIMULATED LEDGER — <b>HITS AND MISSES</b>, NOTHING HIDDEN</span>
+              <div class="ticks-tl" id="trTicks">
+                <span class="hit"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="hit"></span><span class="fl"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="hit"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="fl"></span><span class="hit"></span><span class="hit"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span><span class="hit"></span><span class="fl"></span><span class="miss"></span><span class="hit"></span><span class="hit"></span><span class="hit"></span><span class="hit"></span><span class="miss"></span><span class="hit"></span>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="txt">
+          <h4>A public track record, misses included</h4>
+          <p>When a read is strong enough to count as a call, it goes on the public ledger and is resolved against what happened next — misses included.</p>
+        </div>
+      </article>
+    </div>
+
+    <p class="riskline rv" style="margin:96px auto 0"><span class="rk">Risk</span><span>Futures trading carries a substantial risk of loss and isn't right for everyone. NewsBerri is informational only — no advice, no recommendations, no profit claims.</span></p>
+  </div>
+</section>
+
+
+
 </main>
-
 
 <!-- ======== CHROME: footer (copy verbatim on every page) ======== -->
 <footer class="colophon">
@@ -1376,20 +1478,108 @@ html.js .exdrawer.open{display:flex}
   }
   $$(".tape-int").forEach(function(row){press(row,function(){scoreRow(row);});});
 
-  /* The contract picker, explain drawer, calendar tree, guardrail, squawk and
-     track-record wiring that used to live here targeted #ctrRail / #exRow /
-     #calRow / #grCycle / #sqBtn / .ticks-tl. None of those elements exist on
-     this page any more, and press() dereferences its argument unguarded, so the
-     first of them threw on every load and killed the rest of this IIFE.
-     They all still live on ov-app.html, which is where those panels moved. */
+  /* ---- contract picker: click the mini-rail, the readout swaps ---- */
+  var SC={
+    NQ:{name:"NASDAQ-100 E-MINI",idx:-34,conf:58},
+    ES:{name:"S&P 500 E-MINI",idx:-28,conf:55},
+    ZN:{name:"10-YR T-NOTE",idx:-22,conf:60},
+    GC:{name:"GOLD",idx:24,conf:51},
+    CL:{name:"WTI CRUDE OIL",idx:21,conf:47},
+    ZW:{name:"CHICAGO WHEAT",idx:6,conf:33}
+  };
+  function sgn(n){return (n>0?"+":n<0?"−":"")+Math.abs(n);}
+  function lab(n){var a=Math.abs(n),d=n>0?"BULL":"BEAR";
+    return a>=30?"STRONG "+d:a>=15?d:a>=8?"LEAN "+d:"NEUTRAL";}
+  function col(n){return Math.abs(n)<8?"var(--neutral)":n>0?"var(--bull)":"var(--bear)";}
+  function pick(sym){
+    var c=SC[sym];if(!c)return;
+    $("#ctrSym").textContent=sym;
+    $("#ctrName").textContent=c.name;
+    var big=$("#ctrIdx");big.textContent=sgn(c.idx);big.style.color=col(c.idx);
+    var l=$("#ctrLab");l.textContent=lab(c.idx);l.style.background=col(c.idx);
+    $("#ctrConfI").style.width=c.conf+"%";
+    $("#ctrConfV").textContent=c.conf+"%";
+    $$("#ctrRail .crow2").forEach(function(r){
+      var on=r.getAttribute("data-sym")===sym;
+      r.classList.toggle("sel",on);r.setAttribute("aria-pressed",String(on));
+    });
+  }
+  $$("#ctrRail .crow2").forEach(function(r){press(r,function(){pick(r.getAttribute("data-sym"));});});
+
+  /* ---- explain drawer ---- */
+  var exRow=$("#exRow"),exDr=$("#exDrawer");
+  press(exRow,function(){
+    var open=exDr.classList.toggle("open");
+    exRow.setAttribute("aria-expanded",String(open));
+    $("#exCar").textContent=open?"▾":"▸";
+  });
+
+  /* ---- calendar scenario tree ---- */
+  var calItem=$("#calItem"),calRow=$("#calRow");
+  press(calRow,function(){
+    var open=calItem.classList.toggle("open");
+    calRow.setAttribute("aria-expanded",String(open));
+    $("#calCar").textContent=open?"▾":"▸";
+  });
+
+  /* ---- guardrail: cycle ARMED → HOT → LIVE, explain each stage plainly ---- */
+  var GR=[
+    {t:"CORE CPI · T−28M",chip:0,cap:"ARMED — the release is 30 minutes out, and the countdown has started."},
+    {t:"CORE CPI · T−9M",chip:1,cap:"HOT — ten minutes to go. Toast, notification and a spoken callout, with your firm's release rules on screen."},
+    {t:"CORE CPI · T−90S",chip:2,cap:"LIVE — two minutes. The print is about to cross; you'll hear it the moment it lands."}
+  ];
+  var gi=0,grChips=$$("#grCycle .schip");
+  function grShow(){
+    var g=GR[gi];
+    grChips.forEach(function(ch,i){
+      ch.classList.toggle("alert",i===g.chip);
+      ch.classList.toggle("dim",i!==g.chip);
+    });
+    $("#grT").textContent=g.t;
+    $("#grCap").textContent=g.cap;
+  }
+  $("#grCycle").addEventListener("click",function(){gi=(gi+1)%GR.length;grShow();});
+  grShow();
+
+  /* ---- squawk (SpeechSynthesis, click-only, graceful fallback) ---- */
+  var sqBtn=$("#sqBtn"),sqWave=$("#sqWave"),sqHint=$("#sqHint");
+  var SQ="NewsBerri squawk demo. Impact 92. CPI hotter than forecast — core re-accelerating. Read on N Q: strong bear. Sentiment minus 34, confidence 58 percent.";
+  var NOSQ="NO SPEECH IN THIS BROWSER — THE LINE BELOW IS WHAT IT SAYS";
+  function sqOff(){sqBtn.classList.remove("on");sqWave.classList.remove("talking");$("#sqGlyph").textContent="▶";}
+  sqBtn.addEventListener("click",function(){
+    if(!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined"){sqHint.textContent=NOSQ;return;}
+    if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();sqOff();return;}
+    try{
+      var u=new SpeechSynthesisUtterance(SQ);
+      u.rate=1.02;u.pitch=.95;
+      u.onstart=function(){sqBtn.classList.add("on");sqWave.classList.add("talking");$("#sqGlyph").textContent="■";};
+      u.onend=sqOff;u.onerror=sqOff;
+      window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+    }catch(e){sqHint.textContent=NOSQ;}
+  });
+
+  /* ---- track record: hover tips on every tick ---- */
+  var NOTES={hit:"HIT — the read matched what came next",miss:"MISS — the read went the wrong way",fl:"FLAT — expired neutral, no call made"};
+  $$(".ticks-tl").forEach(function(strip){
+    $$("span",strip).forEach(function(t,i){
+      var k=t.classList.contains("hit")?"hit":t.classList.contains("miss")?"miss":"fl";
+      var note="CALL #"+(i+1)+" · "+NOTES[k];
+      t.setAttribute("data-tip",note);
+      /* the visible tip stays hover-only per the brief; assistive tech gets the same note */
+      t.setAttribute("role","img");
+      t.setAttribute("aria-label",note);
+    });
+  });
+
+  pick("NQ");
 })();
 </script>
 
 <!-- =====================================================================
 OVERHAUL SCRIPT — hero background element.
-Builds the drifting tape and runs the (mockup-only) mode switcher.
-Both are decorative: with JS off or reduced motion on, the hero still
-reads perfectly — the ambient wash is pure CSS and the scrim is static.
+Fills the ticker ribbon and runs the live feed that takes rows in and
+scores them. Decorative: with JS off or reduced motion on, the five rows
+already in the markup are a perfectly good static feed.
 ===================================================================== -->
 <script>
 "use strict";
