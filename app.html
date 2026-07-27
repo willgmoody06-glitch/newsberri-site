@@ -936,6 +936,15 @@ main{overflow-x:clip}
   .gras .svc:last-of-type{padding-bottom:88px}
   .btn-dl{width:100%;justify-content:center}
 }
+.preview-chip{display:inline-flex;align-items:center;font-family:var(--mono);font-size:9px;
+  font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--amber);
+  border:1px dashed color-mix(in srgb,var(--amber),transparent 45%);padding:8px 12px;
+  background:color-mix(in srgb,var(--amber),transparent 92%)}
+/* platforms that are being built: shown, named, and visibly not offered as a download */
+.dl-soon{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;
+  padding:12px 26px;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:2px;
+  color:var(--ink-3);opacity:.75}
+.dl-soon svg{width:15px;height:15px}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
   html{scroll-behavior:auto}
