@@ -735,6 +735,10 @@ img,svg{max-width:100%}
    own line ("All 42 / contracts   & sector reads"); a hanging tick fixes it */
 .band-pricing .manifest li{display:block;position:relative;font-size:16px;padding:12px 0 12px 26px}
 .band-pricing .manifest li::before{position:absolute;left:0;top:13px}
+/* small print inside a manifest bullet (the iPhone push condition) — same weight as
+   the .matrix td small footnote, so the two read as one convention */
+.band-pricing .manifest li .note{display:block;margin-top:7px;font-family:var(--mono);
+  font-size:10.5px;letter-spacing:.6px;line-height:1.5;color:var(--ink-faint)}
 .band-pricing .plan .cta,.band-pricing .btn-ghosted{padding:19px 24px;font-size:13px}
 .band-pricing .preview-chip{margin-top:18px}
 @media (max-width:760px){
@@ -772,9 +776,14 @@ Band order + background, alternating so no two neighbours match:
 The matrix and the cost table keep their .scrollx-fade > .scrollx shells:
 wide artifacts scroll inside themselves, never the page. The FAQ is
 <details>/<summary> and sits last, the way the home page orders it.
-Squawk is deliberately absent from tiers and matrix (tier placement
-undecided). No "coming" labels on any feature — the one sanctioned note
-is the Desk card's "details coming from the founders".
+Tier contents follow WEBSITE_COPY_FIXES.md §4, which is generated from
+backend/tiers.py — the thing the running product enforces. Two rules hold:
+data breadth, scoring and the Event Guardrail (prop-firm presets and flat
+calls included) are on EVERY tier and must never appear as a paid upsell;
+the paid tiers buy depth, delivery lanes and platforms. The matrix is split
+into those two blocks. Spoken squawk is a Pro delivery lane and is named
+plainly — never "TTS". No "coming" labels on any feature — the one
+sanctioned note is the Desk card's "in the works".
 ====================================================================== -->
 <a class="skip" href="#main">Skip to content</a>
 
@@ -883,14 +892,17 @@ is the Desk card's "details coming from the founders".
         <p class="price-alt micro" data-mo="OR $190 A YEAR — 2 MONTHS FREE" data-yr="BILLED $190/YR · 2 MONTHS FREE">OR $190 A YEAR — 2 MONTHS FREE</p>
         <p class="blurb">The full read for one screen. Everything the feed prints, scored and explained.</p>
         <ul class="manifest">
-          <li><b>All 42 contracts</b> &amp; sector reads — the whole feed</li>
+          <li><b>All 42 contracts</b> across 7 asset classes, plus the sector reads</li>
           <li>The live tape, three speeds — provisional the moment it crosses, scored seconds later, corroborated once a second source confirms it</li>
           <li>Top Stories</li>
           <li>AI Overview of your day</li>
           <li>The calendar, with beat / in-line / miss scenarios</li>
+          <li>The Event Guardrail — ARMED, HOT and LIVE heads-ups at 30, 10 and 2 minutes before a release, with prop-firm rule presets and flat calls</li>
+          <li>The public accuracy record</li>
+          <li>Headline search across the archive, and news translation in 8 languages</li>
           <li>✦ Explain — 15 a day</li>
-          <li>3 alert rules — in-app, audio, browser</li>
-          <li>1 device</li>
+          <li>3 alert rules — in-app and desktop notifications</li>
+          <li>1 watchlist, 1 device</li>
         </ul>
         <a class="btn-key cta" href="signin.html">START YOUR 7-DAY TRIAL</a>
         <p class="micro cta-note">CARD REQUIRED · CANCEL ANYTIME, SELF-SERVE</p>
@@ -900,18 +912,18 @@ is the Desk card's "details coming from the founders".
         <h2 class="tiername" id="plan-pro">PRO<span class="popchip">MOST POPULAR</span></h2>
         <p class="price" data-mo="$39" data-yr="$32.50"><span class="price-num">$39</span><sub class="price-per">/MO</sub></p>
         <p class="price-alt micro" data-mo="OR $390 A YEAR — 2 MONTHS FREE" data-yr="BILLED $390/YR · 2 MONTHS FREE">OR $390 A YEAR — 2 MONTHS FREE</p>
-        <p class="blurb">Everything in Core, plus the half that keeps watch — and no limits on the depth.</p>
+        <p class="blurb">Everything in Core, plus the lanes that reach you off the screen, and no daily limits.</p>
         <ul class="manifest">
           <li class="plus"><b>Everything in Core</b>, plus:</li>
-          <li>Unlimited ✦ Explain &amp; scenarios</li>
-          <li>The Event Guardrail — ARMED, HOT and LIVE heads-ups at 30, 10 and 2 minutes before a release</li>
-          <li>20 alert rules, including push to your phone</li>
-          <li>Discord webhooks &amp; keyword triggers</li>
+          <li>Unlimited ✦ Explain &amp; event scenarios</li>
+          <li><b>Spoken squawk</b> and audio alerts</li>
+          <li>20 alert rules — desktop and browser push, Discord webhooks, keyword tripwires<span class="note">(iPhone: add NewsBerri to your Home Screen to receive push — Apple requires it.)</span></li>
+          <li>Email and SMS alerts</li>
+          <li>Ask NewsBerri</li>
           <li>Morning Sift &amp; Away Digest</li>
-          <li>The desktop overlay app</li>
-          <li>Your personal accuracy ledger</li>
+          <li>The desktop overlay app, with discreet mode</li>
           <li>Named layouts, synced across devices</li>
-          <li>3 devices</li>
+          <li>Unlimited watchlists, 3 devices</li>
           <li>Priority support</li>
         </ul>
         <a class="btn-key cta" href="signin.html">START YOUR 7-DAY TRIAL</a>
@@ -921,17 +933,18 @@ is the Desk card's "details coming from the founders".
       <article class="plan ghost" aria-labelledby="plan-desk">
         <h2 class="tiername" id="plan-desk">DESK</h2>
         <p class="price">Talk to us</p>
-        <p class="price-alt micro">FOR SMALL TRADING FLOORS</p>
+        <p class="price-alt micro">FOR DESKS AND BUILDERS</p>
         <span class="preview-chip">IN THE WORKS</span>
-        <p class="blurb">Pricing isn't set yet, but the shape is. Tell us about your floor.</p>
-        <!-- Eight empty <li> rendered as a column of bare em-dashes and left ~430px of dead
-             space. These are the four things Desk is actually for; the price is still the
-             only unknown, and it stays unstated rather than guessed. -->
+        <p class="blurb">Pricing isn't set yet, but the shape is. Tell us what you want to build on.</p>
+        <!-- These four are what Desk is actually for: the read API, its ceilings, and Pro
+             underneath it. The seats / shared-layouts / team-ledger story that used to sit
+             here described features that do not exist (WEBSITE_COPY_FIXES.md §2). The price
+             is still the only unknown, and it stays unstated rather than guessed. -->
         <ul class="manifest" aria-label="What the Desk tier covers">
-          <li>Seats for a whole desk, one bill</li>
-          <li>Shared layouts &amp; shared alert rules</li>
-          <li>Team-wide accuracy ledger</li>
-          <li>Onboarding for the group</li>
+          <li>A read API for your own tools — keys, scoped endpoints, usage metering</li>
+          <li>Higher request ceilings</li>
+          <li>Every Pro feature included</li>
+          <li>Front-of-line support</li>
         </ul>
         <a class="btn-brk" href="mailto:support@newsberri.com">TALK TO US</a>
         <p class="micro cta-note">PRICING NOT SET YET</p>
@@ -953,11 +966,11 @@ is the Desk card's "details coming from the founders".
   <div class="wrap">
     <span class="eybrow">LINE BY LINE</span>
     <h2 class="sectitle-xl" id="matrix-h">The tiers, side by side</h2>
-    <p class="secsub">Same news on all three. The rows below are the only things that change.</p>
+    <p class="secsub">Same news on all three. The first block is on every tier; below it, everything that changes.</p>
     <div class="scrollx-fade" style="text-align:left;max-width:1120px;margin:0 auto">
     <div class="tablewrap scrollx">
       <table class="matrix">
-        <caption>FEATURE COMPARISON — ✓ INCLUDED · — NOT IN TIER, OR NOT YET ANNOUNCED</caption>
+        <caption>FEATURE COMPARISON — ✓ INCLUDED · — NOT IN THIS TIER</caption>
         <thead>
           <tr>
             <th scope="col">What you get</th>
@@ -967,61 +980,95 @@ is the Desk card's "details coming from the founders".
           </tr>
         </thead>
         <tbody>
+          <tr><th colspan="4" scope="rowgroup">EVERYTHING, ON EVERY TIER</th></tr>
+          <tr>
+            <td>All 42 contracts across 7 asset classes<small>PLUS THE SECTOR READS</small></td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+          </tr>
           <tr>
             <td>The live tape, three speeds</td>
-            <td class="val">✓ FULL</td><td class="val procol">✓ FULL</td><td class="val ghostcol">—</td>
+            <td class="val">✓ FULL</td><td class="val procol">✓ FULL</td><td class="val ghostcol">✓ FULL</td>
           </tr>
           <tr>
             <td>Top Stories</td>
-            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
           </tr>
           <tr>
             <td>AI Overview of your day</td>
-            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
           </tr>
           <tr>
             <td>Calendar with beat / in-line / miss scenarios<small>THE WHAT-IFS WRITTEN BEFORE EVERY MAPPED RELEASE</small></td>
-            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
           </tr>
           <tr>
-            <td>✦ Explain &amp; scenarios<small>THE WHY BEHIND ANY SCORE, ON DEMAND</small></td>
-            <td class="val">15 / DAY</td><td class="val procol">UNLIMITED</td><td class="val ghostcol">—</td>
+            <td>The Event Guardrail<small>A HEADS-UP 30, 10 AND 2 MINUTES BEFORE A RELEASE · TOPSTEP &amp; APEX RULE PRESETS AND FLAT CALLS ON SCREEN</small></td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
           </tr>
           <tr>
-            <td>Alert rules<small>CORE: IN-APP, AUDIO, BROWSER · PRO ADDS PUSH TO YOUR PHONE</small></td>
-            <td class="val">3</td><td class="val procol">20</td><td class="val ghostcol">—</td>
+            <td>The public accuracy record</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
           </tr>
           <tr>
-            <td>Discord webhooks &amp; keyword triggers</td>
-            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+            <td>Headline search across the archive</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
           </tr>
           <tr>
-            <td>The Event Guardrail<small>A HEADS-UP 30, 10 AND 2 MINUTES BEFORE A RELEASE · TOPSTEP &amp; APEX RULES ON SCREEN</small></td>
-            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+            <td>News translation<small>8 LANGUAGES</small></td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr><th colspan="4" scope="rowgroup">WHAT SEPARATES THE TIERS</th></tr>
+          <tr>
+            <td>✦ Explain &amp; event scenarios<small>THE WHY BEHIND ANY SCORE, ON DEMAND</small></td>
+            <td class="val">15 / DAY</td><td class="val procol">UNLIMITED</td><td class="val ghostcol">UNLIMITED</td>
+          </tr>
+          <tr>
+            <td>Alert rules</td>
+            <td class="val">3</td><td class="val procol">20</td><td class="val ghostcol">50</td>
+          </tr>
+          <tr>
+            <td>Alert delivery<small>IPHONE: ADD NEWSBERRI TO YOUR HOME SCREEN TO RECEIVE PUSH — APPLE REQUIRES IT</small></td>
+            <td class="val" style="white-space:normal">IN-APP + DESKTOP NOTIFICATIONS</td>
+            <td class="val procol" style="white-space:normal">+ AUDIO ALERTS, SPOKEN SQUAWK, PUSH, DISCORD, EMAIL, SMS</td>
+            <td class="val ghostcol" style="white-space:normal">SAME AS PRO</td>
+          </tr>
+          <tr>
+            <td>Keyword tripwires</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+          </tr>
+          <tr>
+            <td>Ask NewsBerri</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
           </tr>
           <tr>
             <td>Morning Sift &amp; Away Digest</td>
-            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
           </tr>
           <tr>
-            <td>Desktop overlay app<small>FLOATS THE READ OVER YOUR TRADING PLATFORM</small></td>
-            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+            <td>Watchlists</td>
+            <td class="val">1</td><td class="val procol">UNLIMITED</td><td class="val ghostcol">UNLIMITED</td>
           </tr>
           <tr>
-            <td>Personal accuracy ledger</td>
-            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+            <td>Saved layouts &amp; sync across devices</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
           </tr>
           <tr>
-            <td>Named layouts, synced</td>
-            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">—</td>
+            <td>Desktop app overlay &amp; discreet mode<small>FLOATS THE READ OVER YOUR TRADING PLATFORM</small></td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
           </tr>
           <tr>
             <td>Devices</td>
-            <td class="val">1</td><td class="val procol">3</td><td class="val ghostcol">—</td>
+            <td class="val">1</td><td class="val procol">3</td><td class="val ghostcol">5</td>
+          </tr>
+          <tr>
+            <td>Read API<small>KEYS, DOCS, USAGE METERING</small></td>
+            <td class="val na">—</td><td class="val procol na">—</td><td class="val ghostcol">✓</td>
           </tr>
           <tr>
             <td>Support</td>
-            <td class="val">STANDARD</td><td class="val procol">PRIORITY</td><td class="val ghostcol">—</td>
+            <td class="val">STANDARD</td><td class="val procol">PRIORITY</td><td class="val ghostcol">FRONT OF THE LINE</td>
           </tr>
         </tbody>
       </table>
@@ -1044,7 +1091,7 @@ is the Desk card's "details coming from the founders".
       <div class="costrow" role="row"><span class="what" role="cell">Bloomberg Terminal</span><span class="how" role="cell">THE WHOLE INSTITUTIONAL DESK, PER SEAT · ≈ $30K / YR</span><span class="amt" role="cell">≈ $2,400+ / MO</span></div>
       <div class="costrow" role="row"><span class="what" role="cell">An analyst to read the tape</span><span class="how" role="cell">A HUMAN ON THE DESK, FULL-TIME</span><span class="amt" role="cell">A SALARY</span></div>
       <div class="costrow us" role="row"><span class="what" role="cell">NewsBerri Core — the whole feed</span><span class="how" role="cell">EVERY CONTRACT, EVERY SOURCE, ONE DEVICE</span><span class="amt grad-text" role="cell">$19 / MO</span></div>
-      <div class="costrow us" role="row"><span class="what" role="cell">NewsBerri Pro — adds the watchful half</span><span class="how" role="cell">GUARDRAIL, ALERTS EVERYWHERE, UNLIMITED DEPTH</span><span class="amt grad-text" role="cell">$39 / MO</span></div>
+      <div class="costrow us" role="row"><span class="what" role="cell">NewsBerri Pro — adds every delivery lane</span><span class="how" role="cell">SPOKEN SQUAWK, ALERTS EVERYWHERE, UNLIMITED DEPTH</span><span class="amt grad-text" role="cell">$39 / MO</span></div>
     </div>
     </div>
     </div>

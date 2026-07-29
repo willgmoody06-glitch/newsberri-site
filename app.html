@@ -950,6 +950,136 @@ main{overflow-x:clip}
   html{scroll-behavior:auto}
 }
 </style>
+
+<!-- =====================================================================
+   VARIANT: TABBED SWITCHER — section 3 only ("THE WORKING PANELS").
+   Seven stacked rows collapse into one framed stage with a seven-item tab
+   rail. Everything is gated on html.tabs-on, which the script at the end of
+   <body> adds only after it has found and wired the rail, so:
+     · no JS  -> no .tabs-on -> the seven panels stay stacked with their .gbar
+                 group strips, i.e. the page behaves exactly as it does today;
+     · JS on  -> the rail appears, six panels get the `hidden` attribute.
+   Panels are hidden, never removed: every .snip and every panel id stays in
+   the DOM so the wiring IIFE's lookups keep resolving (UI_RULES §8).
+   Nothing outside this section is restyled.
+   ===================================================================== -->
+<style>
+/* ---- default (no-JS) state: the rail does not exist visually ---- */
+.tabrail{display:none}
+.tabwrap{min-width:0}
+
+/* ================= JS ON ================= */
+html.tabs-on .tabwrap{display:grid;grid-template-columns:minmax(224px,318px) 1fr;gap:36px;
+  align-items:start;margin:44px 0 112px}
+html.tabs-on .tabrail{display:flex;flex-direction:column;gap:2px;min-width:0}
+
+/* ---- rail: group label + tabs ---- */
+html.tabs-on .trlab{font-family:var(--mono);font-size:9.5px;letter-spacing:2.2px;line-height:1.5;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 10px;padding:1px 0 1px 12px;
+  border-left:2px solid var(--vio)}
+html.tabs-on .trlab.ras{border-left-color:var(--ras);margin-top:30px}
+html.tabs-on .trtab{display:block;width:100%;min-height:44px;text-align:left;cursor:pointer;
+  font-family:var(--grot);font-weight:600;font-size:15px;line-height:1.3;letter-spacing:.2px;
+  color:var(--ink-3);background:transparent;border:0;border-left:2px solid var(--hair-strong);
+  padding:11px 14px}
+html.tabs-on .trtab:hover{color:var(--ink-2);background:rgba(255,255,255,.03)}
+html.tabs-on .trtab[aria-selected="true"]{color:var(--ink);background:rgba(139,92,246,.11);
+  border-left-color:var(--vio)}
+html.tabs-on .trtab.ras[aria-selected="true"]{background:rgba(232,51,110,.10);border-left-color:var(--ras)}
+html.tabs-on .trtab:focus-visible{outline:2px solid var(--key);outline-offset:-3px}
+html.tabs-on .trtab .tn-s{display:none}
+
+/* ---- stage: one frame, one panel ---- */
+html.tabs-on .tabstage{position:relative;min-width:0;padding:20px 20px 24px;
+  border:1px solid var(--hair-strong);background:var(--panel-2);
+  display:grid;grid-template-rows:min-content;align-content:start}
+/* the two group wrappers stop being boxes, so the one visible panel is the
+   stage's only grid item and fills the reserved height — panel pinned to the
+   top of the frame, its caption to the bottom, so neither moves as tabs swap */
+html.tabs-on .tabstage>.gvio,html.tabs-on .tabstage>.gras{display:contents}
+html.tabs-on .tabstage::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:2px;
+  background:var(--vio);opacity:.8}
+html.tabs-on .tabstage.g-ras::before{background:var(--ras)}
+/* JS measures the tallest panel once and writes --stage-min, so the frame
+   never changes height as panels swap. 480px is the pre-measurement floor. */
+@media (min-width:761px){
+  html.tabs-on .tabstage{min-height:var(--stage-min,480px)}
+  /* the frame resizes to the active panel instead of locking to the tallest */
+  @media (prefers-reduced-motion:no-preference){
+    html.tabs-on .tabstage{transition:min-height .28s cubic-bezier(.2,.7,.2,1)}
+  }
+}
+/* the group strips still carry their copy to assistive tech in tab mode */
+html.tabs-on .tabstage .gbar{position:absolute;width:1px;height:1px;margin:0;padding:0;
+  overflow:hidden;white-space:nowrap;clip:rect(0 0 0 0);clip-path:inset(50%)}
+html.tabs-on .tabstage .svc{display:flex;flex-direction:column;padding:0;margin:0;
+  background:none;opacity:1;transform:none}
+html.tabs-on .tabstage .svc[hidden]{display:none}
+html.tabs-on .tabstage .svc:focus-visible{outline:2px solid var(--key);outline-offset:4px}
+/* the stacked layout lifts .txt above .fig with order:-1; in the frame the
+   panel comes first and its caption sits under it */
+html.tabs-on .tabstage .svc .fig{order:0;max-width:none;width:100%;margin:0 0 20px}
+html.tabs-on .tabstage .svc .txt{order:1;margin-top:auto;padding-top:16px;border-top:1px solid var(--hair)}
+html.tabs-on .tabstage .svc .txt h4{font-size:21px}
+html.tabs-on .tabstage .svc .txt p{max-width:68ch}
+/* measurement pass: every panel laid out at full width, off the flow, unpainted */
+html.tabs-on .tabstage.measuring .svc{position:absolute;left:20px;right:20px;top:20px;
+  display:block;visibility:hidden}
+
+/* ---- motion: a 240ms rise+fade on the panel area only ---- */
+@media (prefers-reduced-motion:no-preference){
+  html.tabs-on .trtab{transition:color .2s ease,background-color .2s ease,border-color .2s ease}
+  html.tabs-on .tabstage::before{transition:background-color .24s ease}
+  html.tabs-on .tabstage .svc.act{animation:tabin 240ms cubic-bezier(.22,.61,.36,1) both}
+}
+@keyframes tabin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---- rail sticks alongside a tall panel, only when there is room for it ---- */
+@media (min-width:981px) and (min-height:680px){
+  html.tabs-on .tabrail{position:sticky;top:74px}
+}
+
+/* ================= MOBILE (≤760px) =================
+   Vertical rail -> one horizontally scrollable chip row, pinned under the
+   sticky nav. Chips carry short names; the tinted bars mark where the second
+   group starts; the full group heading is restored above the panel and swaps
+   with the active group, so both groups still read as two groups. */
+@media (max-width:760px){
+  html.tabs-on .tabwrap{display:block;margin:30px 0 88px}
+  html.tabs-on .tabrail{flex-direction:row;flex-wrap:nowrap;align-items:center;gap:8px;
+    position:sticky;top:48px;z-index:30;
+    margin:0 -22px;padding:10px 22px 12px;
+    background:linear-gradient(180deg,#000 0,#000 74%,rgba(0,0,0,0) 100%);
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;scrollbar-width:none;-ms-overflow-style:none;
+    /* 22 gutter + 2 group bar + 6 its margins + 8 gap: the first chip's snap
+       position is then scrollLeft 0, so the row opens with the gutter and the
+       group bar in view instead of snapping them off the left edge */
+    scroll-padding:0 22px 0 38px}
+  html.tabs-on .tabrail::-webkit-scrollbar{display:none}
+  /* group cue = a 2px tinted bar at the head of each run (the heading text
+     itself is restored above the panel, below) */
+  html.tabs-on .trlab{flex:none;width:2px;height:26px;margin:0 3px;padding:0;
+    font-size:0;line-height:0;border:0;background:var(--vio);opacity:.75}
+  html.tabs-on .trlab.ras{background:var(--ras);margin:0 3px 0 7px}
+  html.tabs-on .trtab{flex:none;width:auto;display:inline-flex;align-items:center;
+    white-space:nowrap;scroll-snap-align:start;
+    font-size:13.5px;padding:0 15px;
+    border:1px solid var(--hair-strong);background:var(--panel);color:var(--ink-3)}
+  html.tabs-on .trtab[aria-selected="true"]{border-color:var(--vio);background:rgba(139,92,246,.15);color:var(--ink)}
+  html.tabs-on .trtab.ras[aria-selected="true"]{border-color:var(--ras);background:rgba(232,51,110,.14)}
+  html.tabs-on .trtab .tn-l{display:none}
+  html.tabs-on .trtab .tn-s{display:inline}
+  html.tabs-on .tabstage{margin-top:16px;padding:16px 14px 20px}
+  /* the active group's heading, back in view */
+  html.tabs-on .tabstage:not(.g-ras) .gvio>.gbar,
+  html.tabs-on .tabstage.g-ras .gras>.gbar{position:static;width:auto;height:auto;
+    margin:0 0 16px;padding:10px 13px;overflow:visible;white-space:normal;
+    clip:auto;clip-path:none}
+  html.tabs-on .tabstage .gbar h3{font-size:15.5px;letter-spacing:1.4px;line-height:1.2}
+  html.tabs-on .tabstage .svc .txt h4{font-size:19px}
+}
+</style>
 </head>
 <body>
 <script>document.documentElement.classList.add("js");</script>
@@ -1143,6 +1273,23 @@ main{overflow-x:clip}
       <h2 class="sectitle-xl" id="offer-h">Every panel below <span class="grad-text">works.</span></h2>
       <p class="secsub">These aren't screenshots — they're the actual components, running on this page. Click a headline, cycle the guardrail, open a scenario tree.</p>
     </div>
+    <!-- TABBED SWITCHER — the rail below is display:none until the enhancement
+         script adds .tabs-on to <html>. With scripting off it never appears and
+         the seven panels stay stacked exactly as they were. -->
+    <div class="tabwrap">
+      <div class="tabrail" id="pnlRail" role="tablist" aria-orientation="vertical" aria-label="Working panels">
+        <p class="trlab vio" aria-hidden="true">Understand what's moving the market and why</p>
+        <button type="button" class="trtab vio" role="tab" id="t-p-tape"    aria-controls="p-tape"    aria-selected="true"  tabindex="0"  data-p="p-tape"><span class="tn-l">The live tape, in three steps</span><span class="tn-s">Live tape</span></button>
+        <button type="button" class="trtab vio" role="tab" id="t-p-board"   aria-controls="p-board"   aria-selected="false" tabindex="-1" data-p="p-board"><span class="tn-l">A score for all 42 contracts</span><span class="tn-s">42 contracts</span></button>
+        <button type="button" class="trtab vio" role="tab" id="t-p-explain" aria-controls="p-explain" aria-selected="false" tabindex="-1" data-p="p-explain"><span class="tn-l">✦ Explain + the AI overview</span><span class="tn-s">✦ Explain</span></button>
+        <p class="trlab ras" aria-hidden="true">Don't get caught out by a headline</p>
+        <button type="button" class="trtab ras" role="tab" id="t-p-cal"     aria-controls="p-cal"     aria-selected="false" tabindex="-1" data-p="p-cal"><span class="tn-l">The calendar, with the what-ifs written</span><span class="tn-s">Calendar</span></button>
+        <button type="button" class="trtab ras" role="tab" id="t-p-guard"   aria-controls="p-guard"   aria-selected="false" tabindex="-1" data-p="p-guard"><span class="tn-l">The Guardrail — a heads-up, three times</span><span class="tn-s">Guardrail</span></button>
+        <button type="button" class="trtab ras" role="tab" id="t-p-squawk"  aria-controls="p-squawk"  aria-selected="false" tabindex="-1" data-p="p-squawk"><span class="tn-l">The squawk — and alerts wherever you are</span><span class="tn-s">Squawk + alerts</span></button>
+        <button type="button" class="trtab ras" role="tab" id="t-p-record"  aria-controls="p-record"  aria-selected="false" tabindex="-1" data-p="p-record"><span class="tn-l">A public track record, misses included</span><span class="tn-s">Track record</span></button>
+      </div>
+
+      <div class="tabstage" id="pnlStage">
     <!-- ———— GROUP 1 · violet ———— -->
     <div class="gvio">
       <div class="gbar vio rv"><h3>Understand what's moving the market and why</h3></div>
@@ -1353,6 +1500,8 @@ main{overflow-x:clip}
         </div>
       </article>
     </div>
+      </div><!-- /.tabstage -->
+    </div><!-- /.tabwrap -->
   </div>
 </section>
 
@@ -1816,6 +1965,126 @@ already in the markup are a perfectly good static feed.
     },jitter(1800,1400));
   }
 
+})();
+</script>
+
+<!-- =====================================================================
+TABBED SWITCHER — section 3 ("THE WORKING PANELS"), progressive enhancement.
+Runs last, after the wiring IIFE, so every id it depends on is already bound.
+Nothing is removed from the DOM: the six inactive panels carry the `hidden`
+attribute and come straight back. If the rail or any panel is missing, this
+returns early and the section stays stacked.
+===================================================================== -->
+<script>
+"use strict";
+(function(){
+  var rail=document.getElementById("pnlRail"),stage=document.getElementById("pnlStage");
+  if(!rail||!stage)return;
+  var tabs=Array.prototype.slice.call(rail.querySelectorAll('[role="tab"]'));
+  var panels=tabs.map(function(t){return document.getElementById(t.getAttribute("data-p"));});
+  if(!tabs.length||panels.indexOf(null)!==-1)return;   /* markup drifted: leave it stacked */
+
+  var narrow=window.matchMedia("(max-width:760px)");
+
+  panels.forEach(function(p,i){
+    p.setAttribute("role","tabpanel");
+    p.setAttribute("aria-labelledby",tabs[i].id);
+    p.setAttribute("tabindex","0");
+    /* the scroll-reveal observer never fires on a hidden panel, so settle the
+       reveal state here — .in is what un-hides .rv content, the confidence bar
+       and the ledger ticks. reveal() adding it again later is a no-op. */
+    p.classList.add("in");
+  });
+
+  /* keep the active chip inside the mobile scroller without moving the page */
+  function keepInView(el){
+    if(!narrow.matches)return;
+    var r=rail.getBoundingClientRect(),e=el.getBoundingClientRect();
+    if(e.left<r.left+10)rail.scrollLeft-=(r.left+10-e.left);
+    else if(e.right>r.right-10)rail.scrollLeft+=(e.right-(r.right-10));
+  }
+
+  var cur=-1;
+  function show(i,moveFocus){
+    tabs.forEach(function(t,j){
+      var on=(j===i);
+      t.setAttribute("aria-selected",String(on));
+      t.tabIndex=on?0:-1;
+    });
+    panels.forEach(function(p,j){
+      if(j===i){p.removeAttribute("hidden");p.classList.add("act");}
+      else{p.setAttribute("hidden","");p.classList.remove("act");}
+    });
+    stage.classList.toggle("g-ras",tabs[i].classList.contains("ras"));
+    cur=i;
+    sizeToActive();
+    if(moveFocus)tabs[i].focus();
+    keepInView(tabs[i]);
+  }
+
+  tabs.forEach(function(t,i){
+    t.addEventListener("click",function(){if(i!==cur)show(i,false);});
+  });
+
+  rail.addEventListener("keydown",function(e){
+    var i=tabs.indexOf(document.activeElement),n=null;
+    if(i<0)return;
+    if(e.key==="ArrowRight"||e.key==="ArrowDown")n=(i+1)%tabs.length;
+    else if(e.key==="ArrowLeft"||e.key==="ArrowUp")n=(i-1+tabs.length)%tabs.length;
+    else if(e.key==="Home")n=0;
+    else if(e.key==="End")n=tabs.length-1;
+    else return;
+    e.preventDefault();
+    show(n,true);
+  });
+
+  /* the frame holds the tallest panel's height, so swapping never moves the page.
+     Measured with all seven laid out off-flow and unpainted, in one synchronous
+     pass — no intermediate frame is painted. */
+  /* Height follows the ACTIVE panel rather than locking to the tallest, so short
+     panels don't leave dead space. Each panel's height is measured once (one
+     synchronous off-flow pass) and the stage transitions between them. */
+  var heights=[];
+  function measure(){
+    if(narrow.matches){stage.style.removeProperty("--stage-min");heights=[];return;}
+    var was=panels.map(function(p){return p.hasAttribute("hidden");});
+    stage.classList.add("measuring");
+    panels.forEach(function(p){p.removeAttribute("hidden");});
+    heights=panels.map(function(p){return Math.ceil(p.offsetHeight)+46;});
+    panels.forEach(function(p,j){if(was[j])p.setAttribute("hidden","");});
+    stage.classList.remove("measuring");
+    sizeToActive();
+  }
+  function sizeToActive(){
+    if(narrow.matches||!heights.length)return;
+    var k=tabs.findIndex?tabs.findIndex(function(t){return t.getAttribute("aria-selected")==="true";}):-1;
+    if(k<0){for(var i=0;i<tabs.length;i++){if(tabs[i].getAttribute("aria-selected")==="true"){k=i;break;}}}
+    if(k>=0&&heights[k])stage.style.setProperty("--stage-min",heights[k]+"px");
+  }
+
+  function orient(){rail.setAttribute("aria-orientation",narrow.matches?"horizontal":"vertical");}
+
+  var rt;
+  addEventListener("resize",function(){
+    clearTimeout(rt);rt=setTimeout(function(){orient();measure();},180);
+  },{passive:true});
+
+  function fromHash(){
+    var h=(location.hash||"").replace("#","");
+    for(var i=0;i<tabs.length;i++){if(tabs[i].getAttribute("data-p")===h)return i;}
+    return -1;
+  }
+  addEventListener("hashchange",function(){var i=fromHash();if(i>-1&&i!==cur)show(i,false);});
+
+  document.documentElement.classList.add("tabs-on");
+  orient();
+  var start=fromHash();
+  show(start>-1?start:0,false);
+  measure();
+  /* headline/mono faces land after first paint and change panel heights */
+  if(document.fonts&&document.fonts.ready&&document.fonts.ready.then){
+    document.fonts.ready.then(measure)["catch"](function(){});
+  }
 })();
 </script>
 </body>
