@@ -560,8 +560,8 @@ html.js .exdrawer.open{display:flex}
    The px cap is deliberately high so large screens get a full-bleed dash too. */
 .m-term{position:absolute;left:50%;bottom:22px;width:min(2200px,112%);transform:translateX(-50%);
   perspective:2400px;opacity:1;
-  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.32) 0%,rgba(0,0,0,.62) 30%,#000 58%,#000 100%);
-          mask-image:linear-gradient(180deg,rgba(0,0,0,.32) 0%,rgba(0,0,0,.62) 30%,#000 58%,#000 100%)}
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.44) 0%,rgba(0,0,0,.72) 28%,#000 56%,#000 100%);
+          mask-image:linear-gradient(180deg,rgba(0,0,0,.44) 0%,rgba(0,0,0,.72) 28%,#000 56%,#000 100%)}
 /* the copy sits in the upper half but centred within it, not pinned to the top */
 .ovhero[data-bg="terminal"]{align-items:flex-start;min-height:min(98vh,960px);padding-bottom:0}
 .ovhero[data-bg="terminal"] .ovhero-in{padding-top:clamp(70px,12vh,150px)}
@@ -569,8 +569,8 @@ html.js .exdrawer.open{display:flex}
 .ovhero[data-bg="terminal"] .undercta{display:none}
 /* a lighter scrim: it only has to protect the copy at the top, not drown the product */
 .ovhero[data-bg="terminal"]::after{
-  background:radial-gradient(ellipse 62% 50% at 50% 36%,rgba(0,0,0,.93),rgba(0,0,0,.72) 58%,rgba(0,0,0,.3) 84%,transparent),
-             linear-gradient(180deg,rgba(0,0,0,.94),transparent 34%,transparent 86%,#000 99%)}
+  background:radial-gradient(ellipse 62% 50% at 50% 36%,rgba(0,0,0,.91),rgba(0,0,0,.68) 58%,rgba(0,0,0,.26) 84%,transparent),
+             linear-gradient(180deg,rgba(0,0,0,.91),transparent 33%,transparent 87%,#000 99%)}
 /* one tilted plane holds both the ribbon and the dash, so they read as one screen */
 .termplane{transform:rotateX(12deg) scale(.88);transform-origin:50% 100%}
 .termgrid{display:grid;grid-template-columns:1.05fr 1.5fr 1fr;gap:14px}
@@ -843,6 +843,61 @@ html.js .exdrawer.open{display:flex}
   html{scroll-behavior:auto}
 }
 </style>
+<style id="plus2">
+/* ===== HERO — let the dashboard own more of the frame, less dead black ===== */
+.ovhero[data-bg="terminal"]{min-height:min(90vh,880px)}
+.ovhero[data-bg="terminal"] .ovhero-in{padding-top:clamp(34px,6vh,88px)}
+/* dash sits lower-to-edge and stays crisp far higher up the frame */
+.m-term{bottom:0}
+.m-term,[data-bg="terminal"] .m-term{
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.60) 0%,rgba(0,0,0,.86) 22%,#000 46%,#000 100%);
+          mask-image:linear-gradient(180deg,rgba(0,0,0,.60) 0%,rgba(0,0,0,.86) 22%,#000 46%,#000 100%)}
+/* scrim: tight enough to protect the copy, no longer drowning the product */
+.ovhero[data-bg="terminal"]::after{
+  background:radial-gradient(ellipse 66% 54% at 50% 34%,rgba(0,0,0,.93),rgba(0,0,0,.70) 54%,rgba(0,0,0,.24) 80%,transparent),
+             linear-gradient(180deg,rgba(0,0,0,.86),transparent 24%,transparent 90%,#000 99%)}
+
+</style>
+<style id="plans-mobile">
+/* ===== MOBILE — one tier card at a time, with a left/right selector =====
+   Desktop (>=761px) is untouched: still the three-up grid. ===== */
+@media (max-width:760px){
+  .ovplans{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;
+    gap:0;grid-template-columns:none;padding:0}
+  .ovplans::-webkit-scrollbar{display:none}
+  .ovplan{flex:0 0 100%;scroll-snap-align:center;margin:0}
+  .planpager{display:flex;align-items:center;justify-content:center;gap:18px;margin:22px 0 0}
+  .planpager button{width:48px;height:48px;flex:none;display:flex;align-items:center;
+    justify-content:center;background:transparent;color:var(--ink);cursor:pointer;
+    border:1px solid var(--hair-strong);font:700 18px/1 var(--mono)}
+  .planpager button:disabled{opacity:.32;cursor:default}
+  .planpager .pp-dots{display:flex;gap:8px}
+  .planpager .pp-dots i{width:8px;height:8px;background:var(--hair-strong);display:block}
+  .planpager .pp-dots i.on{background:var(--ras)}
+  .planpager .pp-label{font:600 12px/1 var(--mono);letter-spacing:1.6px;
+    color:var(--ink-2);min-width:52px;text-align:center}
+}
+@media (min-width:761px){ .planpager{display:none} }
+</style>
+<style id="plus">
+/* ===== SQUAWK — the waveform plays in the live CROSSING ribbon ===== */
+.tt-tag .sqwave{display:inline-flex;align-items:flex-end;gap:2px;height:10px;margin-left:9px}
+.tt-tag .sqwave i{width:2px;height:100%;background:var(--ink-3);
+  transform-origin:50% 100%;transform:scaleY(.45)}
+.tt-tag .sqwave i:nth-child(3n){background:var(--key)}
+@media (prefers-reduced-motion:no-preference){
+  .tt-tag .sqwave i{animation:sqw 1.05s ease-in-out infinite alternate}
+  .tt-tag .sqwave i:nth-child(2){animation-duration:.74s;animation-delay:-.35s}
+  .tt-tag .sqwave i:nth-child(3){animation-duration:1.32s;animation-delay:-.60s}
+  .tt-tag .sqwave i:nth-child(4){animation-duration:.90s;animation-delay:-.20s}
+  .tt-tag .sqwave i:nth-child(5){animation-duration:1.50s;animation-delay:-.80s}
+  .tt-tag .sqwave i:nth-child(6){animation-duration:.82s;animation-delay:-.50s}
+  .tt-tag .sqwave i:nth-child(7){animation-duration:1.18s;animation-delay:-1.0s}
+}
+@keyframes sqw{from{transform:scaleY(.22)}to{transform:scaleY(1)}}
+
+</style>
 </head>
 <body>
 <script>document.documentElement.classList.add("js");</script>
@@ -869,6 +924,7 @@ html.js .exdrawer.open{display:flex}
     <span class="wordmark">News<b>Berri</b></span>
   </a>
   <p class="dek">News, read for your trade</p>
+  
 </header>
 <hr class="rule-scotch wrap">
 
@@ -967,6 +1023,17 @@ html.js .exdrawer.open{display:flex}
               <div class="arow"><span class="ak">Guardrail</span><span class="av">T-minus 10 on CPI</span><span class="ast">ARMED</span></div>
             </div>
           </div>
+          <div class="snip">
+            <div class="ph"><span class="led live"></span>SQUAWK + ALERTS</div>
+            <div class="bd">
+              <div class="chiprow" style="margin-bottom:8px">
+                <span class="schip"><b>&#9654;</b> PLAYING</span>
+                <span class="schip">IMPACT 92 &middot; CORROB &times;3</span>
+              </div>
+              <div class="wave talking" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <p class="spoken" style="margin:0">&ldquo;CPI hotter than forecast &mdash; core re-accelerating. Read on NQ: strong bear.&rdquo;</p>
+            </div>
+          </div>
         </div>
         <div class="tcol">
           <div class="snip">
@@ -1012,7 +1079,7 @@ html.js .exdrawer.open{display:flex}
       </div>
       </div>
       <div class="termticker">
-        <span class="tt-tag"><span class="led"></span>CROSSING</span>
+        <span class="tt-tag"><span class="led"></span>CROSSING<span class="sqwave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
         <span class="tt-win"><span class="tt-track" id="ttTrack">
           <span class="tt-item"><span>Nvidia server-rack supplier lead times stretch to 40 weeks</span><b class="c-bear">NQ &minus;12</b></span>
           <span class="tt-item"><span>EIA crude build lands under the consensus range</span><b class="c-bull">CL +19</b></span>
@@ -1047,7 +1114,7 @@ html.js .exdrawer.open{display:flex}
     <div class="ovstats rv" data-anim="stats">
       <div class="stat"><b class="sv"><span class="ct" data-n="42">42</span></b><span class="sk">FUTURES CONTRACTS</span></div>
       <div class="stat"><b class="sv"><span class="ct" data-n="7">7</span></b><span class="sk">ASSET CLASSES</span></div>
-      <div class="stat"><b class="sv"><span class="ct" data-n="24">24</span><span class="su">/5</span></b><span class="sk">NEWS COVERAGE</span></div>
+      <div class="stat"><b class="sv"><span class="ct" data-n="24">24</span><span class="su">/7</span></b><span class="sk">NEWS COVERAGE</span></div>
       <div class="stat"><b class="sv">$<span class="ct" data-n="19">19</span><span class="su">/MO</span></b><span class="sk">PRICING FROM — EVERY TIER</span></div>
     </div>
   </div>
@@ -1106,6 +1173,13 @@ html.js .exdrawer.open{display:flex}
         <div class="pcta"><a class="btn-brk" href="mailto:support@newsberri.com">TALK TO US</a></div>
       </article>
     </div>
+    <div class="planpager" role="group" aria-label="Choose a plan to view">
+      <button type="button" id="ppPrev" aria-label="Previous plan">&#8249;</button>
+      <span class="pp-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></span>
+      <span class="pp-label" id="ppLabel" aria-live="polite">CORE</span>
+      <button type="button" id="ppNext" aria-label="Next plan">&#8250;</button>
+    </div>
+
 
     <p class="plans-note">THE RATE YOU JOIN AT IS YOURS FOR LIFE · <a href="pricing.html" style="color:var(--ink-2);border-bottom:1px solid var(--hair-strong)">FULL COMPARISON →</a></p>
   </div>
@@ -1140,7 +1214,7 @@ html.js .exdrawer.open{display:flex}
     <div class="whygrid">
       <div class="whycell rv d1"><p class="wn grad-text">01</p><h3>News as fast as the big desks</h3><p>The same sources at the same speed — headlines delivered the second they hit, not after someone writes them up.</p></div>
       <div class="whycell rv d2"><p class="wn grad-text">02</p><h3>Scored for the contract you trade</h3><p>For each market, NewsBerri evaluates how every headline affects it — and tells you why, in a sentence.</p></div>
-      <div class="whycell rv d3"><p class="wn grad-text">03</p><h3>Alerts before and after they hit</h3><p>Heads-ups and audio before scheduled releases, and on major headlines — so a big release never catches you mid-trade.</p></div>
+      <div class="whycell rv d3"><p class="wn grad-text">03</p><h3>Alerts before and after they hit</h3><p>Heads-ups and audio before scheduled releases, and on major headlines — so you know a big release is coming before it lands.</p></div>
     </div>
   </div>
 </section>
@@ -1211,6 +1285,7 @@ html.js .exdrawer.open{display:flex}
       <a class="cta-big" href="signin.html">START THE 7-DAY TRIAL</a>
       <a class="cta-demo" href="demo.html">TRY THE DEMO FIRST</a>
     </div>
+    
   </div>
 </section>
 
@@ -1618,6 +1693,42 @@ reads perfectly — the ambient wash is pure CSS and the scrim is static.
     },jitter(1800,1400));
   }
 
+})();
+</script>
+<script>
+/* mobile plan carousel — progressive enhancement; with JS off the grid still
+   scroll-snaps horizontally by swipe, and desktop is untouched. */
+(function(){
+  var wrap=document.querySelector('.ovplans'), pager=document.querySelector('.planpager');
+  if(!wrap||!pager) return;
+  var cards=[].slice.call(wrap.querySelectorAll('.ovplan')),
+      prev=document.getElementById('ppPrev'), next=document.getElementById('ppNext'),
+      label=document.getElementById('ppLabel'),
+      dots=[].slice.call(pager.querySelectorAll('.pp-dots i')),
+      names=cards.map(function(c){var h=c.querySelector('.pname');
+        return h?h.childNodes[0].textContent.trim():'';}), idx=0;
+  function paint(){
+    dots.forEach(function(d,k){d.classList.toggle('on',k===idx);});
+    if(label) label.textContent=names[idx]||'';
+    prev.disabled = idx===0; next.disabled = idx===cards.length-1;
+  }
+  function go(k){
+    idx=Math.max(0,Math.min(cards.length-1,k));
+    wrap.scrollTo({left:cards[idx].offsetLeft-wrap.offsetLeft,
+      behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    paint();
+  }
+  prev.addEventListener('click',function(){go(idx-1);});
+  next.addEventListener('click',function(){go(idx+1);});
+  var t; wrap.addEventListener('scroll',function(){          /* keep pager in sync on swipe */
+    clearTimeout(t); t=setTimeout(function(){
+      var mid=wrap.scrollLeft+wrap.clientWidth/2, best=0, bd=1e9;
+      cards.forEach(function(c,k){var cc=c.offsetLeft-wrap.offsetLeft+c.offsetWidth/2;
+        var d=Math.abs(cc-mid); if(d<bd){bd=d;best=k;}});
+      if(best!==idx){idx=best;paint();}
+    },90);
+  },{passive:true});
+  paint();
 })();
 </script>
 </body>
