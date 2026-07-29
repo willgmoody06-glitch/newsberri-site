@@ -363,7 +363,8 @@ than a registrable suffix of newsberri.com, so navigator.credentials.get() throw
 SecurityError from this origin. Google would need a cross-site cookie write that
 Safari ITP and Firefox TCP block by default.
 
-Accepts ?plan=core|pro|desk and ?bill=monthly|annual → slim plan chip + the intent
+Accepts ?plan=core|pro|desk and ?bill=monthly|six ("annual", the pre-2026-07-29
+spelling of the longer term, is still accepted and maps to six) → slim plan chip + the intent
 sent with the sign-in request. Both are validated against a fixed vocabulary and
 stripped from the URL after parsing. No param = NO intent (never defaults to Pro).
 COMPACT CHROME: topstrip + newsnav only (no masthead — the task gets the focus).
@@ -615,16 +616,19 @@ column's terminal snippet is the app's true skin (no gradients inside).
 
   var API="https://app.newsberri.com";
 
-  /* ---- ?plan=core|pro|desk × ?bill=monthly|annual → plan chip + sign-in intent.
+  /* ---- ?plan=core|pro|desk × ?bill=monthly|six → plan chip + sign-in intent.
      No param = NO intent. (The old mockup defaulted to "pro" and silently routed a
      bare SIGN IN click as a Pro purchase — that was a bug, not a default.)
      `desk` deliberately maps to no intent: it has no price key server-side, so the
-     enterprise tier is structurally unpurchasable rather than merely un-linked. ---- */
-  var PLANS={core:{name:"CORE",m:"$19/MO",y:"$190/YR"},
-             pro:{name:"PRO",m:"$39/MO",y:"$390/YR"},
-             desk:{name:"DESK",ghost:true}}; /* third tier: real, terms unpublished */
-  var INTENTS={"core|monthly":"core_m","core|annual":"core_y",
-               "pro|monthly":"pro_m","pro|annual":"pro_y"};
+     third tier is structurally unpurchasable rather than merely un-linked. Its price
+     is published ($69/mo, $345/6mo) but checkout cannot sell it.
+     The server-side keys are still core_y / pro_y; since 2026-07-29 they buy a
+     SIX-MONTH term, not a year. ---- */
+  var PLANS={core:{name:"CORE",m:"$19/MO",y:"$95 EVERY 6 MONTHS"},
+             pro:{name:"PRO",m:"$39/MO",y:"$195 EVERY 6 MONTHS"},
+             desk:{name:"DESK",ghost:true}}; /* third tier: priced, not self-serve */
+  var INTENTS={"core|monthly":"core_m","core|six":"core_y",
+               "pro|monthly":"pro_m","pro|six":"pro_y"};
   var plan="",bill="monthly",intent="";
   try{
     var qp=new URLSearchParams(location.search);
@@ -634,7 +638,8 @@ column's terminal snippet is the app's true skin (no gradients inside).
        ?plan=constructor / ?plan=toString would pass and render "undefined" in the chip */
     var own=Object.prototype.hasOwnProperty;
     if(own.call(PLANS,v))plan=v;                     /* chip only for a VALID value */
-    if(b==="annual"||b==="monthly")bill=b;
+    if(b==="six"||b==="monthly")bill=b;
+    else if(b==="annual")bill="six";           /* legacy links written before 2026-07-29 */
     if(plan&&own.call(INTENTS,plan+"|"+bill))intent=INTENTS[plan+"|"+bill];  /* desk → "" */
     /* Drop the params so the plan choice does not sit in history or ride along in the
        Referer sent to the font CDN. Same pattern as checkout.html. */
@@ -643,11 +648,12 @@ column's terminal snippet is the app's true skin (no gradients inside).
   }catch(e){/* very old browser: no chip, no intent — an ordinary sign-in still works */}
   if(plan){
     if(PLANS[plan].ghost){
-      /* Desk has no published price — the chip says so instead of the price template */
-      $("#planChip").textContent="YOU'RE STARTING DESK — DETAILS BEING FINALIZED · NOT ON SALE YET";
+      /* Desk is priced but has no server-side price key — the chip says so instead
+         of the price template, and points at the email channel */
+      $("#planChip").textContent="DESK IS $69/MO OR $345 EVERY 6 MONTHS — NOT SELF-SERVE YET · EMAIL SUPPORT@NEWSBERRI.COM";
     }else{
       $("#planName").textContent=PLANS[plan].name;
-      $("#planAmt").textContent=bill==="annual"?PLANS[plan].y:PLANS[plan].m;
+      $("#planAmt").textContent=bill==="six"?PLANS[plan].y:PLANS[plan].m;
     }
     $("#planChip").hidden=false;
   }

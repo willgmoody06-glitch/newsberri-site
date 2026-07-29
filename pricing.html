@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NewsBerri — Pricing · Every market on every tier</title>
-<meta name="description" content="NewsBerri pricing: Core $19/mo, Pro $39/mo — every tier gets all 42 contracts, every source, at the same speed. Paid tiers add platform and AI depth, never faster data. 7-day trial, cancel anytime. Informational only — not trading advice.">
+<meta name="description" content="NewsBerri pricing: Core $19/mo, Pro $39/mo, Desk $69/mo — every tier gets all 42 contracts, every source, at the same speed. Paid tiers add platform and AI depth, never faster data. 7-day trial, cancel anytime. Informational only — not trading advice.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Ccircle cx='26.1' cy='19.5' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='37.9' cy='19.5' r='6.5' fill='%2300e676'/%3E%3Ccircle cx='19.7' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='32' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='44.3' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='21.3' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='42.7' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='26.7' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='37.3' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='58.1' r='6' fill='%238f1029'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -127,14 +127,8 @@ img,svg{max-width:100%}
 .plan .cta-note{text-align:center;margin-top:10px}
 .plan.pro{background:linear-gradient(180deg,rgba(199,68,151,.09),rgba(139,92,246,.04) 46%,transparent 80%),var(--panel);border-color:var(--hair-strong)}
 .plan.pro::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:3px;background:var(--grad)}
-.plan.ghost{background:var(--well);border-style:dashed;color:var(--ink-faint)}
-.plan.ghost .tiername,.plan.ghost .price,.plan.ghost .blurb{color:var(--ink-faint)}
-.plan.ghost .manifest li{color:var(--ink-faint);border-top-color:var(--well-line)}
-.plan.ghost .manifest li::before{content:"—";color:var(--ink-faint)}
-.preview-chip{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:1.5px;color:var(--ink-3);border:1px dashed var(--hair-strong);padding:3px 7px;margin-top:14px}
-.btn-ghosted{display:block;text-align:center;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:2px;padding:13px 24px;color:var(--ink-faint);border:1px dashed var(--hair-strong);cursor:not-allowed;margin-top:auto}
 .plans-foot{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-3);margin-top:14px;font-variant-numeric:tabular-nums}
-/* ============ MONTHLY / ANNUAL TOGGLE ============ */
+/* ============ MONTHLY / 6-MONTH TOGGLE ============ */
 .billrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:6px 0 4px}
 .billrow-lab{color:var(--ink-3)}
 .billtoggle{display:inline-flex;border:1px solid var(--hair-strong);background:var(--panel)}
@@ -144,9 +138,8 @@ img,svg{max-width:100%}
 .bt-opt.is-on{color:var(--key);background:linear-gradient(180deg,rgba(199,68,151,.13),rgba(139,92,246,.06))}
 .bt-save{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:1px;color:#fff;background:var(--grad);padding:3px 7px}
 .bt-opt:not(.is-on) .bt-save{opacity:.7}
-/* price sub-line (annual/monthly alternate, always visible with JS off) */
+/* price sub-line (6-month/monthly alternate, always visible with JS off) */
 .price-alt{color:var(--ink-3);margin:8px 0 0;letter-spacing:1.2px}
-.plan.ghost .price-alt{visibility:hidden}
 /* ============ AT-CTA REASSURANCE / RISK / FOUNDING PRICING ============ */
 .atcta{margin-top:26px;border:1px solid var(--hair-strong);background:var(--panel);position:relative;padding:20px 24px}
 .atcta::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:1px;
@@ -168,12 +161,9 @@ img,svg{max-width:100%}
 .matrix td small{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:1px;color:var(--ink-faint);margin-top:3px}
 .matrix td.val{font-family:var(--mono);font-size:12px;letter-spacing:.5px;text-align:center;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
 .matrix td.na{color:var(--ink-faint)}
-.matrix th.ghostcol,.matrix td.ghostcol{background:var(--well);color:var(--ink-faint)}
-.matrix th.ghostcol small{color:var(--ink-faint)}
 .matrix td.procol{background:rgba(139,92,246,.05)}
 .matrix th.procol{background:rgba(139,92,246,.07)}
 .matrix tbody tr:hover td{background:var(--selrow)}
-.matrix tbody tr:hover td.ghostcol{background:var(--well)}
 /* ============ COST STRIP (from index, slightly expanded) ============ */
 .cost{border:1px solid var(--hair-strong);background:var(--panel);max-width:920px}
 .costrow{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) auto;gap:8px 18px;align-items:baseline;padding:11px 20px;border-top:1px solid var(--hair)}
@@ -298,7 +288,7 @@ img,svg{max-width:100%}
   /* tier cards stack Core → Pro → Desk with 44px of air between */
   .plans{grid-template-columns:1fr;gap:44px;margin-top:32px}
   .plan{padding:26px 20px 22px}
-  .plan .cta,.btn-ghosted{padding:15px 24px}
+  .plan .cta{padding:15px 24px}
   .atcta{margin-top:44px;padding:20px}
   /* matrix + cost table scroll inside their own shells (see .scrollx wrappers) */
   .scrollx .cost{min-width:640px;max-width:none}
@@ -546,15 +536,10 @@ img,svg{max-width:100%}
 .ovplan.feat{border:1px solid transparent;border-image:var(--grad) 1;
   background:linear-gradient(160deg,rgba(232,51,110,.09),rgba(139,92,246,.10)),var(--panel);
   box-shadow:0 0 40px rgba(166,79,198,.16)}
-/* Desk is a real third tier, not an afterthought — it reads quieter because it
-   has no price yet, not because it's dimmed out */
-.ovplan.ghost{background:var(--panel-2);border-color:var(--hair)}
-.ovplan.ghost .pprice{color:var(--ink-3);font-size:clamp(40px,4vw,54px)}
-.ovplan.ghost li{color:var(--ink-3)}
+/* All three tiers render at the same weight — Desk is a full tier and carries
+   the same price scale, body colour and CTA as Core and Pro. */
 .popchip{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:1.4px;color:#fff;
   background:var(--grad);padding:4px 8px;text-transform:uppercase}
-.soonchip{font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:1.4px;
-  color:var(--ink-faint);border:1px solid var(--hair-strong);padding:3px 7px;text-transform:uppercase}
 .plans-note{font-family:var(--mono);font-size:10px;letter-spacing:1.6px;color:var(--ink-faint);
   text-transform:uppercase;text-align:center;margin:26px 0 0}
 
@@ -716,18 +701,16 @@ img,svg{max-width:100%}
    PAGE-LOCAL (pricing only) — the shared block above is verbatim.
    .band-pricing enlarges the band; the shared .ovplan rules that would
    enlarge the CARDS can't be borrowed here, because this page's cards keep
-   their own .plan markup (the ✓ manifest, the ghosted Desk column and the
-   monthly/annual toggle all hang off it, and .ovplan li::before would
-   replace every ✓ with an em dash). Same treatment, applied to .plan, and
+   their own .plan markup (the ✓ manifest and the monthly/6-month toggle both
+   hang off it, and .ovplan li::before would replace every ✓ with an em
+   dash). Same treatment, applied to .plan, and
    scoped to .band-pricing so nothing else on the page moves.
    ===================================================================== */
 .band-pricing .plans{gap:26px;margin:56px auto 0;max-width:1360px}
 .band-pricing .plan{padding:48px 40px 42px}
 .band-pricing .plan .tiername{font-family:var(--display);font-weight:800;font-size:28px;
   letter-spacing:3px;color:var(--ink-2);margin-bottom:8px}
-.band-pricing .plan.ghost .tiername{color:var(--ink-faint)}
 .band-pricing .plan .price{font-size:clamp(58px,6vw,84px)}
-.band-pricing .plan.ghost .price{font-size:clamp(40px,4vw,54px)}
 .band-pricing .plan .price sub{font-size:.2em;letter-spacing:2px}
 .band-pricing .plan .blurb{font-size:16.5px;margin-top:18px}
 .band-pricing .manifest{margin:26px 0 30px}
@@ -739,8 +722,7 @@ img,svg{max-width:100%}
    the .matrix td small footnote, so the two read as one convention */
 .band-pricing .manifest li .note{display:block;margin-top:7px;font-family:var(--mono);
   font-size:10.5px;letter-spacing:.6px;line-height:1.5;color:var(--ink-faint)}
-.band-pricing .plan .cta,.band-pricing .btn-ghosted{padding:19px 24px;font-size:13px}
-.band-pricing .preview-chip{margin-top:18px}
+.band-pricing .plan .cta{padding:19px 24px;font-size:13px}
 @media (max-width:760px){
   .band-pricing .plans{margin-top:36px;gap:52px}
   .band-pricing .plan{padding:30px 24px 26px}
@@ -782,8 +764,8 @@ data breadth, scoring and the Event Guardrail (prop-firm presets and flat
 calls included) are on EVERY tier and must never appear as a paid upsell;
 the paid tiers buy depth, delivery lanes and platforms. The matrix is split
 into those two blocks. Spoken squawk is a Pro delivery lane and is named
-plainly — never "TTS". No "coming" labels on any feature — the one
-sanctioned note is the Desk card's "in the works".
+plainly — never "TTS". No "coming" or "in the works" labels anywhere: all
+three tiers are sellable and are presented the same way.
 ====================================================================== -->
 <a class="skip" href="#main">Skip to content</a>
 
@@ -881,7 +863,7 @@ sanctioned note is the Desk card's "in the works".
       <span class="micro billrow-lab">BILLED</span>
       <div class="billtoggle" role="group" aria-label="Choose billing period">
         <button type="button" class="bt-opt is-on" data-annual="false" aria-pressed="true">MONTHLY</button>
-        <button type="button" class="bt-opt" data-annual="true" aria-pressed="false">ANNUAL <span class="bt-save">2 MONTHS FREE</span></button>
+        <button type="button" class="bt-opt" data-annual="true" aria-pressed="false">6 MONTHS <span class="bt-save">ONE MONTH FREE</span></button>
       </div>
     </div>
 
@@ -889,7 +871,7 @@ sanctioned note is the Desk card's "in the works".
       <article class="plan" aria-labelledby="plan-core">
         <h2 class="tiername" id="plan-core">CORE</h2>
         <p class="price" data-mo="$19" data-yr="$15.83"><span class="price-num">$19</span><sub class="price-per">/MO</sub></p>
-        <p class="price-alt micro" data-mo="OR $190 A YEAR — 2 MONTHS FREE" data-yr="BILLED $190/YR · 2 MONTHS FREE">OR $190 A YEAR — 2 MONTHS FREE</p>
+        <p class="price-alt micro" data-mo="OR $95 FOR 6 MONTHS — ONE MONTH FREE" data-yr="BILLED $95 / 6 MONTHS · ONE MONTH FREE">OR $95 FOR 6 MONTHS — ONE MONTH FREE</p>
         <p class="blurb">The full read for one screen. Everything the feed prints, scored and explained.</p>
         <ul class="manifest">
           <li><b>All 42 contracts</b> across 7 asset classes, plus the sector reads</li>
@@ -911,7 +893,7 @@ sanctioned note is the Desk card's "in the works".
       <article class="plan pro" aria-labelledby="plan-pro">
         <h2 class="tiername" id="plan-pro">PRO<span class="popchip">MOST POPULAR</span></h2>
         <p class="price" data-mo="$39" data-yr="$32.50"><span class="price-num">$39</span><sub class="price-per">/MO</sub></p>
-        <p class="price-alt micro" data-mo="OR $390 A YEAR — 2 MONTHS FREE" data-yr="BILLED $390/YR · 2 MONTHS FREE">OR $390 A YEAR — 2 MONTHS FREE</p>
+        <p class="price-alt micro" data-mo="OR $195 FOR 6 MONTHS — ONE MONTH FREE" data-yr="BILLED $195 / 6 MONTHS · ONE MONTH FREE">OR $195 FOR 6 MONTHS — ONE MONTH FREE</p>
         <p class="blurb">Everything in Core, plus the lanes that reach you off the screen, and no daily limits.</p>
         <ul class="manifest">
           <li class="plus"><b>Everything in Core</b>, plus:</li>
@@ -930,24 +912,22 @@ sanctioned note is the Desk card's "in the works".
         <p class="micro cta-note">CARD REQUIRED · CANCEL ANYTIME, SELF-SERVE</p>
       </article>
 
-      <article class="plan ghost" aria-labelledby="plan-desk">
+      <article class="plan" aria-labelledby="plan-desk">
         <h2 class="tiername" id="plan-desk">DESK</h2>
-        <p class="price">Talk to us</p>
-        <p class="price-alt micro">FOR DESKS AND BUILDERS</p>
-        <span class="preview-chip">IN THE WORKS</span>
-        <p class="blurb">Pricing isn't set yet, but the shape is. Tell us what you want to build on.</p>
+        <p class="price" data-mo="$69" data-yr="$57.50"><span class="price-num">$69</span><sub class="price-per">/MO</sub></p>
+        <p class="price-alt micro" data-mo="OR $345 FOR 6 MONTHS — ONE MONTH FREE" data-yr="BILLED $345 / 6 MONTHS · ONE MONTH FREE">OR $345 FOR 6 MONTHS — ONE MONTH FREE</p>
+        <p class="blurb">Everything in Pro, plus a read API for building on the scored feed in your own tools.</p>
         <!-- These four are what Desk is actually for: the read API, its ceilings, and Pro
              underneath it. The seats / shared-layouts / team-ledger story that used to sit
-             here described features that do not exist (WEBSITE_COPY_FIXES.md §2). The price
-             is still the only unknown, and it stays unstated rather than guessed. -->
+             here described features that do not exist (WEBSITE_COPY_FIXES.md §2). -->
         <ul class="manifest" aria-label="What the Desk tier covers">
           <li>A read API for your own tools — keys, scoped endpoints, usage metering</li>
           <li>Higher request ceilings</li>
           <li>Every Pro feature included</li>
           <li>Front-of-line support</li>
         </ul>
-        <a class="btn-brk" href="mailto:support@newsberri.com">TALK TO US</a>
-        <p class="micro cta-note">PRICING NOT SET YET</p>
+        <a class="btn-key cta" href="signin.html">START YOUR 7-DAY TRIAL</a>
+        <p class="micro cta-note">CARD REQUIRED · CANCEL ANYTIME, SELF-SERVE</p>
       </article>
     </div>
 
@@ -976,99 +956,99 @@ sanctioned note is the Desk card's "in the works".
             <th scope="col">What you get</th>
             <th scope="col" class="val-h">CORE<small>$19/MO</small></th>
             <th scope="col" class="val-h procol"><span class="popchip">MOST POPULAR</span><br>PRO<small>$39/MO</small></th>
-            <th scope="col" class="val-h ghostcol">DESK<small>$—</small></th>
+            <th scope="col" class="val-h">DESK<small>$69/MO</small></th>
           </tr>
         </thead>
         <tbody>
           <tr><th colspan="4" scope="rowgroup">EVERYTHING, ON EVERY TIER</th></tr>
           <tr>
             <td>All 42 contracts across 7 asset classes<small>PLUS THE SECTOR READS</small></td>
-            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>The live tape, three speeds</td>
-            <td class="val">✓ FULL</td><td class="val procol">✓ FULL</td><td class="val ghostcol">✓ FULL</td>
+            <td class="val">✓ FULL</td><td class="val procol">✓ FULL</td><td class="val">✓ FULL</td>
           </tr>
           <tr>
             <td>Top Stories</td>
-            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>AI Overview of your day</td>
-            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>Calendar with beat / in-line / miss scenarios<small>THE WHAT-IFS WRITTEN BEFORE EVERY MAPPED RELEASE</small></td>
-            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>The Event Guardrail<small>A HEADS-UP 30, 10 AND 2 MINUTES BEFORE A RELEASE · TOPSTEP &amp; APEX RULE PRESETS AND FLAT CALLS ON SCREEN</small></td>
-            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>The public accuracy record</td>
-            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>Headline search across the archive</td>
-            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>News translation<small>8 LANGUAGES</small></td>
-            <td class="val">✓</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val">✓</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
         </tbody>
         <tbody>
           <tr><th colspan="4" scope="rowgroup">WHAT SEPARATES THE TIERS</th></tr>
           <tr>
             <td>✦ Explain &amp; event scenarios<small>THE WHY BEHIND ANY SCORE, ON DEMAND</small></td>
-            <td class="val">15 / DAY</td><td class="val procol">UNLIMITED</td><td class="val ghostcol">UNLIMITED</td>
+            <td class="val">15 / DAY</td><td class="val procol">UNLIMITED</td><td class="val">UNLIMITED</td>
           </tr>
           <tr>
             <td>Alert rules</td>
-            <td class="val">3</td><td class="val procol">20</td><td class="val ghostcol">50</td>
+            <td class="val">3</td><td class="val procol">20</td><td class="val">50</td>
           </tr>
           <tr>
             <td>Alert delivery<small>IPHONE: ADD NEWSBERRI TO YOUR HOME SCREEN TO RECEIVE PUSH — APPLE REQUIRES IT</small></td>
             <td class="val" style="white-space:normal">IN-APP + DESKTOP NOTIFICATIONS</td>
             <td class="val procol" style="white-space:normal">+ AUDIO ALERTS, SPOKEN SQUAWK, PUSH, DISCORD, EMAIL, SMS</td>
-            <td class="val ghostcol" style="white-space:normal">SAME AS PRO</td>
+            <td class="val" style="white-space:normal">SAME AS PRO</td>
           </tr>
           <tr>
             <td>Keyword tripwires</td>
-            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>Ask NewsBerri</td>
-            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>Morning Sift &amp; Away Digest</td>
-            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>Watchlists</td>
-            <td class="val">1</td><td class="val procol">UNLIMITED</td><td class="val ghostcol">UNLIMITED</td>
+            <td class="val">1</td><td class="val procol">UNLIMITED</td><td class="val">UNLIMITED</td>
           </tr>
           <tr>
             <td>Saved layouts &amp; sync across devices</td>
-            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>Desktop app overlay &amp; discreet mode<small>FLOATS THE READ OVER YOUR TRADING PLATFORM</small></td>
-            <td class="val na">—</td><td class="val procol">✓</td><td class="val ghostcol">✓</td>
+            <td class="val na">—</td><td class="val procol">✓</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>Devices</td>
-            <td class="val">1</td><td class="val procol">3</td><td class="val ghostcol">5</td>
+            <td class="val">1</td><td class="val procol">3</td><td class="val">5</td>
           </tr>
           <tr>
             <td>Read API<small>KEYS, DOCS, USAGE METERING</small></td>
-            <td class="val na">—</td><td class="val procol na">—</td><td class="val ghostcol">✓</td>
+            <td class="val na">—</td><td class="val procol na">—</td><td class="val">✓</td>
           </tr>
           <tr>
             <td>Support</td>
-            <td class="val">STANDARD</td><td class="val procol">PRIORITY</td><td class="val ghostcol">FRONT OF THE LINE</td>
+            <td class="val">STANDARD</td><td class="val procol">PRIORITY</td><td class="val">FRONT OF THE LINE</td>
           </tr>
         </tbody>
       </table>
@@ -1134,7 +1114,7 @@ sanctioned note is the Desk card's "in the works".
   <div class="wrap">
     <span class="eybrow">READY WHEN YOU ARE</span>
     <h2 class="sectitle-xl" id="final-h">Start with <span class="grad-text">the entire desk</span></h2>
-    <p class="secsub">Core or Pro, you get every contract and every source from the first minute.</p>
+    <p class="secsub">Whichever tier you pick, you get every contract and every source from the first minute.</p>
     <div class="cta-row">
       <a class="btn-key" href="signin.html">START YOUR 7-DAY TRIAL</a>
       <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
@@ -1156,11 +1136,11 @@ sanctioned note is the Desk card's "in the works".
       </details>
       <details class="faq">
         <summary><span>What do I need to run it?</span><i aria-hidden="true"></i></summary>
-        <div class="faqbody"><p>A browser — nothing to install. Core covers one device, Pro covers three, and Pro's desktop overlay app floats the read right over your trading platform. <a href="how-it-works.html" style="color:var(--ink);border-bottom:1px solid var(--hair-strong)">How the read is made →</a></p></div>
+        <div class="faqbody"><p>A browser — nothing to install. Core covers one device, Pro three, Desk five. Pro and Desk add the desktop overlay app, which floats the read right over your trading platform. <a href="how-it-works.html" style="color:var(--ink);border-bottom:1px solid var(--hair-strong)">How the read is made →</a></p></div>
       </details>
       <details class="faq">
-        <summary><span>Is yearly really two months free?</span><i aria-hidden="true"></i></summary>
-        <div class="faqbody"><p>Yes. $190 a year against $19 a month saves you two months' worth, and the same math holds for Pro at $390.</p></div>
+        <summary><span>Is the 6-month plan really one month free?</span><i aria-hidden="true"></i></summary>
+        <div class="faqbody"><p>Yes. Core is $95 for six months against $114 if you paid monthly, so you pay for five and get six. Pro and Desk work the same way, at $195 and $345.</p></div>
       </details>
       <details class="faq">
         <summary><span>Does the cheaper tier get slower news?</span><i aria-hidden="true"></i></summary>
@@ -1212,12 +1192,14 @@ sanctioned note is the Desk card's "in the works".
 </footer>
 
 <script>
-/* Monthly / annual toggle — vanilla, progressive-enhancement. With JS off the
-   page shows monthly prices with the annual line visible under each; JS only
-   swaps the displayed figures. ANNUAL shows the per-month EQUIVALENT as the
-   big number ($15.83 / $32.50, suffix stays /MO) with the billed-yearly total
-   on the line beneath. prefers-reduced-motion is honored by the global CSS
-   rule (this only changes text + classes, never depends on animation). */
+/* Monthly / 6-month toggle — vanilla, progressive-enhancement. With JS off the
+   page shows monthly prices with the 6-month line visible under each; JS only
+   swaps the displayed figures. 6 MONTHS shows the per-month EQUIVALENT as the
+   big number ($15.83 / $32.50 / $57.50, suffix stays /MO) with the billed
+   6-month total on the line beneath. The data-* attribute names (data-mo,
+   data-yr, data-annual) are historical and kept as-is — data-yr now holds the
+   6-month string. prefers-reduced-motion is honored by the global CSS rule
+   (this only changes text + classes, never depends on animation). */
 (function () {
   var opts = document.querySelectorAll(".bt-opt");
   if (!opts.length) return;

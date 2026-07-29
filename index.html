@@ -672,15 +672,10 @@ html.js .exdrawer.open{display:flex}
 .ovplan.feat{border:1px solid transparent;border-image:var(--grad) 1;
   background:linear-gradient(160deg,rgba(232,51,110,.09),rgba(139,92,246,.10)),var(--panel);
   box-shadow:0 0 40px rgba(166,79,198,.16)}
-/* Desk is a real third tier, not an afterthought — it reads quieter because it
-   has no price yet, not because it's dimmed out */
-.ovplan.ghost{background:var(--panel-2);border-color:var(--hair)}
-.ovplan.ghost .pprice{color:var(--ink-3);font-size:clamp(40px,4vw,54px)}
-.ovplan.ghost li{color:var(--ink-3)}
+/* All three tiers render at the same weight — Desk is a full tier and carries
+   the same price scale, body colour and CTA as Core and Pro. */
 .popchip{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:1.4px;color:#fff;
   background:var(--grad);padding:4px 8px;text-transform:uppercase}
-.soonchip{font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:1.4px;
-  color:var(--ink-faint);border:1px solid var(--hair-strong);padding:3px 7px;text-transform:uppercase}
 .plans-note{font-family:var(--mono);font-size:10px;letter-spacing:1.6px;color:var(--ink-faint);
   text-transform:uppercase;text-align:center;margin:26px 0 0}
 
@@ -1131,7 +1126,7 @@ html.js .exdrawer.open{display:flex}
       <article class="ovplan rv d1" aria-labelledby="p-core">
         <h3 class="pname" id="p-core">CORE</h3>
         <p class="pprice">$19<sub>/MO</sub></p>
-        <p class="palt">OR $190 A YEAR — 2 MONTHS FREE</p>
+        <p class="palt">OR $95 FOR 6 MONTHS — ONE MONTH FREE</p>
         <ul>
           <li><b>All 42 contracts</b> &amp; sector reads — the whole feed</li>
           <li>The live tape, three speeds — provisional, scored, corroborated</li>
@@ -1150,7 +1145,7 @@ html.js .exdrawer.open{display:flex}
       <article class="ovplan feat rv d2" aria-labelledby="p-pro">
         <h3 class="pname" id="p-pro">PRO <span class="popchip">MOST POPULAR</span></h3>
         <p class="pprice">$39<sub>/MO</sub></p>
-        <p class="palt">OR $390 A YEAR — 2 MONTHS FREE</p>
+        <p class="palt">OR $195 FOR 6 MONTHS — ONE MONTH FREE</p>
         <ul>
           <li class="plus"><b>Everything in Core</b>, plus:</li>
           <li><b>Spoken squawk</b> — headlines read out loud as they land</li>
@@ -1167,17 +1162,17 @@ html.js .exdrawer.open{display:flex}
         <div class="pcta"><a class="btn-key" href="signin.html">START THE TRIAL</a></div>
       </article>
 
-      <article class="ovplan ghost rv d3" aria-labelledby="p-desk">
-        <h3 class="pname" id="p-desk">DESK <span class="soonchip">IN THE WORKS</span></h3>
-        <p class="pprice">Talk to us</p>
-        <p class="palt">FOR DESKS AND BUILDERS</p>
+      <article class="ovplan rv d3" aria-labelledby="p-desk">
+        <h3 class="pname" id="p-desk">DESK</h3>
+        <p class="pprice">$69<sub>/MO</sub></p>
+        <p class="palt">OR $345 FOR 6 MONTHS — ONE MONTH FREE</p>
         <ul>
           <li>A read API for your own tools — keys, scoped endpoints, usage metering</li>
           <li>Higher request ceilings</li>
           <li>Every Pro feature included</li>
           <li>Front-of-line support</li>
         </ul>
-        <div class="pcta"><a class="btn-brk" href="mailto:support@newsberri.com">TALK TO US</a></div>
+        <div class="pcta"><a class="btn-key" href="signin.html">START THE TRIAL</a></div>
       </article>
     </div>
     <div class="planpager" role="group" aria-label="Choose a plan to view">
@@ -1320,7 +1315,7 @@ html.js .exdrawer.open{display:flex}
       </details>
       <details class="faq">
         <summary><span>Which tier should I start on?</span><i aria-hidden="true"></i></summary>
-        <div class="faqbody"><p>Core if you want the whole feed at your desk. Pro if you want it watching while you're away from it. Desk adds a read API for your own tools — talk to us. All three tiers carry every contract and every source.</p></div>
+        <div class="faqbody"><p>Core if you want the whole feed at your desk. Pro if you want it watching while you're away from it. Desk adds a read API for your own tools. All three tiers carry every contract and every source.</p></div>
       </details>
       <details class="faq">
         <summary><span>Where do the scores come from?</span><i aria-hidden="true"></i></summary>
