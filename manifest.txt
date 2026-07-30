@@ -2,6 +2,7 @@ index.html
 how-it-works.html
 pricing.html
 demo.html
+signup.html
 signin.html
 terms.html
 privacy.html
