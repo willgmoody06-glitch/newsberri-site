@@ -345,7 +345,12 @@ button.btn-key{cursor:pointer}
 </style>
 </head>
 <body>
-<script>document.documentElement.classList.add("js");</script>
+<script>document.documentElement.classList.add("js");
+/* Capture ?plan=/?bill= BEFORE anything can strip them. This page calls
+   history.replaceState(null,"",location.pathname) on load, which drops the whole
+   query string - so any later code reading location.search finds it empty and the
+   customer silently gets the default tier instead of the one they clicked. */
+window.__nbQ=location.search;</script>
 <!-- =====================================================================
 SIGN IN — REAL. This is the live front door on newsberri.com (no longer a mockup).
 
@@ -952,7 +957,9 @@ the session cookie readable from this page.
   var APP = "https://app.newsberri.com";
 
   function params(){
-    var q = new URLSearchParams(location.search);
+    /* __nbQ is captured in <head>; location.search is empty by now because the page
+       strips it with replaceState on load. Fall back for safety. */
+    var q = new URLSearchParams(window.__nbQ || location.search);
     var plan = (q.get("plan") || "").toLowerCase();
     var bill = (q.get("bill") || "monthly").toLowerCase();
     if (!/^(core|pro|desk)$/.test(plan)) plan = "";
