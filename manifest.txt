@@ -9,3 +9,4 @@ privacy.html
 refunds.html
 disclaimer.html
 app.html
+checkout.html
