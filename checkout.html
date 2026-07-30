@@ -469,6 +469,12 @@ button asks the app box for a Checkout session and mounts Stripe's form.
              button is pressed, so the page is unchanged for anyone just reading it. -->
         <div class="payside" id="payside" hidden>
           <p class="cardh">PAYMENT DETAILS</p>
+          <!-- Apple Pay / Google Pay live HERE, not in the Payment Element. Stripe puts
+               wallets in the Express Checkout Element and suppresses them in the Payment
+               Element to avoid showing the same method twice. Both stay hidden until
+               Stripe says a wallet is actually available on this device. -->
+          <div id="expMount"></div>
+          <div class="paysep" id="paySep" hidden><span>OR PAY BY CARD</span></div>
           <div id="payMount"></div>
           <p class="payerr" id="payErr" role="alert"></p>
           <button type="button" class="cta-go" id="paySubmit">START MY 7-DAY TRIAL</button>
@@ -655,6 +661,10 @@ the session cookie readable and lets the whole purchase stay on this domain.
   #paySubmit[disabled]{opacity:.55;cursor:not-allowed}
   .payerr{font-family:var(--mono);font-size:11.5px;letter-spacing:.4px;color:var(--bear);
           margin:12px 0 0;min-height:1em}
+  #expMount:empty{display:none}
+  .paysep{display:flex;align-items:center;gap:12px;margin:20px 0 4px;
+          font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--ink-faint)}
+  .paysep::before,.paysep::after{content:"";flex:1;border-top:1px solid var(--hair-strong)}
 </style>
 <!-- The `clover` release, pinned deliberately. Verified against this account 2026-07-30
      by mounting each bundle in isolation:
@@ -754,6 +764,33 @@ the session cookie readable and lets the whole purchase stay on this domain.
       });
       var pe=checkout.createPaymentElement();
       pe.mount("#payMount");
+
+      /* Wallets. The Payment Element does NOT render Apple Pay or Google Pay - Stripe
+         puts them in the Express Checkout Element and suppresses them in the Payment
+         Element so the same method is not offered twice. Embedded Checkout mounted this
+         for us, which is why wallets worked before the rebuild and stopped after it. */
+      try{
+        var ex=checkout.createExpressCheckoutElement();
+        /* Only reveal the separator once Stripe confirms a wallet exists on this device.
+           With none available the element collapses to a few pixels, and an "OR PAY BY
+           CARD" rule above nothing reads like something failed to load. */
+        ex.on("availablepaymentmethodschange", function(e){
+          var any=e&&e.availablePaymentMethods&&Object.keys(e.availablePaymentMethods).length;
+          var sep=$("#paySep"); if(sep) sep.hidden=!any;
+        });
+        /* The wallet sheet fires confirm; the same action confirms the same Session.
+           Only one path runs per checkout - wallet OR the card button below. */
+        ex.on("confirm", async function(){
+          try{
+            var la=await checkout.loadActions();
+            var res=await la.actions.confirm();
+            if(res&&res.error){ fieldErr(res.error.message||"That payment could not be completed."); return; }
+            done();
+          }catch(e){ fieldErr("That payment could not be completed. Nothing was charged."); }
+        });
+        ex.mount("#expMount");
+      }catch(e){ /* no wallets is not an error - the card form is still there */ }
+
       mounted=true;
 
       if(btn) btn.hidden=true;
