@@ -1349,9 +1349,15 @@ is what makes the session cookie visible to this page at all.
       .forEach(function(a){
         var plan = planOf(a.getAttribute("href"));
         if (paid){
-          /* Already subscribed: every "start a trial" control is really "open the app". */
+          /* Already subscribed: a "start a trial" control is really "open the app", and
+             "sign in" is really "account" - that is where log out and cancel live. */
+          if (/sign in/i.test(a.textContent) || a.className.indexOf("signin") >= 0){
+            a.setAttribute("href", "account.html");
+            a.textContent = "ACCOUNT";
+            return;
+          }
           a.setAttribute("href", APP);
-          if (/trial|sign in|start/i.test(a.textContent)) a.textContent = "OPEN NEWSBERRI";
+          if (/trial|start/i.test(a.textContent)) a.textContent = "OPEN NEWSBERRI";
           handoff(a);
         } else if (plan){
           /* Signed in, unpaid, and they picked a tier - send them straight to checkout
@@ -1361,6 +1367,14 @@ is what makes the session cookie visible to this page at all.
           /* Signed in, unpaid, no tier chosen yet - the pricing table is the next step. */
           a.setAttribute("href", "pricing.html");
           if (/sign in/i.test(a.textContent)) a.textContent = "CHOOSE A PLAN";
+        }
+        /* "Sign in" is meaningless to somebody already signed in, and it is also the
+           only nav slot on these pages - so it becomes the way to reach the account,
+           which is where log out lives. Without this there is no way to sign out at
+           all from the marketing site. */
+        if (/sign in|account/i.test(a.textContent) || a.className.indexOf("signin") >= 0){
+          a.setAttribute("href", "account.html");
+          a.textContent = "ACCOUNT";
         }
       });
 
