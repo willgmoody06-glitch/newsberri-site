@@ -465,8 +465,15 @@ button asks the app box for a Checkout session and mounts Stripe's form.
         <!-- live region ships EMPTY: screen readers announce content CHANGES, not
              visibility flips, so JS fills it (see the checkout script at the foot) -->
         <div class="mockstate" id="mockState" role="status" hidden></div>
-        <!-- Stripe Embedded Checkout mounts here. Empty until the button is pressed. -->
-        <div id="payMount"></div>
+        <!-- The Payment Element mounts into #payMount. Both stay hidden until the
+             button is pressed, so the page is unchanged for anyone just reading it. -->
+        <div class="payside" id="payside" hidden>
+          <p class="cardh">PAYMENT DETAILS</p>
+          <div id="payMount"></div>
+          <p class="payerr" id="payErr" role="alert"></p>
+          <button type="button" class="cta-go" id="paySubmit">START MY 7-DAY TRIAL</button>
+        </div>
+        <div id="payMountLegacy" hidden></div>
         <p class="reassure">CANCEL ANYTIME, SELF-SERVE<span class="sep">·</span>WE EMAIL YOU BEFORE IT RENEWS<span class="sep">·</span>FOUNDING RATE LOCKED FOR LIFE</p>
         <p class="risknote">Futures trading carries a substantial risk of loss and isn't right for everyone. NewsBerri is informational only — no advice, no recommendations, no profit claims.</p>
         <p class="backrow"><a class="btn-brk" href="pricing.html">← BACK TO PRICING</a></p>
@@ -624,151 +631,185 @@ button asks the app box for a Checkout session and mounts Stripe's form.
 })();
 </script>
 
-<!-- ======== LIVE CHECKOUT ========================================================
-Stripe Embedded Checkout. The card fields render inside Stripe's iframe in
-#payMount, so no card number reaches this DOM, this JS, or our servers (PCI
-SAQ-A). There is no redirect to a Stripe-hosted page at any point.
+<!-- ======== LIVE CHECKOUT (Payment Element) ==================================
+Stripe's Payment Element, themed to this site. The previous integration was
+Embedded Checkout, which cannot be made dark: Stripe's own guidance is that the
+form is customisable through Dashboard branding alone, with no API to change its
+look and no way to make its background transparent. Setting a branding background
+colours the area AROUND the form, not the form card - which is why a black page
+had a white panel dropped into the middle of it.
 
-Everything below talks to /api/* on THIS origin. nginx proxies the funnel routes
-(/api/auth, /api/billing, /api/me, /api/health) to the app box, which is what
-lets the session cookie and the checkout live on newsberri.com. Never point these
-at app.newsberri.com directly: that is cross-origin, allow_credentials is false,
-and the session would not be sent.
+The card fields still live in Stripe's iframe, so no card number reaches this DOM,
+this JS or our servers (PCI SAQ-A). Only the rendering changed.
 
-The publishable key is fetched from /api/health rather than hardcoded. This page
-ships through a PUBLIC mirror repo, so a baked-in key would live in that repo and
-its history forever, and rotating it would mean a site deploy instead of an env
-change. pk_live_ is public by design and can only create payment methods.
-============================================================================= -->
-<!-- v3 is the evergreen bundle. Pinned names (basil, clover) also expose
-     initEmbeddedCheckout today, but a pinned version is a thing that gets retired -
-     Stripe retired the `embedded` ui_mode value the same way. Verified 2026-07-30:
-     all three bundles serve initEmbeddedCheckout; v3 is the one that stays current. -->
+/api/* is same-origin here (nginx proxies the funnel routes), which is what makes
+the session cookie readable and lets the whole purchase stay on this domain.
+=========================================================================== -->
+<style>
+  /* The Element is Stripe's iframe; this is the frame we put around it. */
+  #payMount{margin-top:18px}
+  #payMount:empty{display:none}
+  .payside{border:1px solid var(--hair-strong);background:var(--panel);padding:22px}
+  .payside .cardh{margin-bottom:14px}
+  #paySubmit{margin-top:18px}
+  #paySubmit[disabled]{opacity:.55;cursor:not-allowed}
+  .payerr{font-family:var(--mono);font-size:11.5px;letter-spacing:.4px;color:var(--bear);
+          margin:12px 0 0;min-height:1em}
+</style>
 <script src="https://js.stripe.com/v3/"></script>
 <script>
 (function(){
   "use strict";
-  var $=function(s){return document.querySelector(s);};
+  var $=function(q){return document.querySelector(q);};
   var mount=$("#payMount"), btn=$("#goStripe"), ms=$("#mockState");
-  var busy=false, checkout=null;
+  var busy=false, checkout=null, mounted=false;
 
-  /* Validate against the six literal keys before anything reaches the network or the
-     DOM. ?plan= is attacker-controllable via a crafted link, and an unvalidated value
-     would be echoed into a fetch body and a status message. */
   var KEYS={core_m:1,core_6m:1,pro_m:1,pro_6m:1,desk_m:1,desk_6m:1};
   function priceKey(){
     var q=new URLSearchParams(location.search);
     var tier=(q.get("plan")||"pro").toLowerCase();
     var bill=(q.get("bill")||"monthly").toLowerCase();
-    /* "annual" is a legacy value from before the 2026-07-29 six-month change; links
-       written then still work and map to the six-month price. */
+    /* "annual" predates the 2026-07-29 six-month change; old links still resolve. */
     var term=(bill==="six"||bill==="annual")?"6m":"m";
     var key=tier+"_"+term;
     return KEYS[key]?key:"pro_m";
   }
 
-  /* textContent, never innerHTML: everything here can carry server or URL text. */
+  /* textContent only - every string here can carry server or URL text. */
   function say(msg,isErr){
     if(!ms)return;
-    ms.hidden=false;
-    ms.textContent="";
+    ms.hidden=false; ms.textContent="";
     var b=document.createElement("b");
     b.textContent=isErr?"Checkout unavailable":"One moment";
-    ms.appendChild(b);
-    ms.appendChild(document.createTextNode(msg));
+    ms.appendChild(b); ms.appendChild(document.createTextNode(msg));
   }
+  function fieldErr(msg){ var e=$("#payErr"); if(e) e.textContent=msg||""; }
 
   function toSignin(){
-    var back=encodeURIComponent(location.pathname+location.search);
-    location.href="signin.html?return_to="+back;
+    var q=new URLSearchParams(location.search);
+    var extra=q.get("plan")?("&plan="+q.get("plan")+"&bill="+(q.get("bill")||"monthly")):"";
+    location.href="signin.html?return_to="+encodeURIComponent(location.pathname)+extra;
   }
 
+  /* Site tokens, so the form is part of the page rather than a widget dropped on it.
+     colorBackground/colorText/colorPrimary reject rgba() and var() - literals only. */
+  var APPEARANCE={
+    theme:"night",
+    variables:{
+      colorPrimary:"#ffffff",
+      colorBackground:"#0d1013",
+      colorText:"#f2f6f8",
+      colorTextSecondary:"#b8c7d1",
+      colorTextPlaceholder:"#5d6d78",
+      colorDanger:"#ff1744",
+      colorSuccess:"#00e676",
+      borderRadius:"0px",
+      spacingUnit:"4px",
+      fontSizeBase:"16px",
+      fontFamily:'"Barlow Semi Condensed",system-ui,-apple-system,sans-serif'
+    },
+    rules:{
+      ".Input":{backgroundColor:"#05080b",border:"1px solid #262d35",boxShadow:"none"},
+      ".Input:focus":{border:"1px solid #ffffff",boxShadow:"0 0 0 1px #ffffff"},
+      ".Label":{fontFamily:'"Martian Mono",ui-monospace,monospace',fontSize:"10.5px",
+                letterSpacing:"1.5px",textTransform:"uppercase",color:"#8496a2"},
+      ".Tab":{backgroundColor:"#05080b",border:"1px solid #262d35"},
+      ".Tab--selected":{backgroundColor:"#14181d",border:"1px solid #ffffff"},
+      ".Block":{backgroundColor:"#05080b",border:"1px solid #262d35"}
+    }
+  };
+
   async function startCheckout(){
-    if(busy)return; busy=true;
-    if(btn){btn.disabled=true;}
+    if(busy||mounted)return; busy=true;
+    if(btn) btn.disabled=true;
+    fieldErr("");
     try{
-      var h=await fetch("/api/health",{cache:"no-store"});
-      var health=await h.json();
+      var health=await (await fetch("/api/health",{cache:"no-store"})).json();
       if(!health.stripe_pk){
         say(" Payments are not configured on this site yet. Nothing was submitted.",true);
         return;
       }
-      var r=await fetch("/api/billing/checkout-embedded",{
-        method:"POST", credentials:"include", cache:"no-store",
+      var r=await fetch("/api/billing/checkout-elements",{
+        method:"POST",credentials:"include",cache:"no-store",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({price:priceKey()})
       });
       if(r.status===401){ toSignin(); return; }
       var d=await r.json().catch(function(){return {};});
       if(!r.ok||!d.client_secret){
-        say(" We could not start a checkout just now. Nothing was submitted — try again shortly.",true);
+        say(" We could not start a checkout just now. Nothing was submitted \u2014 try again shortly.",true);
         return;
       }
-      if(btn){btn.hidden=true;}
-      if(ms){ms.hidden=true;}
-      checkout=await Stripe(health.stripe_pk).initEmbeddedCheckout({clientSecret:d.client_secret});
-      checkout.mount("#payMount");
-      mount.scrollIntoView({behavior:"smooth",block:"start"});
+
+      var stripe=Stripe(health.stripe_pk);
+      checkout=await stripe.initCheckoutElementsSdk({
+        clientSecret:d.client_secret, elementsOptions:{appearance:APPEARANCE}
+      });
+      var pe=checkout.createPaymentElement();
+      pe.mount("#payMount");
+      mounted=true;
+
+      if(btn) btn.hidden=true;
+      if(ms) ms.hidden=true;
+      $("#payside").hidden=false;
+      mount.scrollIntoView({behavior:"smooth",block:"center"});
     }catch(e){
       say(" We could not reach the payment service. Nothing was submitted.",true);
     }finally{
       busy=false;
-      if(btn&&!btn.hidden){btn.disabled=false;}
+      if(btn&&!btn.hidden) btn.disabled=false;
     }
   }
   window.startCheckout=startCheckout;
 
-  /* Stripe returns the browser here with ?session_id=. Confirming server-side applies
-     entitlement synchronously, so the customer is not left on a locked app waiting for
-     a webhook that may still be in flight. */
-  (function returnLeg(){
-    var sid=new URLSearchParams(location.search).get("session_id");
-    if(!sid)return;
-    if(btn){btn.hidden=true;}
-    say(" Confirming your subscription…",false);
-    fetch("/api/billing/confirm?session_id="+encodeURIComponent(sid),
-          {credentials:"include",cache:"no-store"})
-      .then(function(r){
-        if(r.status===401){toSignin();return null;}
-        return r.ok?r.json():Promise.reject(r.status);
-      })
-      .then(function(d){
-        if(!d)return;
-        ms.textContent="";
-        var b=document.createElement("b");
-        /* tier===null is NOT an error. Stripe can return the browser before
-           customer.subscription.created exists on the session; the webhook finishes
-           moments later. Saying "you're in" then would be a guess, and saying
-           "something went wrong" would be a lie. */
-        b.textContent=d.tier?"You're in":"Payment received";
-        ms.appendChild(b);
-        ms.appendChild(document.createTextNode(d.tier
-          ? " Your trial has started. Nothing is charged for 7 days."
-          : " Your subscription is being activated. Open the app in a moment and it will be ready."));
-        var a=document.createElement("a");
-        a.className="btn-key"; a.href="https://app.newsberri.com";
-        a.textContent="OPEN NEWSBERRI";
-        a.style.marginTop="14px"; a.style.display="inline-block";
-        /* The session lives on THIS host - __Host- cookies are host-only, which is what
-           keeps a sibling subdomain from writing ours. So a plain link lands the customer
-           on the app signed out, moments after paying. Trade the session for a 60-second
-           one-time token and navigate to that instead. If the hand-off is unavailable the
-           href still works, and they sign in normally. */
-        a.addEventListener("click",function(ev){
-          ev.preventDefault();
-          fetch("/api/auth/handoff",{method:"POST",credentials:"include",cache:"no-store",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({to:"https://app.newsberri.com"})})
-            .then(function(r){return r.ok?r.json():null;})
-            .then(function(d){location.href=(d&&d.url)||"https://app.newsberri.com";})
-            .catch(function(){location.href="https://app.newsberri.com";});
-        });
-        ms.appendChild(a);
-      })
-      .catch(function(){
-        say(" Your payment went through. We are still finishing setup — open the app and it will be ready shortly.",false);
-      });
-  })();
+  /* Confirm. Client-side with elements - there is no redirect to Stripe at any point. */
+  var submit=$("#paySubmit");
+  if(submit) submit.addEventListener("click", async function(){
+    if(!checkout||busy)return; busy=true;
+    submit.disabled=true; fieldErr("");
+    var label=submit.textContent; submit.textContent="CONFIRMING\u2026";
+    try{
+      var la=await checkout.loadActions();
+      var res=await la.actions.confirm();
+      if(res&&res.error){
+        /* Stripe's message is customer-facing and specific (declined, wrong CVC,
+           insufficient funds). Ours would be strictly worse. */
+        fieldErr(res.error.message||"That payment could not be completed.");
+        submit.disabled=false; submit.textContent=label;
+        return;
+      }
+      done();
+    }catch(e){
+      fieldErr("That payment could not be completed. Nothing was charged.");
+      submit.disabled=false; submit.textContent=label;
+    }finally{ busy=false; }
+  });
+
+  function done(){
+    var side=$("#payside"); if(side) side.hidden=true;
+    if(!ms)return;
+    ms.hidden=false; ms.textContent="";
+    var b=document.createElement("b"); b.textContent="You're in";
+    ms.appendChild(b);
+    ms.appendChild(document.createTextNode(
+      " Your trial has started. Nothing is charged for 7 days."));
+    var a=document.createElement("a");
+    a.className="btn-key"; a.href="https://app.newsberri.com";
+    a.textContent="OPEN NEWSBERRI";
+    a.style.marginTop="14px"; a.style.display="inline-block";
+    /* The session is on THIS host and __Host- cookies are host-only, so a plain link
+       would land them on the app signed out moments after paying. */
+    a.addEventListener("click",function(ev){
+      ev.preventDefault();
+      fetch("/api/auth/handoff",{method:"POST",credentials:"include",cache:"no-store",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({to:"https://app.newsberri.com"})})
+        .then(function(r){return r.ok?r.json():null;})
+        .then(function(d){location.href=(d&&d.url)||"https://app.newsberri.com";})
+        .catch(function(){location.href="https://app.newsberri.com";});
+    });
+    ms.appendChild(a);
+  }
 })();
 </script>
 </body>
