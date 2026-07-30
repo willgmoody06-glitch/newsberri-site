@@ -656,7 +656,14 @@ the session cookie readable and lets the whole purchase stay on this domain.
   .payerr{font-family:var(--mono);font-size:11.5px;letter-spacing:.4px;color:var(--bear);
           margin:12px 0 0;min-height:1em}
 </style>
-<script src="https://js.stripe.com/v3/"></script>
+<!-- The `clover` release, pinned deliberately. Verified against this account 2026-07-30
+     by mounting each bundle in isolation:
+       v3     -> throws "You must upgrade to the Basil release or higher to use initCheckout"
+       basil  -> throws "options.clientSecret is not an accepted parameter" (older signature)
+       clover -> mounts
+     `initCheckoutElementsSdk` EXISTS as a function on v3, so a typeof check says yes and
+     the call still fails. Presence is not support - test by calling it. -->
+<script src="https://js.stripe.com/clover/stripe.js"></script>
 <script>
 (function(){
   "use strict";
