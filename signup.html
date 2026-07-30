@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NewsBerri — Sign in</title>
-<meta name="description" content="Sign in to NewsBerri — no password, we email you a one-tap link. Informational only — not trading advice.">
+<title>NewsBerri — Create your account</title>
+<meta name="description" content="Create a NewsBerri account — no password, we email you a link. Pick a plan after you're in; every plan starts with a 7-day trial. Informational only — not trading advice.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Ccircle cx='26.1' cy='19.5' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='37.9' cy='19.5' r='6.5' fill='%2300e676'/%3E%3Ccircle cx='19.7' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='32' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='44.3' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='21.3' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='42.7' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='26.7' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='37.3' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='58.1' r='6' fill='%238f1029'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -454,14 +454,14 @@ column's terminal snippet is the app's true skin (no gradients inside).
                 <circle cx="26.7" cy="47.9" r="5.4" fill="#c2183a"/><circle cx="37.3" cy="47.9" r="5.4" fill="#c2183a"/>
                 <circle cx="32" cy="55.1" r="5.1" fill="#8f1029"/>
               </svg>
-              <h1 id="signin-h">Sign in to <span class="grad-text">NewsBerri</span></h1>
+              <h1 id="signin-h">Create your <span class="grad-text">NewsBerri</span> account</h1>
             </div>
-            <p class="cardlede">One tap from your inbox and you're back at the board.</p>
+            <p class="cardlede">Enter your email and we'll send a link that creates your account. Your 7-day trial starts when you pick a plan.</p>
 
-            <!-- "confirm it after you sign in", not "you're starting X": the deployed
-                 backend has no intent plumbing, so this choice does not survive the
-                 round trip. Claiming otherwise would be a promise the server cannot keep. -->
-            <p class="planchip" id="planChip" hidden>YOU PICKED <b id="planName">PRO</b> — <span id="planAmt">$39/MO</span> · CONFIRM IT AFTER YOU SIGN IN</p>
+            <!-- "confirm it once you're in", not "you're starting X": the deployed backend
+                 has no intent plumbing, so this choice does not survive the round trip.
+                 Claiming otherwise would be a promise the server cannot keep. -->
+            <p class="planchip" id="planChip" hidden>YOU PICKED <b id="planName">PRO</b> — <span id="planAmt">$39/MO</span> · CONFIRM IT ONCE YOU'RE IN</p>
 
             <div id="formView">
               <!-- deliberately NOT a <form>: (i) with JS off a real form would GET-submit
@@ -470,7 +470,7 @@ column's terminal snippet is the app's true skin (no gradients inside).
               <div class="mailform" id="mailForm">
                 <label class="flab" for="email">Email</label>
                 <input class="fin" type="email" id="email" placeholder="you@desk.com" autocomplete="email" inputmode="email" required>
-                <button class="btn-key wide" type="button" id="sendBtn">EMAIL ME A SIGN-IN LINK</button>
+                <button class="btn-key wide" type="button" id="sendBtn">EMAIL ME A SIGN-UP LINK</button>
               </div>
 
               <!-- Ships EMPTY and is filled by JS: screen readers announce content
@@ -484,32 +484,23 @@ column's terminal snippet is the app's true skin (no gradients inside).
 
               <div class="or" aria-hidden="true">OR</div>
 
-              <!-- Passkey is now a REAL button and completes on this hostname. It became
-                   possible when WEBAUTHN_RP_ID was wired to the apex (2026-07-29): an
-                   rp_id must be a registrable suffix of the page origin, and
-                   `newsberri.com` is a suffix of both this host and app.newsberri.com, so
-                   one credential works on either. The session cookie is SameSite=Lax and
-                   set on the app origin — that still lands, because SameSite keys on the
-                   REGISTRABLE DOMAIN and these two hosts share `newsberri.com`. Hence
-                   credentials:"include" on both calls below.
-                   Google stays a LINK to the app origin: it needs this hostname listed
-                   under Authorized JavaScript Origins in the Google Cloud console and it
-                   is not, so a native button here would fail with an opaque error. -->
+              <!-- Google stays a LINK to the app origin: Google sign-in needs this
+                   hostname listed under Authorized JavaScript Origins in the Google
+                   Cloud console, and it is not. Until it is, a native button here would
+                   fail with an opaque error, so the handoff is the honest option.
+                   No passkey button on this page: a passkey authenticates an account
+                   that already exists, so it cannot create one. It appears on
+                   signin.html, where it works from this hostname. -->
               <div class="altrow">
                 <a class="btn-auth" href="https://app.newsberri.com">
                   <span class="gg" aria-hidden="true">G</span>CONTINUE WITH GOOGLE
                 </a>
-                <button class="btn-auth" type="button" id="pkBtn">
-                  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <circle cx="5.5" cy="8" r="3"/><path d="M8.5 8h6M12 8v2.6M14.5 8v1.8"/>
-                  </svg>USE A PASSKEY
-                </button>
               </div>
 
               <div class="notes">
                 <p class="note"><b>No password to make or leak</b> — we email you a link.</p>
-                <p class="note">No account yet? <a href="signup.html">Create one →</a></p>
-                <p class="note">Your 7-day trial starts when you pick a plan — <a href="pricing.html">see the plans</a>.</p>
+                <p class="note">Already have an account? <a href="signin.html">Sign in →</a></p>
+                <p class="note">Pick a plan after you're in — <a href="pricing.html">see the plans</a>. Every plan starts with a 7-day trial and takes a card up front; you're not charged until the trial ends.</p>
                 <p class="note">Want to look around first? <a href="demo.html">Try the demo — no sign-up →</a></p>
                 <!-- Permanently visible, not JS-gated: if the API is unreachable or the
                      allowed-origins env var is ever dropped, this page must degrade to
@@ -526,16 +517,6 @@ column's terminal snippet is the app's true skin (no gradients inside).
               <p class="note">Nothing after a minute? Check your spam folder.</p>
               <button class="linkbtn" id="againBtn" type="button">Use a different email</button>
             </div>
-
-            <!-- passkey success. Deliberately does NOT auto-redirect: the session cookie
-                 is already set on the app origin, so the handoff is the customer's click,
-                 and a blocked or slow redirect cannot strand them on a blank page. -->
-            <div class="sent" id="pkOkView" hidden>
-              <span class="sentchip">● PASSKEY</span>
-              <h2 id="pkOkH" tabindex="-1">Signed in — <span class="grad-text">you're through.</span></h2>
-              <p>Your passkey checked out and your session is live. Open the terminal to pick up where the feed is.</p>
-              <a class="btn-key wide" href="https://app.newsberri.com/">OPEN NEWSBERRI →</a>
-            </div>
           </div>
         </div>
 
@@ -545,7 +526,7 @@ column's terminal snippet is the app's true skin (no gradients inside).
       <!-- ———— RIGHT · the tape's already running ———— -->
       <div class="viz rv d2">
         <p class="vizkick">The tape's <span class="grad-text">already running.</span></p>
-        <p class="vizsub">Sign in, pick your contract, and pick up right where the feed is.</p>
+        <p class="vizsub">Create your account, pick your contract, and start where the feed already is.</p>
         <figure class="viz-fig">
           <div class="snip">
             <div class="ph"><span class="led live"></span>LIVE FEED — NQ<span class="ph-r">SENTIMENT · SIMULATED<span class="hint">CLICK THE ROW</span></span></div>
@@ -747,98 +728,6 @@ column's terminal snippet is the app's true skin (no gradients inside).
     emailIn.value="";
     emailIn.focus();
   });
-
-  /* ---- passkey sign-in, on THIS hostname.
-     WebAuthn speaks ArrayBuffers and the API speaks JSON, so every binary field is
-     base64url on the wire. atob/btoa handle standard base64 only — the -_ alphabet and
-     the stripped padding both have to be converted by hand.
-     credentials:"include" on both calls: the response sets the session cookie on the app
-     origin, and without it the browser discards the Set-Cookie and the user authenticates
-     into nothing. ---- */
-  function b64uToBuf(s){
-    s=String(s||"").replace(/-/g,"+").replace(/_/g,"/");
-    while(s.length%4)s+="=";
-    var bin=atob(s),out=new Uint8Array(bin.length);
-    for(var i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);
-    return out;
-  }
-  function bufToB64u(buf){
-    var b=new Uint8Array(buf),s="";
-    for(var i=0;i<b.length;i++)s+=String.fromCharCode(b[i]);
-    return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-  }
-
-  var pkBtn=$("#pkBtn");
-  if(pkBtn){
-    if(!(window.PublicKeyCredential&&navigator.credentials&&navigator.credentials.get)){
-      /* Old browser: say so on the button rather than failing on click. The email link
-         above still works, so this is a downgrade and not a dead end. */
-      pkBtn.disabled=true;
-      pkBtn.title="This browser doesn't support passkeys — use the email link";
-    }else{
-      pkBtn.addEventListener("click",function(){
-        if(busy)return;
-        clearErr();
-        busy=true;pkBtn.disabled=true;
-        fetch(API+"/api/auth/passkey/auth-options",{
-          method:"POST",credentials:"include",
-          headers:{"Content-Type":"application/json"},body:"{}"
-        }).then(function(r){
-          if(!r.ok)throw{soft:"Couldn't start passkey sign-in. Use the email link above."};
-          return r.json();
-        }).then(function(d){
-          var pk=(d.options||{}).publicKey||{};
-          var req={challenge:b64uToBuf(pk.challenge)};
-          /* Pass rpId through rather than hardcoding it: the server owns that value and
-             a mismatch is an instant NotAllowedError with no useful message. */
-          if(pk.rpId)req.rpId=pk.rpId;
-          if(pk.userVerification)req.userVerification=pk.userVerification;
-          if(pk.timeout)req.timeout=pk.timeout;
-          /* The server begins a DISCOVERABLE-credential flow, so allowCredentials is
-             normally absent. Honour it if that ever changes. */
-          if(pk.allowCredentials&&pk.allowCredentials.length)
-            req.allowCredentials=pk.allowCredentials.map(function(c){
-              return {type:c.type||"public-key",id:b64uToBuf(c.id)};
-            });
-          return navigator.credentials.get({publicKey:req}).then(function(cred){
-            if(!cred)throw{soft:"No passkey was returned. Use the email link above."};
-            return {state:d.state,cred:cred};
-          });
-        }).then(function(x){
-          var c=x.cred,r=c.response;
-          return fetch(API+"/api/auth/passkey/auth",{
-            method:"POST",credentials:"include",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({state:x.state,response:{
-              id:c.id,rawId:bufToB64u(c.rawId),type:c.type,
-              response:{
-                clientDataJSON:bufToB64u(r.clientDataJSON),
-                authenticatorData:bufToB64u(r.authenticatorData),
-                signature:bufToB64u(r.signature),
-                userHandle:r.userHandle?bufToB64u(r.userHandle):null
-              }}})
-          });
-        }).then(function(r){
-          if(r.status===401)
-            throw{soft:"That passkey isn't registered on this account. Sign in with an "+
-                       "email link, then add a passkey again from Settings."};
-          if(!r.ok)throw{soft:"Passkey sign-in failed. Use the email link above."};
-          return r.json();
-        }).then(function(){
-          formView.hidden=true;
-          $("#pkOkView").hidden=false;
-          $("#pkOkH").focus();
-        }).catch(function(e){
-          /* A cancelled prompt or a timeout is not an error worth shouting about — the
-             user closed the sheet on purpose. Everything else gets a message. */
-          var n=e&&e.name;
-          if(n==="NotAllowedError"||n==="AbortError")return;
-          fail(e&&e.soft?e.soft:
-            "Passkey sign-in didn't complete. Use the email link above.");
-        }).then(function(){busy=false;pkBtn.disabled=false;});
-      });
-    }
-  }
 
   /* ---- the tape row scores itself shortly after load; click toggles it ---- */
   function scoreRow(row,force){
