@@ -936,47 +936,79 @@ column's terminal snippet is the app's true skin (no gradients inside).
   setTimeout(function(){if(!tr.classList.contains("scored"))scoreRow(tr,true);},RM?300:1200);
 })();
 
-  /* ---- carry the session to app.newsberri.com -------------------------------
-     The session lives on this host. __Host- cookies are host-only - that is the
-     property that stops a sibling subdomain writing ours - so a plain link lands the
-     customer on the app signed out, moments after signing in here. Trade the session
-     for a 60-second one-time token instead.
-     Every app-bound anchor is wired, not just the success button: "go straight to the
-     app" is the one a returning signed-in visitor is most likely to click.
-     The href is untouched, so JS-off, a handoff failure and a 401 (no session yet) all
-     fall through to the plain link - never worse than before. */
-  /* If they arrived from a pricing CTA (?plan=), finishing sign-in should land them on
-     checkout, not in the app - that is the journey they started. Runs BEFORE the handoff
-     wiring below so the retargeted button is a plain same-origin link, not a session jump. */
-  (function(){
+</script>
+
+<!-- ======== SIGNED-IN SHORT-CIRCUIT + WHERE SIGN-IN LEADS =====================
+A visitor who is already signed in should never be shown a sign-in form, and the
+step after signing in on this site is buying - not opening the app. Somebody who
+wants the app opens the app.
+
+/api/* is same-origin here (nginx proxies the funnel routes), which is what makes
+the session cookie readable from this page.
+=========================================================================== -->
+<script>
+(function(){
+  "use strict";
+  var APP = "https://app.newsberri.com";
+
+  function params(){
     var q = new URLSearchParams(location.search);
     var plan = (q.get("plan") || "").toLowerCase();
-    if (!/^(core|pro|desk)$/.test(plan)) return;
     var bill = (q.get("bill") || "monthly").toLowerCase();
+    if (!/^(core|pro|desk)$/.test(plan)) plan = "";
     if (bill !== "six" && bill !== "monthly") bill = "monthly";
+    return {plan: plan, bill: bill};
+  }
+
+  function checkoutHref(){
+    var p = params();
+    return p.plan ? ("checkout.html?plan=" + p.plan + "&bill=" + p.bill) : "checkout.html";
+  }
+
+  /* Existing subscribers only. Trades the session for a 60s one-time token so the app
+     does not ask them to sign in again. href stays intact as the fallback. */
+  function handoff(a){
+    a.addEventListener("click", function(ev){
+      ev.preventDefault();
+      var back = a.getAttribute("href") || APP;
+      fetch("/api/auth/handoff", {method:"POST", credentials:"include", cache:"no-store",
+        headers:{"Content-Type":"application/json"}, body:JSON.stringify({to:APP})})
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(d){ location.href = (d && d.url) || back; })
+        .catch(function(){ location.href = back; });
+    });
+  }
+
+  /* The button on the post-sign-in success panel. */
+  function retarget(paid){
     var go = document.querySelector("#pkOkView a.btn-key");
     if (!go) return;
-    go.setAttribute("href", "checkout.html?plan=" + plan + "&bill=" + bill);
-    go.textContent = "CONTINUE TO CHECKOUT →";
-  })();
+    if (paid){
+      go.setAttribute("href", APP);
+      go.textContent = "OPEN NEWSBERRI \u2192";
+      handoff(go);
+    } else {
+      go.setAttribute("href", checkoutHref());
+      go.textContent = "START YOUR TRIAL \u2192";
+    }
+  }
 
-  Array.prototype.forEach.call(
-    document.querySelectorAll('a[href^="https://app.newsberri.com"]'),
-    function(a){
-      if(a.id === "gsiFallback") return;   /* that one is a Google shim, not a session jump */
-      a.addEventListener("click", function(ev){
-        ev.preventDefault();
-        var fallback = a.getAttribute("href");
-        fetch("/api/auth/handoff", {
-          method:"POST", credentials:"include", cache:"no-store",
-          headers:{"Content-Type":"application/json"},
-          body: JSON.stringify({to:"https://app.newsberri.com"})
-        })
-        .then(function(r){ return r.ok ? r.json() : null; })
-        .then(function(d){ location.href = (d && d.url) || fallback; })
-        .catch(function(){ location.href = fallback; });
-      });
-    });
+  fetch("/api/me", {credentials:"include", cache:"no-store"})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(me){
+      if (!me || !me.email){ retarget(false); return; }   /* signed out: leave the form */
+      var paid = me.tier && me.tier !== "none";
+      if (paid){
+        /* Already subscribed. Do not offer checkout - a second subscription would
+           attach to the same Customer and bill them twice. */
+        retarget(true);
+        return;
+      }
+      /* Signed in and unpaid: the form has nothing to ask. Go and buy. */
+      location.replace(checkoutHref());
+    })
+    .catch(function(){ retarget(false); });
+})();
 </script>
 </body>
 </html>
