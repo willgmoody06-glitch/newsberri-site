@@ -870,5 +870,91 @@ a.btn{text-decoration:none}
   if(showIt)setTimeout(showTour,350);
 })();
 </script>
+
+<!-- ======== SIGNED-IN STATE + PURCHASE PATH ==================================
+Asks /api/me once and, only if it answers 200, points the CTAs at whatever this
+visitor can actually do next. A 401 or any error changes nothing, so the
+signed-out page is exactly what it was.
+
+/api/* is same-origin here: nginx proxies the funnel routes to the app box. That
+is what makes the session cookie visible to this page at all.
+=========================================================================== -->
+<script>
+(function(){
+  "use strict";
+  var APP = "https://app.newsberri.com";
+
+  /* Trade the apex session for a 60s one-time token so the app does not ask the
+     customer to sign in again. href stays intact: JS-off, a failed handoff and a
+     401 all fall through to the plain link. */
+  function handoff(a){
+    a.addEventListener("click", function(ev){
+      ev.preventDefault();
+      var back = a.getAttribute("href") || APP;
+      fetch("/api/auth/handoff", {method:"POST", credentials:"include", cache:"no-store",
+        headers:{"Content-Type":"application/json"}, body:JSON.stringify({to:APP})})
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(d){ location.href = (d && d.url) || back; })
+        .catch(function(){ location.href = back; });
+    });
+  }
+
+  /* monthly | six, read from the pricing toggle when the page has one. */
+  function cycle(){
+    var on = document.querySelector(".bt-opt.is-on");
+    return (on && on.getAttribute("data-annual") === "true") ? "six" : "monthly";
+  }
+
+  function planOf(href){
+    var m = /[?&]plan=([a-z]+)/.exec(href || "");
+    return m ? m[1] : "";
+  }
+
+  function apply(me){
+    var paid = me.tier && me.tier !== "none";
+
+    document.querySelectorAll('a[href^="signup.html"], a[href^="signin.html"]')
+      .forEach(function(a){
+        var plan = planOf(a.getAttribute("href"));
+        if (paid){
+          /* Already subscribed: every "start a trial" control is really "open the app". */
+          a.setAttribute("href", APP);
+          if (/trial|sign in|start/i.test(a.textContent)) a.textContent = "OPEN NEWSBERRI";
+          handoff(a);
+        } else if (plan){
+          /* Signed in, unpaid, and they picked a tier - send them straight to checkout
+             on THIS domain instead of a sign-in page they no longer need. */
+          a.setAttribute("href", "checkout.html?plan=" + plan + "&bill=" + cycle());
+        } else {
+          /* Signed in, unpaid, no tier chosen yet - the pricing table is the next step. */
+          a.setAttribute("href", "pricing.html");
+          if (/sign in/i.test(a.textContent)) a.textContent = "CHOOSE A PLAN";
+        }
+      });
+
+    /* Any remaining direct app link should also carry the session. */
+    document.querySelectorAll('a[href^="' + APP + '"]').forEach(function(a){
+      if (a.id !== "gsiFallback") handoff(a);
+    });
+
+    /* Keep checkout links honest when the monthly/6-month toggle moves. */
+    document.querySelectorAll(".bt-opt").forEach(function(b){
+      b.addEventListener("click", function(){
+        document.querySelectorAll('a[href^="checkout.html?plan="]').forEach(function(a){
+          a.setAttribute("href",
+            a.getAttribute("href").replace(/bill=[a-z]+/, "bill=" + cycle()));
+        });
+      });
+    });
+  }
+
+  try{
+    fetch("/api/me", {credentials:"include", cache:"no-store"})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(me){ if (me && me.email) apply(me); })
+      .catch(function(){});
+  }catch(e){}
+})();
+</script>
 </body>
 </html>

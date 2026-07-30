@@ -945,6 +945,21 @@ column's terminal snippet is the app's true skin (no gradients inside).
      app" is the one a returning signed-in visitor is most likely to click.
      The href is untouched, so JS-off, a handoff failure and a 401 (no session yet) all
      fall through to the plain link - never worse than before. */
+  /* If they arrived from a pricing CTA (?plan=), finishing sign-in should land them on
+     checkout, not in the app - that is the journey they started. Runs BEFORE the handoff
+     wiring below so the retargeted button is a plain same-origin link, not a session jump. */
+  (function(){
+    var q = new URLSearchParams(location.search);
+    var plan = (q.get("plan") || "").toLowerCase();
+    if (!/^(core|pro|desk)$/.test(plan)) return;
+    var bill = (q.get("bill") || "monthly").toLowerCase();
+    if (bill !== "six" && bill !== "monthly") bill = "monthly";
+    var go = document.querySelector("#pkOkView a.btn-key");
+    if (!go) return;
+    go.setAttribute("href", "checkout.html?plan=" + plan + "&bill=" + bill);
+    go.textContent = "CONTINUE TO CHECKOUT →";
+  })();
+
   Array.prototype.forEach.call(
     document.querySelectorAll('a[href^="https://app.newsberri.com"]'),
     function(a){
