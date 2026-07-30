@@ -749,6 +749,20 @@ change. pk_live_ is public by design and can only create payment methods.
         a.className="btn-key"; a.href="https://app.newsberri.com";
         a.textContent="OPEN NEWSBERRI";
         a.style.marginTop="14px"; a.style.display="inline-block";
+        /* The session lives on THIS host - __Host- cookies are host-only, which is what
+           keeps a sibling subdomain from writing ours. So a plain link lands the customer
+           on the app signed out, moments after paying. Trade the session for a 60-second
+           one-time token and navigate to that instead. If the hand-off is unavailable the
+           href still works, and they sign in normally. */
+        a.addEventListener("click",function(ev){
+          ev.preventDefault();
+          fetch("/api/auth/handoff",{method:"POST",credentials:"include",cache:"no-store",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({to:"https://app.newsberri.com"})})
+            .then(function(r){return r.ok?r.json():null;})
+            .then(function(d){location.href=(d&&d.url)||"https://app.newsberri.com";})
+            .catch(function(){location.href="https://app.newsberri.com";});
+        });
         ms.appendChild(a);
       })
       .catch(function(){
