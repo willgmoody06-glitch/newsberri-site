@@ -649,7 +649,15 @@ column's terminal snippet is the app's true skin (no gradients inside).
     $$(".rv").forEach(function(el){el.classList.add("in");});
   });});
 
-  var API="https://app.newsberri.com";
+  /* Same-origin. nginx on this box proxies /api/auth, /api/billing, /api/me and
+     /api/health to the app box, so these calls are same-origin and TWO things follow
+     that an absolute app.newsberri.com URL cannot give us:
+       1. Set-Cookie is attributed to THIS host, so the session lives on newsberri.com.
+          Cross-origin, the __Host- cookie belonged to app.newsberri.com and this page
+          had no session at all - navigating away read as being logged out.
+       2. Our nginx sets X-Forwarded-Host: newsberri.com, which is what tells the app
+          to build the emailed sign-in link against this origin instead of the app. */
+  var API="";
 
   /* ---- ?plan=core|pro|desk × ?bill=monthly|six → plan chip. No param = no chip.
      (The old mockup defaulted to "pro" and silently routed a bare click as a Pro
