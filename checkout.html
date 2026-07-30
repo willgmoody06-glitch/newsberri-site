@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NewsBerri — Checkout · Start your 7-day trial</title>
+<meta name="description" content="Start your NewsBerri 7-day trial. Nothing is charged today — we email you a reminder on day 5, and the first charge lands on day 7. Card details are handled by Stripe and never touch our servers. Informational only — not trading advice.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Ccircle cx='26.1' cy='19.5' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='37.9' cy='19.5' r='6.5' fill='%2300e676'/%3E%3Ccircle cx='19.7' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='32' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='44.3' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='21.3' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='42.7' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='26.7' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='37.3' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='58.1' r='6' fill='%238f1029'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS — locked app tokens (verbatim) + site tints ============ */
+:root{
+  --mono:"Martian Mono",ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+  --grot:"Barlow Semi Condensed",system-ui,-apple-system,sans-serif;
+  --display:"Big Shoulders Display","Barlow Semi Condensed",system-ui,sans-serif;
+  --bull:#00e676; --bear:#ff1744; --amber:#ff9100; --neutral:#8a97a6;
+  --berry:#ff3b57; --berry-dk:#c2183a; --berry-deep:#8f1029;
+  --grad:linear-gradient(135deg,#E8336E 0%,#C74497 40%,#A64FC6 70%,#8B5CF6 100%);
+  --canvas:#000000; --panel:#0d1013; --panel-2:#101317; --raise:#14181d;
+  --hair:#1a1f25; --hair-strong:#262d35;
+  --ink:#f2f6f8; --ink-2:#b8c7d1; --ink-3:#8496a2; --ink-faint:#5d6d78;
+  --key:#ffffff; --key-ink:#04060a;
+  --key-glow:0 0 12px rgba(255,255,255,.25);
+  --bull-bg:rgba(0,210,122,.12); --bear-bg:rgba(255,65,81,.12);
+  /* site-only tints (never inside .snip) */
+  --vio:#8B5CF6; --vio-2:#A64FC6; --ras:#E8336E; --ras-2:#C74497;
+  --vio-ink:#c9b8fa; --ras-ink:#ff9dbd;
+  --well:#05080b; --well-line:#1f262e; --selrow:rgba(255,255,255,.06);
+  color-scheme:dark;
+}
+/* ============ BASE ============ */
+*,*::before,*::after{box-sizing:border-box;border-radius:0}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--grot);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;overflow-x:clip}
+::selection{background:rgba(199,68,151,.35)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--key);outline-offset:2px}
+img,svg{max-width:100%}
+[hidden]{display:none !important}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--key);color:var(--key-ink);padding:8px 16px;font-family:var(--mono);font-size:12px;z-index:99}
+.skip:focus{left:12px;top:12px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.micro{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.rule{border:0;border-top:1px solid var(--hair);margin:0 auto}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* buttons */
+.btn-key{display:inline-block;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:2px;padding:13px 24px;box-shadow:var(--key-glow);border:1px solid var(--key);transition:box-shadow .18s ease}
+.btn-key:hover{box-shadow:0 0 14px rgba(232,51,110,.4),0 0 26px rgba(139,92,246,.35)}
+.btn-brk{display:inline-block;color:var(--ink-2);font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:2px;padding:13px 10px}
+.btn-brk::before{content:"[ ";color:var(--ink-faint)}
+.btn-brk::after{content:" ]";color:var(--ink-faint)}
+.btn-brk:hover{color:var(--key)}
+.btn-brk:hover::before,.btn-brk:hover::after{color:var(--ras-2)}
+/* wordmark */
+.wordmark{font-family:var(--display);font-weight:800;letter-spacing:2px;color:var(--ink);text-transform:uppercase;line-height:1}
+.wordmark b{color:var(--berry);font-weight:800}
+/* ============ COMPACT CHROME: topstrip + sticky nav (no masthead — focus on the task) ============ */
+.topstrip{display:flex;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px}
+.newsnav{position:sticky;top:0;z-index:50;background:rgba(0,0,0,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--hair-strong)}
+.newsnav .wrap{display:flex;align-items:center;gap:22px;min-height:54px}
+.newsnav .brand{display:flex;align-items:center;gap:9px}
+.newsnav .brand svg{display:block}
+.newsnav .brand .wordmark{font-size:21px}
+.newsnav .links{display:flex;gap:26px;margin-left:8px}
+.newsnav .links a{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;color:var(--ink-2);padding:6px 0;border-bottom:2px solid transparent}
+.newsnav .links a:hover{color:var(--key)}
+.newsnav .actions{margin-left:auto;display:flex;align-items:center;gap:14px}
+.newsnav .signin{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;color:var(--ink-3)}
+.newsnav .signin:hover{color:var(--key)}
+.newsnav .btn-key{padding:9px 18px;font-size:11px}
+.newsnav .btn-brk{padding:9px 4px;font-size:11px}
+/* mobile-only chrome controls (short CTA + hamburger) — shown only in the ≤760px block */
+.newsnav .mcta,.newsnav .mnav{display:none}
+/* ============ PAGE FURNITURE ============ */
+.sec{position:relative;padding:52px 0 0}
+.sec .inner{position:relative}
+.eychip{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:2px;color:#fff;background:var(--grad);padding:5px 12px;margin-bottom:14px}
+.wash-hero::before{content:"";position:absolute;inset:-40px 0 0;pointer-events:none;
+  background:radial-gradient(ellipse 720px 460px at 12% 0%,rgba(232,51,110,.09),transparent 68%),
+             radial-gradient(ellipse 760px 500px at 88% 14%,rgba(139,92,246,.09),transparent 70%)}
+.cohead h1{font-family:var(--display);font-weight:800;font-size:clamp(40px,4.4vw,62px);line-height:.98;letter-spacing:.5px;text-transform:uppercase;margin:0 0 12px;max-width:900px}
+.cohead .lede{font-size:18px;color:var(--ink-2);margin:0;max-width:60ch}
+.simchip{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--amber);border:1px dashed color-mix(in srgb,var(--amber),transparent 45%);padding:4px 8px;text-transform:uppercase;margin-left:12px;vertical-align:3px}
+/* ============ TWO-COLUMN CHECKOUT GRID ============ */
+.cogrid{display:grid;grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);gap:26px;align-items:start;margin-top:36px}
+.cardh{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:2.5px;color:var(--ink-3);margin:0 0 18px;text-transform:uppercase}
+/* LEFT — plan summary */
+.plancard{border:1px solid var(--hair-strong);background:var(--panel);padding:28px 28px 24px}
+.planname{font-family:var(--display);font-weight:800;font-size:36px;letter-spacing:1px;text-transform:uppercase;line-height:1;margin:0 0 10px}
+.popchip{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:1.5px;color:#fff;background:var(--grad);padding:3px 8px;margin-left:10px;vertical-align:4px}
+.price{font-family:var(--display);font-weight:800;font-size:50px;line-height:1;letter-spacing:1px;margin:0}
+.price sub{font-family:var(--mono);font-size:11px;font-weight:400;letter-spacing:1px;color:var(--ink-3);vertical-align:baseline}
+.price-alt{color:var(--ink-3);margin:8px 0 0;letter-spacing:1.2px}
+.aftertrial{margin:6px 0 0;color:var(--ink-faint)}
+.blurb{font-size:15px;color:var(--ink-2);margin:14px 0 20px}
+/* segmented controls: plan link pair + monthly/six-month toggle (pricing-page pattern) */
+.segrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 12px}
+.seglab{width:52px;flex:none}
+.billtoggle{display:inline-flex;border:1px solid var(--hair-strong);background:var(--panel-2)}
+.bt-opt{font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:1.5px;color:var(--ink-3);background:transparent;border:0;padding:11px 20px;cursor:pointer;display:inline-flex;align-items:center;gap:9px;transition:color .18s ease,background .18s ease}
+.bt-opt+.bt-opt{border-left:1px solid var(--hair-strong)}
+.bt-opt:hover{color:var(--ink)}
+.bt-opt.is-on{color:var(--key);background:linear-gradient(180deg,rgba(199,68,151,.13),rgba(139,92,246,.06))}
+.bt-save{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:1px;color:#fff;background:var(--grad);padding:3px 7px}
+.bt-opt:not(.is-on) .bt-save{opacity:.7}
+/* inclusions (facts from pricing.html; both lists in markup so no-JS reads complete) */
+.manifest{list-style:none;margin:16px 0 0;padding:0}
+.manifest li{border-top:1px solid var(--hair);padding:9px 0;font-size:14.5px;color:var(--ink-2);display:flex;align-items:baseline;gap:10px}
+.manifest li::before{content:"✓";font-family:var(--mono);font-size:11px;color:var(--ink);flex:none}
+.manifest li.plus::before{content:"+";color:var(--ink-3)}
+.manifest li b{color:var(--ink);font-weight:600}
+.plist-x{margin:12px 0 0}
+.plist+.plist{margin-top:20px;border-top:1px dashed var(--hair-strong);padding-top:16px}
+html.js .plist{display:none}
+html.js .plist.is-on{display:block}
+html.js .plist+.plist{margin-top:0;border-top:0;padding-top:0}
+html.js .plist-h{display:none}
+.plan-foot{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between;align-items:baseline;border-top:1px solid var(--hair-strong);margin-top:20px;padding-top:14px}
+.plan-foot a{color:var(--ink-2);border-bottom:1px solid var(--hair-strong);font-size:13.5px}
+.plan-foot a:hover{color:var(--key);border-color:var(--ras-2)}
+/* RIGHT — the order / trial panel (gradient cap, the page's centerpiece) */
+.ordercard{position:relative;border:1px solid var(--hair-strong);padding:28px 30px 26px;
+  background:linear-gradient(180deg,rgba(199,68,151,.09),rgba(139,92,246,.04) 46%,transparent 80%),var(--panel)}
+.ordercard::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:3px;background:var(--grad)}
+/* the trial timeline — three stops on a vertical gradient rail */
+.rail{list-style:none;margin:6px 0 8px;padding:0;position:relative}
+.rail::before{content:"";position:absolute;left:9px;top:10px;bottom:14px;width:2px;
+  background:linear-gradient(180deg,#E8336E,#C74497 40%,#A64FC6 70%,#8B5CF6)}
+.stop{position:relative;padding:0 0 26px 46px}
+.stop:last-child{padding-bottom:10px}
+.stop::before{content:"";position:absolute;left:3px;top:5px;width:14px;height:14px;background:var(--canvas);border:2px solid var(--ras);box-shadow:0 0 10px rgba(232,51,110,.55)}
+.stop.s2::before{border-color:var(--vio-2);box-shadow:0 0 10px rgba(166,79,198,.55)}
+.stop.s3::before{border-color:var(--vio);box-shadow:0 0 10px rgba(139,92,246,.55)}
+.stop .when{display:block;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:2.2px;color:var(--ink-3);margin:0 0 5px}
+.stop.s1 .when{color:var(--ras-ink)}
+.stop.s3 .when{color:var(--vio-ink)}
+.stop .st{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:1px;text-transform:uppercase;line-height:1.05;margin:0 0 5px}
+.stop .sd{font-size:14.5px;color:var(--ink-2);line-height:1.5;margin:0;max-width:52ch}
+/* due today + the handoff button */
+.duerow{display:flex;justify-content:space-between;align-items:baseline;gap:14px;border-top:1px solid var(--hair-strong);margin-top:4px;padding:16px 0 18px}
+.duerow .dl{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2.2px;color:var(--ink-3)}
+.duerow b{font-family:var(--mono);font-size:clamp(30px,3vw,40px);font-weight:700;font-variant-numeric:tabular-nums;text-shadow:0 0 12px rgba(255,255,255,.25)}
+.cta-go{display:block;width:100%;position:relative;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:2.5px;padding:19px 24px;border:1px solid var(--key);cursor:pointer;isolation:isolate;box-shadow:var(--key-glow);text-align:center;transition:box-shadow .18s ease}
+.cta-go::before{content:"";position:absolute;inset:-6px;background:var(--grad);filter:blur(14px);opacity:.45;z-index:-1}
+.cta-go:hover{box-shadow:0 0 16px rgba(232,51,110,.5),0 0 34px rgba(139,92,246,.5)}
+.cta-go:hover::before{opacity:.7}
+.stripeline{font-size:13px;color:var(--ink-3);margin:12px 0 0;text-align:center}
+.mockstate{margin:16px 0 0;border:1px dashed color-mix(in srgb,var(--amber),transparent 45%);background:color-mix(in srgb,var(--amber),transparent 92%);padding:12px 14px;font-size:13.5px;color:var(--ink-2)}
+.mockstate b{display:block;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--amber);margin-bottom:5px;text-transform:uppercase}
+.reassure{font-family:var(--mono);font-size:11px;letter-spacing:1.3px;line-height:1.95;color:var(--ink-2);margin:18px 0 0;font-variant-numeric:tabular-nums}
+.reassure .sep{color:var(--ras-2);padding:0 4px}
+.risknote{font-size:12.5px;line-height:1.55;color:var(--ink-2);margin:14px 0 0;border-top:1px solid var(--hair);padding-top:12px}
+.backrow{margin-top:10px}
+.backrow .btn-brk{padding-left:0}
+/* ============ FOOTER (copied verbatim from the other pages) ============ */
+.colophon{border-top:1px solid var(--hair-strong);margin-top:72px;padding:40px 0 34px;position:relative}
+.colophon::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(232,51,110,.55) 25%,rgba(139,92,246,.55) 75%,transparent)}
+.colo-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;padding-bottom:22px}
+.colo-brand{display:flex;align-items:center;gap:10px}
+.colo-brand .wordmark{font-size:26px}
+.colo-comp{font-family:var(--display);font-weight:700;font-size:clamp(20px,2.4vw,30px);letter-spacing:1px;text-transform:uppercase;margin:0}
+.colo-mid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;border-top:1px solid var(--hair);padding:14px 0}
+.colo-mid a{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-3);margin-right:22px}
+.colo-mid a:hover{color:var(--key)}
+.colo-bot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;border-top:1px solid var(--hair);padding-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--ink-faint)}
+.roundtag{color:var(--ink-3)}
+/* ============ MOTION (js-gated + reduced-motion-gated; no-JS stays fully visible) ============ */
+@media (prefers-reduced-motion:no-preference){
+  html.js .rv{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+  html.js .rv.d1{transition-delay:.08s}
+  html.js .rv.d2{transition-delay:.16s}
+  html.js .rv.in{opacity:1;transform:none}
+  .wash-hero::before{animation:drift 18s ease-in-out infinite alternate}
+  .cta-go{animation:ctapulse 2.6s ease-in-out infinite}
+}
+@keyframes drift{from{transform:translate3d(-1.2%,-.6%,0)}to{transform:translate3d(1.2%,1%,0)}}
+@keyframes ctapulse{0%,100%{box-shadow:0 0 0 0 rgba(232,51,110,.45),0 0 16px rgba(139,92,246,.35)}50%{box-shadow:0 0 0 10px rgba(232,51,110,0),0 0 30px rgba(139,92,246,.6)}}
+/* ============ RESPONSIVE ============ */
+@media (max-width:1024px){
+  .newsnav .links{gap:18px}
+  .cogrid{gap:18px}
+  .plancard{padding:24px 20px 20px}
+  .ordercard{padding:24px 22px 22px}
+}
+@media (max-width:900px){
+  .newsnav .wrap{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+  .newsnav .links{order:3;width:100%;gap:16px;margin-left:0}
+  .newsnav .actions{gap:10px;flex-wrap:wrap;justify-content:flex-end}
+  .cogrid{grid-template-columns:1fr}
+}
+/* ============ MOBILE CHROME (≤760px) — copy this block byte-identical on every page ============ */
+@media (max-width:760px){
+  body{font-size:16px}
+  .wrap{padding:0 18px}
+  /* topstrip: one tiny centered compliance line */
+  .topstrip{flex-direction:row;justify-content:center;text-align:center;gap:0;padding-top:4px;padding-bottom:4px;font-size:8.5px;letter-spacing:1.2px;line-height:1.2}
+  .topstrip span{margin:0 !important}
+  /* masthead: one inline row — mark 26px + nameplate 30px; dek/dateline are desktop-only */
+  .masthead{padding-top:8px;padding-bottom:8px;line-height:1}
+  .masthead::before{display:none}
+  .masthead .nameplate{gap:10px;vertical-align:top}
+  .masthead .nameplate .wordmark{font-size:30px}
+  .masthead .mark-lg svg{width:26px}
+  .masthead .dek,.masthead .dateline{display:none}
+  .rule-scotch{height:3px;border-top-width:2px}
+  /* sticky nav: brand + short key CTA + JS-free hamburger; desktop links/actions hidden */
+  .newsnav .wrap{flex-wrap:nowrap;gap:10px;min-height:48px;padding-top:0;padding-bottom:0}
+  .newsnav .brand{gap:7px}
+  .newsnav .brand svg{width:18px;height:18px}
+  .newsnav .brand .wordmark{font-size:17px}
+  .newsnav .links,.newsnav .actions{display:none}
+  .newsnav .mcta{display:inline-flex;align-items:center;min-height:44px;margin-left:auto;font-size:11px;padding:10px 14px;letter-spacing:1.5px}
+  .newsnav .mnav{display:block}
+  .mnav summary{list-style:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;cursor:pointer;border:1px solid var(--hair-strong);color:var(--ink-2);font-size:17px;line-height:1;user-select:none}
+  .mnav summary::-webkit-details-marker{display:none}
+  .mnav summary:hover{color:var(--key);border-color:var(--key)}
+  .mnav[open] summary{background:var(--raise);color:var(--key)}
+  .mnav-panel{position:absolute;left:0;right:0;top:100%;background:#000;border-bottom:1px solid var(--hair-strong);box-shadow:0 18px 30px rgba(0,0,0,.55)}
+  .mnav-panel a{display:flex;align-items:center;min-height:48px;padding:0 18px;font-family:var(--mono);font-size:12px;letter-spacing:1.5px;color:var(--ink-2);border-top:1px solid var(--hair)}
+  .mnav-panel a:hover{color:var(--key);background:var(--selrow)}
+  .mnav-panel a[aria-current="page"]{color:var(--ink);box-shadow:inset 2px 0 0 var(--ras)}
+  /* no horizontal page scroll: clip decorative washes at the viewport */
+  main{overflow-x:clip}
+  .wash-hero::before{left:0;right:0}
+  /* wide artifacts scroll inside their own shell, never the page */
+  .scrollx{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .scrollx-fade{position:relative}
+  .scrollx-fade::after{content:"";position:absolute;top:0;right:0;bottom:0;width:16px;pointer-events:none;background:linear-gradient(270deg,rgba(0,0,0,.5),transparent)}
+  .snip .bd{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .snip .ph{height:auto;min-height:30px;padding-top:3px;padding-bottom:3px;flex-wrap:wrap;line-height:1.2}
+}
+/* ============ MOBILE POLISH — checkout (≤760px) ============ */
+@media (max-width:760px){
+  body{line-height:1.6}
+  .wrap{padding-left:22px;padding-right:22px}
+  .sec{padding-top:40px}
+  .cohead h1{font-size:clamp(34px,9vw,44px);margin-bottom:18px}
+  .cohead .lede{font-size:16.5px}
+  .simchip{margin-left:0;margin-top:10px;display:inline-block;vertical-align:baseline}
+  .cohead .simchip{display:block;width:max-content}
+  .cogrid{margin-top:40px;gap:44px}
+  .plancard{padding:24px 20px 20px}
+  .ordercard{padding:24px 20px 22px}
+  /* toggles + buttons ≥48px tap height */
+  .segrow{gap:10px}
+  .bt-opt{min-height:48px;padding:11px 14px}
+  .cta-go{min-height:48px;padding:16px 18px;font-size:12.5px}
+  .stripeline{margin-top:20px}
+  /* timeline rail tightened */
+  .rail{margin:2px 0 6px}
+  .stop{padding:0 0 20px 34px}
+  .stop:last-child{padding-bottom:8px}
+  .duerow b{font-size:28px}
+  /* 'Full comparison' link: ≥44px tap box, underline moves to text-decoration so it hugs the text */
+  .plan-foot a{display:inline-flex;align-items:center;min-height:44px;border-bottom:0;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--hair-strong)}
+  .backrow .btn-brk{display:inline-flex;align-items:center;min-height:44px}
+  .colophon{margin-top:80px}
+}
+/* ============ V2.0 MOBILE CUTS (≤760px) — page starts at the sticky nav + more air ============ */
+@media (max-width:760px){
+  /* 1 · the topstrip dies (the compliance line stays in the footer) */
+  .topstrip,.topstrip+.rule{display:none}
+  /* 2 · more space: 52px stacked gap, panel padding ≥22px, 112px above the footer */
+  .cohead h1{margin-bottom:22px}
+  .cogrid{gap:52px}
+  .plancard{padding:24px 22px 20px}
+  .ordercard{padding:24px 22px 22px}
+  .colophon{margin-top:112px}
+  /* 3 · inclusions collapse to the first 3 items (full lists on desktop);
+         the same-sources line in .plan-foot stays put */
+  .plancard .manifest li:nth-child(n+4){display:none}
+  .plancard .plist .plist-x{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add("js");</script>
+<!-- =====================================================================
+CHECKOUT — LIVE. Stripe Embedded Checkout mounts in #payMount below, so the
+card form renders inside this page and there is no redirect to a
+Stripe-hosted page. The fields live in Stripe's iframe: no card number
+ever reaches this DOM, this JS, or our servers (PCI SAQ-A).
+Requires a session — /api/billing/checkout-embedded answers 401 without
+one, and this page then sends you to signin.html and returns you here.
+/api/* is same-origin on this host (nginx proxies the funnel routes to the
+app box), which is what lets a session and a checkout live on the apex.
+COMPACT chrome: topstrip + sticky newsnav only — no masthead.
+Accepts ?plan=core|pro|desk (default pro) and ?bill=monthly|six (default
+monthly; the legacy value "annual" is still accepted and maps to six, so
+links written before the 2026-07-29 pricing change keep working).
+Toggle math: Core $19/mo · $95/6mo ($15.83/mo equiv) — Pro $39/mo ·
+$195/6mo ($32.50/mo equiv) — Desk $69/mo · $345/6mo ($57.50/mo equiv).
+All three tiers run the same path through this page.
+Six months is one month free: you pay five, you get six.
+Static markup holds the Pro-monthly
+default AND both inclusion lists (labelled), so JS-off reads complete;
+JS narrows to the selected plan and keeps the URL in sync. The continue
+button asks the app box for a Checkout session and mounts Stripe's form.
+====================================================================== -->
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ======== COMPACT CHROME: topstrip + sticky nav ======== -->
+<div class="topstrip wrap micro" role="doc-pageheader">
+  <span style="margin-left:auto">INFORMATIONAL ONLY — NOT TRADING ADVICE</span>
+</div>
+<hr class="rule wrap">
+<nav class="newsnav" aria-label="Site">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 64 64" width="22" height="22" fill="none" aria-hidden="true">
+        <path fill="#00e676" d="M30 15 C27.5 8 21.5 5.5 16 8.5 C18.5 14.5 25 17 30 15 Z"/>
+        <circle cx="26.1" cy="21.5" r="5.4" fill="#ff3b57"/><circle cx="37.9" cy="21.5" r="5.4" fill="#00e676"/>
+        <circle cx="19.7" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="32" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="5.4" fill="#ff3b57"/>
+        <circle cx="21.3" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="32" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="42.7" cy="39.1" r="5.4" fill="#c2183a"/>
+        <circle cx="26.7" cy="47.9" r="5.4" fill="#c2183a"/><circle cx="37.3" cy="47.9" r="5.4" fill="#c2183a"/>
+        <circle cx="32" cy="55.1" r="5.1" fill="#8f1029"/>
+      </svg>
+      <span class="wordmark">News<b>Berri</b></span>
+    </a>
+    <div class="links">
+      <a href="index.html">HOME</a>
+      <a href="how-it-works.html">HOW IT WORKS</a>
+      <a href="pricing.html">PRICING</a>
+    </div>
+    <div class="actions">
+      <a class="signin" href="https://app.newsberri.com">SIGN IN</a>
+      <a class="btn-brk" href="pricing.html">COMPARE TIERS</a>
+      <a class="btn-brk" href="demo.html">TRY THE DEMO</a>
+      <a class="btn-key" href="https://app.newsberri.com">START 7-DAY TRIAL</a>
+    </div>
+    <a class="btn-key mcta" href="https://app.newsberri.com">START TRIAL</a>
+    <details class="mnav">
+      <summary aria-label="Menu"><span aria-hidden="true">☰</span></summary>
+      <div class="mnav-panel">
+        <a href="index.html">HOME</a>
+        <a href="how-it-works.html">HOW IT WORKS</a>
+        <a href="pricing.html">PRICING</a>
+        <a href="pricing.html">COMPARE TIERS</a>
+        <a href="demo.html">TRY THE DEMO</a>
+        <a href="https://app.newsberri.com">SIGN IN</a>
+      </div>
+    </details>
+  </div>
+</nav>
+<script>
+/* mnav close (progressive enhancement only — with JS off, summary still toggles) */
+(function(){
+  var d=document.querySelector("details.mnav");if(!d)return;
+  d.addEventListener("click",function(e){
+    var t=e.target;
+    while(t&&t!==d){if(t.tagName==="A"){d.removeAttribute("open");return;}t=t.parentNode;}
+  });
+  document.addEventListener("click",function(e){
+    if(d.hasAttribute("open")&&!d.contains(e.target))d.removeAttribute("open");
+  });
+})();
+</script>
+
+<main id="main">
+<section class="sec wash-hero" aria-labelledby="co-h">
+  <div class="wrap inner">
+    <div class="cohead rv">
+      <h1 id="co-h">Start your <span class="grad-text">7-day trial</span></h1>
+      <p class="lede">Nothing is charged today. Here's exactly what happens, and when.</p>
+    </div>
+
+    <div class="cogrid">
+      <!-- ============ LEFT · YOUR PLAN ============ -->
+      <section class="plancard rv d1" aria-labelledby="plan-h">
+        <h2 class="cardh" id="plan-h">Your plan</h2>
+        <p class="planname"><span id="planNm">PRO</span><span class="popchip" id="popChip">MOST POPULAR</span></p>
+        <p class="price" aria-live="polite"><span class="price-num" id="priceNum">$39</span><sub class="price-per">/MO</sub></p>
+        <p class="price-alt micro" id="priceAlt">OR $195 FOR SIX MONTHS — ONE MONTH FREE</p>
+        <p class="micro aftertrial" id="afterTrial">AFTER YOUR 7-DAY TRIAL — $0 TODAY</p>
+        <p class="blurb" id="planBlurb">Everything in Core, plus the half that keeps watch — and no limits on the depth.</p>
+
+        <div class="segrow">
+          <span class="micro seglab">PLAN</span>
+          <div class="billtoggle" id="planSeg" role="group" aria-label="Switch plan">
+            <a class="bt-opt" data-plan="core" href="checkout.html?plan=core&amp;bill=monthly">CORE</a>
+            <a class="bt-opt is-on" data-plan="pro" href="checkout.html?plan=pro&amp;bill=monthly" aria-current="true">PRO</a>
+            <a class="bt-opt" data-plan="desk" href="checkout.html?plan=desk&amp;bill=monthly">DESK</a>
+          </div>
+        </div>
+        <div class="segrow">
+          <span class="micro seglab">BILLED</span>
+          <div class="billtoggle" id="billSeg" role="group" aria-label="Choose billing period">
+            <button type="button" class="bt-opt is-on" data-bill="monthly" aria-pressed="true">MONTHLY</button>
+            <button type="button" class="bt-opt" data-bill="six" aria-pressed="false">6 MONTHS <span class="bt-save">ONE MONTH FREE</span></button>
+          </div>
+        </div>
+
+        <div class="plist is-on" data-plan="pro">
+          <p class="plist-h micro">WITH PRO — $39/MO OR $195/6MO</p>
+          <ul class="manifest">
+            <li class="plus"><b>Everything in Core</b>, plus:</li>
+            <li>Unlimited ✦ Explain &amp; scenarios</li>
+            <li>The Event Guardrail — heads-ups 30, 10 and 2 minutes before a release</li>
+            <li>20 alert rules, including push to your phone</li>
+            <li>Discord webhooks &amp; keyword triggers</li>
+            <li>The desktop overlay app</li>
+          </ul>
+          <p class="plist-x micro">PLUS MORNING SIFT · AWAY DIGEST · ACCURACY LEDGER · 3 DEVICES · PRIORITY SUPPORT</p>
+        </div>
+        <div class="plist" data-plan="core">
+          <p class="plist-h micro">WITH CORE — $19/MO OR $95/6MO</p>
+          <ul class="manifest">
+            <li><b>All 42 contracts</b> &amp; sector reads — the whole feed</li>
+            <li>The live tape, three speeds — provisional, scored, corroborated</li>
+            <li>Top Stories &amp; the AI Overview of your day</li>
+            <li>The calendar, with beat / in-line / miss scenarios</li>
+            <li>✦ Explain — 15 a day</li>
+            <li>3 alert rules — in-app, audio, browser</li>
+          </ul>
+          <p class="plist-x micro">1 DEVICE · STANDARD SUPPORT</p>
+        </div>
+        <div class="plist" data-plan="desk">
+          <p class="plist-h micro">WITH DESK — $69/MO OR $345/6MO</p>
+          <ul class="manifest">
+            <li class="plus"><b>Everything in Pro</b>, plus:</li>
+            <li>A read API for your own tools — keys, scoped endpoints, usage metering</li>
+            <li>Higher request ceilings</li>
+            <li>Front-of-line support</li>
+          </ul>
+        </div>
+
+        <div class="plan-foot">
+          <span class="micro">SAME SOURCES, SAME SPEED, ALL 42 CONTRACTS — ON EVERY TIER</span>
+          <a href="pricing.html">Full comparison →</a>
+        </div>
+      </section>
+
+      <!-- ============ RIGHT · THE TRIAL TIMELINE + HANDOFF ============ -->
+      <section class="ordercard rv d2" aria-labelledby="order-h">
+        <h2 class="cardh" id="order-h">Your first seven days</h2>
+        <ol class="rail">
+          <li class="stop s1">
+            <span class="when">TODAY</span>
+            <p class="st">$0 — card saved</p>
+            <p class="sd">Full access starts now: every contract, every source, at full speed.</p>
+          </li>
+          <li class="stop s2">
+            <span class="when">DAY 5</span>
+            <p class="st">We email you a reminder</p>
+            <p class="sd">Before anything is charged. If it's not for you, cancel in two clicks.</p>
+          </li>
+          <li class="stop s3">
+            <span class="when">DAY 7</span>
+            <p class="st" id="firstCharge">First charge: $39</p>
+            <p class="sd" id="fcNote">Billed monthly from then on. Your founding rate: the price you join at is yours for life.</p>
+          </li>
+        </ol>
+        <div class="duerow">
+          <span class="dl">DUE TODAY</span>
+          <b id="dueAmt">$0.00</b>
+        </div>
+        <button type="button" class="cta-go" id="goStripe">CONTINUE TO SECURE CHECKOUT</button>
+        <p class="stripeline">Card details are handled by Stripe, inside their own frame — they never touch our servers.</p>
+        <!-- live region ships EMPTY: screen readers announce content CHANGES, not
+             visibility flips, so JS fills it (see the checkout script at the foot) -->
+        <div class="mockstate" id="mockState" role="status" hidden></div>
+        <!-- Stripe Embedded Checkout mounts here. Empty until the button is pressed. -->
+        <div id="payMount"></div>
+        <p class="reassure">CANCEL ANYTIME, SELF-SERVE<span class="sep">·</span>WE EMAIL YOU BEFORE IT RENEWS<span class="sep">·</span>FOUNDING RATE LOCKED FOR LIFE</p>
+        <p class="risknote">Futures trading carries a substantial risk of loss and isn't right for everyone. NewsBerri is informational only — no advice, no recommendations, no profit claims.</p>
+        <p class="backrow"><a class="btn-brk" href="pricing.html">← BACK TO PRICING</a></p>
+      </section>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ======== CHROME: footer (identical to the other pages; round tag differs) ======== -->
+<footer class="colophon">
+  <div class="wrap">
+    <div class="colo-top">
+      <a class="colo-brand" href="index.html" aria-label="NewsBerri — home">
+        <svg viewBox="0 0 64 64" width="26" height="26" fill="none" aria-hidden="true">
+          <path fill="#00e676" d="M30 15 C27.5 8 21.5 5.5 16 8.5 C18.5 14.5 25 17 30 15 Z"/>
+          <circle cx="26.1" cy="21.5" r="5.4" fill="#ff3b57"/><circle cx="37.9" cy="21.5" r="5.4" fill="#00e676"/>
+          <circle cx="19.7" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="32" cy="30.3" r="5.4" fill="#ff3b57"/><circle cx="44.3" cy="30.3" r="5.4" fill="#ff3b57"/>
+          <circle cx="21.3" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="32" cy="39.1" r="5.4" fill="#c2183a"/><circle cx="42.7" cy="39.1" r="5.4" fill="#c2183a"/>
+          <circle cx="26.7" cy="47.9" r="5.4" fill="#c2183a"/><circle cx="37.3" cy="47.9" r="5.4" fill="#c2183a"/>
+          <circle cx="32" cy="55.1" r="5.1" fill="#8f1029"/>
+        </svg>
+        <span class="wordmark">News<b>Berri</b></span>
+      </a>
+      <p class="colo-comp">Informational only — not trading advice.</p>
+    </div>
+    <div class="colo-mid">
+      <span>
+        <a href="how-it-works.html">HOW IT WORKS</a>
+        <a href="pricing.html">PRICING</a>
+        <a href="demo.html">DEMO</a>
+        <a href="#">TERMS</a>
+        <a href="#">PRIVACY</a>
+        <a href="#">REFUNDS</a>
+        <a href="#">MARKET-DATA DISCLAIMER</a>
+      </span>
+      <a href="mailto:support@newsberri.com">SUPPORT@NEWSBERRI.COM</a>
+    </div>
+    <div class="colo-bot">
+      <span>© 2026 NEWSBERRI · ALL PAGES MOCK DATA</span>
+      <span class="roundtag">CHECKOUT · SECURED BY STRIPE</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+"use strict";
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s);};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+
+  /* ---- entrance reveal: the page is one viewport-ish, so everything reveals
+     on load (staggered). Hiding only ever applies under html.js AND
+     prefers-reduced-motion: no-preference, so no-JS / reduced-motion users
+     always see the full page. ---- */
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    /* double rAF (as on signin.html): guarantees the first paint happens with
+       .rv still hidden, so the staggered fade actually runs */
+    $$(".rv").forEach(function(el){el.classList.add("in");});
+  });});
+
+  /* ---- ?plan / ?bill parsing with safe defaults ---- */
+  function param(k,allowed,dflt){
+    try{
+      var v=(new URLSearchParams(location.search).get(k)||"").toLowerCase(); /* same case-folding as signin.html */
+      return allowed.indexOf(v)>-1?v:dflt;
+    }catch(e){return dflt;}
+  }
+  var state={
+    plan:param("plan",["core","pro","desk"],"pro"),
+    /* "annual" is the pre-2026-07-29 spelling of the longer term; accept it so old
+       links still land on the six-month view, then normalise to "six" */
+    bill:param("bill",["monthly","six","annual"],"monthly")
+  };
+  if(state.bill==="annual")state.bill="six";
+
+  /* ---- plan facts (mirrors pricing.html exactly; strings, no float math).
+     The yr* keys are the LONGER TERM, which since 2026-07-29 is six months,
+     not a year — the names are kept so nothing else in this file has to move. ---- */
+  var PLANS={
+    core:{nm:"CORE",pop:false,
+      blurb:"The full read for one screen. Everything the feed prints, scored and explained.",
+      moNum:"$19",yrEq:"$15.83",yrTotal:"$95",
+      altMo:"OR $95 FOR SIX MONTHS — ONE MONTH FREE",altYr:"BILLED $95 EVERY 6 MONTHS · ONE MONTH FREE"},
+    pro:{nm:"PRO",pop:true,
+      blurb:"Everything in Core, plus the half that keeps watch — and no limits on the depth.",
+      moNum:"$39",yrEq:"$32.50",yrTotal:"$195",
+      altMo:"OR $195 FOR SIX MONTHS — ONE MONTH FREE",altYr:"BILLED $195 EVERY 6 MONTHS · ONE MONTH FREE"},
+    desk:{nm:"DESK",pop:false,
+      blurb:"Everything in Pro, plus a read API for your own tools — keys, scoped endpoints, higher ceilings.",
+      moNum:"$69",yrEq:"$57.50",yrTotal:"$345",
+      altMo:"OR $345 FOR SIX MONTHS — ONE MONTH FREE",altYr:"BILLED $345 EVERY 6 MONTHS · ONE MONTH FREE"}
+  };
+
+  function render(){
+    var p=PLANS[state.plan],sixmo=state.bill==="six";
+    $("#planNm").textContent=p.nm;
+    $("#popChip").hidden=!p.pop;
+    $("#planBlurb").textContent=p.blurb;
+    /* the six-month view shows the per-month EQUIVALENT as the big number (suffix stays /MO) */
+    $("#priceNum").textContent=sixmo?p.yrEq:p.moNum;
+    $("#priceAlt").textContent=sixmo?p.altYr:p.altMo;
+    $$("#planSeg .bt-opt").forEach(function(a){
+      var on=a.getAttribute("data-plan")===state.plan;
+      a.classList.toggle("is-on",on);
+      if(on){a.setAttribute("aria-current","true");}else{a.removeAttribute("aria-current");}
+      a.setAttribute("href","checkout.html?plan="+a.getAttribute("data-plan")+"&bill="+state.bill);
+    });
+    $$("#billSeg .bt-opt").forEach(function(b){
+      var on=b.getAttribute("data-bill")===state.bill;
+      b.classList.toggle("is-on",on);
+      b.setAttribute("aria-pressed",String(on));
+    });
+    $$(".plist").forEach(function(l){
+      l.classList.toggle("is-on",l.getAttribute("data-plan")===state.plan);
+    });
+    $("#firstCharge").textContent="First charge: "+(sixmo?p.yrTotal:p.moNum);
+    $("#fcNote").textContent=sixmo
+      ?"Billed every six months — that's "+p.yrEq+"/mo, one month free. Your founding rate: the price you join at is yours for life."
+      :"Billed monthly from then on. Your founding rate: the price you join at is yours for life.";
+  }
+
+  function setState(plan,bill){
+    state.plan=plan;state.bill=bill;
+    render();
+    try{history.replaceState(null,"","checkout.html?plan="+plan+"&bill="+bill);}catch(e){}
+  }
+
+  /* switch-plan link pair — JS updates the param in place; the hrefs stay
+     correct for middle-click / open-in-new-tab */
+  $$("#planSeg .bt-opt").forEach(function(a){
+    a.addEventListener("click",function(e){
+      e.preventDefault();
+      setState(a.getAttribute("data-plan"),state.bill);
+    });
+  });
+  /* monthly / six-month segmented toggle (pricing-page pattern) */
+  $$("#billSeg .bt-opt").forEach(function(b){
+    b.addEventListener("click",function(){
+      setState(state.plan,b.getAttribute("data-bill"));
+    });
+  });
+
+  /* ---- the handoff button: never navigates; reveals the simulated note.
+     In the real app this opens Stripe's HOSTED checkout — card entry never
+     happens on our pages, so none is mocked here. ---- */
+  var go=$("#goStripe"),ms=$("#mockState");
+  if(go&&ms){
+    go.addEventListener("click",function(){
+      startCheckout();
+    });
+  }
+
+  render();
+})();
+</script>
+
+<!-- ======== LIVE CHECKOUT ========================================================
+Stripe Embedded Checkout. The card fields render inside Stripe's iframe in
+#payMount, so no card number reaches this DOM, this JS, or our servers (PCI
+SAQ-A). There is no redirect to a Stripe-hosted page at any point.
+
+Everything below talks to /api/* on THIS origin. nginx proxies the funnel routes
+(/api/auth, /api/billing, /api/me, /api/health) to the app box, which is what
+lets the session cookie and the checkout live on newsberri.com. Never point these
+at app.newsberri.com directly: that is cross-origin, allow_credentials is false,
+and the session would not be sent.
+
+The publishable key is fetched from /api/health rather than hardcoded. This page
+ships through a PUBLIC mirror repo, so a baked-in key would live in that repo and
+its history forever, and rotating it would mean a site deploy instead of an env
+change. pk_live_ is public by design and can only create payment methods.
+============================================================================= -->
+<!-- v3 is the evergreen bundle. Pinned names (basil, clover) also expose
+     initEmbeddedCheckout today, but a pinned version is a thing that gets retired -
+     Stripe retired the `embedded` ui_mode value the same way. Verified 2026-07-30:
+     all three bundles serve initEmbeddedCheckout; v3 is the one that stays current. -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+(function(){
+  "use strict";
+  var $=function(s){return document.querySelector(s);};
+  var mount=$("#payMount"), btn=$("#goStripe"), ms=$("#mockState");
+  var busy=false, checkout=null;
+
+  /* Validate against the six literal keys before anything reaches the network or the
+     DOM. ?plan= is attacker-controllable via a crafted link, and an unvalidated value
+     would be echoed into a fetch body and a status message. */
+  var KEYS={core_m:1,core_6m:1,pro_m:1,pro_6m:1,desk_m:1,desk_6m:1};
+  function priceKey(){
+    var q=new URLSearchParams(location.search);
+    var tier=(q.get("plan")||"pro").toLowerCase();
+    var bill=(q.get("bill")||"monthly").toLowerCase();
+    /* "annual" is a legacy value from before the 2026-07-29 six-month change; links
+       written then still work and map to the six-month price. */
+    var term=(bill==="six"||bill==="annual")?"6m":"m";
+    var key=tier+"_"+term;
+    return KEYS[key]?key:"pro_m";
+  }
+
+  /* textContent, never innerHTML: everything here can carry server or URL text. */
+  function say(msg,isErr){
+    if(!ms)return;
+    ms.hidden=false;
+    ms.textContent="";
+    var b=document.createElement("b");
+    b.textContent=isErr?"Checkout unavailable":"One moment";
+    ms.appendChild(b);
+    ms.appendChild(document.createTextNode(msg));
+  }
+
+  function toSignin(){
+    var back=encodeURIComponent(location.pathname+location.search);
+    location.href="signin.html?return_to="+back;
+  }
+
+  async function startCheckout(){
+    if(busy)return; busy=true;
+    if(btn){btn.disabled=true;}
+    try{
+      var h=await fetch("/api/health",{cache:"no-store"});
+      var health=await h.json();
+      if(!health.stripe_pk){
+        say(" Payments are not configured on this site yet. Nothing was submitted.",true);
+        return;
+      }
+      var r=await fetch("/api/billing/checkout-embedded",{
+        method:"POST", credentials:"include", cache:"no-store",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({price:priceKey()})
+      });
+      if(r.status===401){ toSignin(); return; }
+      var d=await r.json().catch(function(){return {};});
+      if(!r.ok||!d.client_secret){
+        say(" We could not start a checkout just now. Nothing was submitted — try again shortly.",true);
+        return;
+      }
+      if(btn){btn.hidden=true;}
+      if(ms){ms.hidden=true;}
+      checkout=await Stripe(health.stripe_pk).initEmbeddedCheckout({clientSecret:d.client_secret});
+      checkout.mount("#payMount");
+      mount.scrollIntoView({behavior:"smooth",block:"start"});
+    }catch(e){
+      say(" We could not reach the payment service. Nothing was submitted.",true);
+    }finally{
+      busy=false;
+      if(btn&&!btn.hidden){btn.disabled=false;}
+    }
+  }
+  window.startCheckout=startCheckout;
+
+  /* Stripe returns the browser here with ?session_id=. Confirming server-side applies
+     entitlement synchronously, so the customer is not left on a locked app waiting for
+     a webhook that may still be in flight. */
+  (function returnLeg(){
+    var sid=new URLSearchParams(location.search).get("session_id");
+    if(!sid)return;
+    if(btn){btn.hidden=true;}
+    say(" Confirming your subscription…",false);
+    fetch("/api/billing/confirm?session_id="+encodeURIComponent(sid),
+          {credentials:"include",cache:"no-store"})
+      .then(function(r){
+        if(r.status===401){toSignin();return null;}
+        return r.ok?r.json():Promise.reject(r.status);
+      })
+      .then(function(d){
+        if(!d)return;
+        ms.textContent="";
+        var b=document.createElement("b");
+        /* tier===null is NOT an error. Stripe can return the browser before
+           customer.subscription.created exists on the session; the webhook finishes
+           moments later. Saying "you're in" then would be a guess, and saying
+           "something went wrong" would be a lie. */
+        b.textContent=d.tier?"You're in":"Payment received";
+        ms.appendChild(b);
+        ms.appendChild(document.createTextNode(d.tier
+          ? " Your trial has started. Nothing is charged for 7 days."
+          : " Your subscription is being activated. Open the app in a moment and it will be ready."));
+        var a=document.createElement("a");
+        a.className="btn-key"; a.href="https://app.newsberri.com";
+        a.textContent="OPEN NEWSBERRI";
+        a.style.marginTop="14px"; a.style.display="inline-block";
+        ms.appendChild(a);
+      })
+      .catch(function(){
+        say(" Your payment went through. We are still finishing setup — open the app and it will be ready shortly.",false);
+      });
+  })();
+})();
+</script>
+</body>
+</html>
