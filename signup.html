@@ -6,6 +6,7 @@
 <title>NewsBerri — Create your account</title>
 <meta name="description" content="Create a NewsBerri account — no password, we email you a link. Pick a plan after you're in; every plan starts with a 7-day trial. Informational only — not trading advice.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Ccircle cx='26.1' cy='19.5' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='37.9' cy='19.5' r='6.5' fill='%2300e676'/%3E%3Ccircle cx='19.7' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='32' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='44.3' cy='30.3' r='6.5' fill='%23ff3b57'/%3E%3Ccircle cx='21.3' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='42.7' cy='41.1' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='26.7' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='37.3' cy='50.9' r='6.5' fill='%23c2183a'/%3E%3Ccircle cx='32' cy='58.1' r='6' fill='%238f1029'/%3E%3C/svg%3E">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ============ TOKENS — locked app tokens (verbatim) + site tints ============ */
@@ -74,6 +75,10 @@ button.btn-key{cursor:pointer}
 .newsnav .btn-brk{padding:9px 4px;font-size:11px}
 /* mobile-only chrome controls (short CTA + hamburger) — shown only in the ≤760px block */
 .newsnav .mcta,.newsnav .mnav{display:none}
+/* Google Identity Services renders its own iframe/button here. Fixed min-height so the
+   row does not reflow when it lands, and the container is hidden until it does. */
+.gsiwrap{display:none;min-height:40px}
+.gsiwrap.ready{display:block}
 /* ============ AUTH SPLIT — one crafted screen ============ */
 .auth-sec{position:relative;padding:60px 0 76px}
 .auth-sec::before{content:"";position:absolute;inset:0;pointer-events:none;
@@ -492,7 +497,12 @@ column's terminal snippet is the app's true skin (no gradients inside).
                    that already exists, so it cannot create one. It appears on
                    signin.html, where it works from this hostname. -->
               <div class="altrow">
-                <a class="btn-auth" href="https://app.newsberri.com">
+                <!-- Google's OWN rendered button (brand guidelines require it). The anchor
+                     below is the FALLBACK and is hidden by JS only once GSI has actually
+                     rendered — if the script is blocked, this origin is not authorised in
+                     the Google console, or JS is off, the link is the only way through. -->
+                <div id="gsiBtn" class="gsiwrap"></div>
+                <a class="btn-auth" id="gsiFallback" href="https://app.newsberri.com">
                   <span class="gg" aria-hidden="true">G</span>CONTINUE WITH GOOGLE
                 </a>
               </div>
@@ -516,6 +526,16 @@ column's terminal snippet is the app's true skin (no gradients inside).
               <p>A one-tap sign-in link is on its way to <b id="sentEmail">you@desk.com</b>. Click it and you're in — no password. The link works once and expires in 15 minutes.</p>
               <p class="note">Nothing after a minute? Check your spam folder.</p>
               <button class="linkbtn" id="againBtn" type="button">Use a different email</button>
+            </div>
+            <!-- shared signed-in state for Google (and passkey on signin.html).
+                 Deliberately does NOT auto-redirect: the session cookie is already set on
+                 the app origin, so the handoff is the customer's click and a blocked or
+                 slow redirect cannot strand them on a blank page. -->
+            <div class="sent" id="pkOkView" hidden>
+              <span class="sentchip" id="pkOkChip">● SIGNED IN</span>
+              <h2 id="pkOkH" tabindex="-1">Signed in — <span class="grad-text">you're through.</span></h2>
+              <p>Your session is live. Open the terminal to pick up where the feed is.</p>
+              <a class="btn-key wide" href="https://app.newsberri.com/">OPEN NEWSBERRI →</a>
             </div>
           </div>
         </div>
@@ -715,6 +735,64 @@ column's terminal snippet is the app's true skin (no gradients inside).
         "Couldn't reach the sign-in service. Check your connection, or go straight to app.newsberri.com.");
     }).then(function(){busy=false;sendBtn.disabled=false;});
   }
+
+  /* ---- Google sign-in, on THIS hostname.
+     The client id comes from /api/health so it cannot go stale in this file. GSI loads
+     async, so poll briefly for it rather than assuming it has arrived by the time this
+     runs; give up quietly and leave the fallback link visible. ---- */
+  function googleOk(){
+    formView.hidden=true;
+    var chip=$("#pkOkChip");
+    if(chip)chip.textContent="● GOOGLE";
+    $("#pkOkView").hidden=false;
+    $("#pkOkH").focus();
+  }
+
+  function onGoogleCredential(resp){
+    var tok=resp&&resp.credential;
+    if(!tok){fail("Google didn't return a sign-in token. Use the email link above.");return;}
+    clearErr();
+    fetch(API+"/api/auth/google",{
+      method:"POST",credentials:"include",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({credential:tok})
+    }).then(function(r){
+      if(r.status===503)throw{soft:"Google sign-in isn't switched on yet. Use the email link above."};
+      if(r.status===401)throw{soft:"Google couldn't verify that account. Use the email link above."};
+      if(!r.ok)throw{soft:"Google sign-in failed. Use the email link above."};
+      return r.json();
+    }).then(function(d){
+      /* ok:false is the private-beta refusal — an honest 200. Show the server's own
+         message here: unlike the magic-link path this is not an invitee oracle, because
+         the visitor had to prove control of the Google account to get this far. */
+      if(d&&d.ok===false){fail(d.message||"That account isn't on the invite list yet.");return;}
+      googleOk();
+    }).catch(function(e){
+      fail(e&&e.soft?e.soft:"Google sign-in didn't complete. Use the email link above.");
+    });
+  }
+
+  (function initGoogle(){
+    var box=$("#gsiBtn"),fb=$("#gsiFallback"),tries=0;
+    if(!box)return;
+    function attempt(){
+      if(!(window.google&&google.accounts&&google.accounts.id)){
+        if(++tries>40)return;                 /* ~6s, then keep the fallback link */
+        return setTimeout(attempt,150);
+      }
+      fetch(API+"/api/health").then(function(r){return r.json();}).then(function(h){
+        var cid=h&&h.google_client_id;
+        if(!cid)return;                        /* not configured server-side: keep fallback */
+        google.accounts.id.initialize({client_id:cid,callback:onGoogleCredential});
+        google.accounts.id.renderButton(box,{
+          type:"standard",theme:"filled_black",size:"large",
+          text:"continue_with",shape:"square",logo_alignment:"left"});
+        box.classList.add("ready");
+        if(fb)fb.hidden=true;                  /* only now is the fallback redundant */
+      }).catch(function(){/* health unreachable: fallback link stays */});
+    }
+    attempt();
+  })();
 
   sendBtn.addEventListener("click",send);
   emailIn.addEventListener("keydown",function(e){
