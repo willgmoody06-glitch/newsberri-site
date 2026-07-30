@@ -828,6 +828,33 @@ column's terminal snippet is the app's true skin (no gradients inside).
   });
   setTimeout(function(){if(!tr.classList.contains("scored"))scoreRow(tr,true);},RM?300:1200);
 })();
+
+  /* ---- carry the session to app.newsberri.com -------------------------------
+     The session lives on this host. __Host- cookies are host-only - that is the
+     property that stops a sibling subdomain writing ours - so a plain link lands the
+     customer on the app signed out, moments after signing in here. Trade the session
+     for a 60-second one-time token instead.
+     Every app-bound anchor is wired, not just the success button: "go straight to the
+     app" is the one a returning signed-in visitor is most likely to click.
+     The href is untouched, so JS-off, a handoff failure and a 401 (no session yet) all
+     fall through to the plain link - never worse than before. */
+  Array.prototype.forEach.call(
+    document.querySelectorAll('a[href^="https://app.newsberri.com"]'),
+    function(a){
+      if(a.id === "gsiFallback") return;   /* that one is a Google shim, not a session jump */
+      a.addEventListener("click", function(ev){
+        ev.preventDefault();
+        var fallback = a.getAttribute("href");
+        fetch("/api/auth/handoff", {
+          method:"POST", credentials:"include", cache:"no-store",
+          headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({to:"https://app.newsberri.com"})
+        })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(d){ location.href = (d && d.url) || fallback; })
+        .catch(function(){ location.href = fallback; });
+      });
+    });
 </script>
 </body>
 </html>
