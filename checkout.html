@@ -778,15 +778,31 @@ the session cookie readable and lets the whole purchase stay on this domain.
           var any=e&&e.availablePaymentMethods&&Object.keys(e.availablePaymentMethods).length;
           var sep=$("#paySep"); if(sep) sep.hidden=!any;
         });
-        /* The wallet sheet fires confirm; the same action confirms the same Session.
-           Only one path runs per checkout - wallet OR the card button below. */
-        ex.on("confirm", async function(){
+        /* The wallet sheet fires confirm, and the EVENT must be handed to confirm().
+           Without `expressCheckoutConfirmEvent` the call tries to confirm using the
+           Payment Element - which is empty, because the customer paid by wallet - and
+           the wallet's authorisation is never consumed. The sheet then sits on
+           "processing" forever and nothing reaches Stripe. That shipped and is exactly
+           what it looked like. Only one path runs per checkout: wallet OR the card
+           button below, never both. */
+        ex.on("confirm", async function(event){
           try{
-            var la=await checkout.loadActions();
-            var res=await la.actions.confirm();
-            if(res&&res.error){ fieldErr(res.error.message||"That payment could not be completed."); return; }
+            var result=await checkout.loadActions();
+            if(result&&result.type==="error"){
+              fieldErr((result.error&&result.error.message)||"Checkout could not start.");
+              return;
+            }
+            var out=await result.actions.confirm({expressCheckoutConfirmEvent:event});
+            if(out&&out.error){
+              fieldErr(out.error.message||"That payment could not be completed.");
+              return;
+            }
+            /* On success Stripe redirects to return_url, so this rarely runs - it is the
+               belt for the case where it confirms without navigating. */
             done();
-          }catch(e){ fieldErr("That payment could not be completed. Nothing was charged."); }
+          }catch(e){
+            fieldErr("That payment could not be completed. Nothing was charged.");
+          }
         });
         ex.mount("#expMount");
       }catch(e){ /* no wallets is not an error - the card form is still there */ }
@@ -814,6 +830,10 @@ the session cookie readable and lets the whole purchase stay on this domain.
     var label=submit.textContent; submit.textContent="CONFIRMING\u2026";
     try{
       var la=await checkout.loadActions();
+      if(la&&la.type==="error"){
+        fieldErr((la.error&&la.error.message)||"Checkout could not start.");
+        submit.disabled=false; submit.textContent=label; return;
+      }
       var res=await la.actions.confirm();
       if(res&&res.error){
         /* Stripe's message is customer-facing and specific (declined, wrong CVC,
@@ -854,6 +874,56 @@ the session cookie readable and lets the whole purchase stay on this domain.
     });
     ms.appendChild(a);
   }
+
+  /* RETURN LEG. Restored - it was dropped when this page moved to the Payment Element,
+     and the wallet path needs it: Stripe redirects to return_url after a wallet confirm,
+     so without this a customer pays by Apple Pay and lands back on the checkout form as
+     though nothing happened. Confirming server-side also applies entitlement straight
+     away instead of waiting on the webhook. */
+  (function returnLeg(){
+    var sid=new URLSearchParams(location.search).get("session_id");
+    if(!sid)return;
+    if(btn) btn.hidden=true;
+    var side=$("#payside"); if(side) side.hidden=true;
+    say(" Confirming your subscription…",false);
+    fetch("/api/billing/confirm?session_id="+encodeURIComponent(sid),
+          {credentials:"include",cache:"no-store"})
+      .then(function(r){
+        if(r.status===401){ toSignin(); return null; }
+        return r.ok?r.json():Promise.reject(r.status);
+      })
+      .then(function(d){
+        if(!d)return;
+        ms.textContent="";
+        var b=document.createElement("b");
+        /* tier===null is NOT an error: Stripe can return the browser before
+           customer.subscription.created exists on the session, and the webhook finishes
+           moments later. Claiming "you're in" there would be a guess. */
+        b.textContent=d.tier?"You're in":"Payment received";
+        ms.appendChild(b);
+        ms.appendChild(document.createTextNode(d.tier
+          ? " Your trial has started. Nothing is charged for 7 days."
+          : " Your subscription is being activated. Open the app in a moment."));
+        var a=document.createElement("a");
+        a.className="btn-key"; a.href="https://app.newsberri.com";
+        a.textContent="OPEN NEWSBERRI";
+        a.style.marginTop="14px"; a.style.display="inline-block";
+        a.addEventListener("click",function(ev){
+          ev.preventDefault();
+          fetch("/api/auth/handoff",{method:"POST",credentials:"include",cache:"no-store",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({to:"https://app.newsberri.com"})})
+            .then(function(r){return r.ok?r.json():null;})
+            .then(function(x){location.href=(x&&x.url)||"https://app.newsberri.com";})
+            .catch(function(){location.href="https://app.newsberri.com";});
+        });
+        ms.appendChild(a);
+      })
+      .catch(function(){
+        say(" Your payment went through. We are still finishing setup — open the app "
+            +"and it will be ready shortly.",false);
+      });
+  })();
 })();
 </script>
 </body>
