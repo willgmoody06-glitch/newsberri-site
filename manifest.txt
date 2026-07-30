@@ -10,3 +10,4 @@ refunds.html
 disclaimer.html
 app.html
 checkout.html
+account.html
