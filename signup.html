@@ -115,7 +115,7 @@ button.btn-key{cursor:pointer}
 .or{display:flex;align-items:center;gap:14px;margin:24px 0;font-family:var(--mono);font-size:9px;letter-spacing:2.5px;color:var(--ink-faint)}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--hair)}
 .altrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.btn-auth{display:flex;align-items:center;justify-content:center;gap:10px;background:transparent;border:1px solid var(--hair-strong);color:var(--ink-2);font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:1.6px;padding:13px 10px;cursor:pointer;transition:color .18s ease,box-shadow .18s ease}
+.btn-auth{display:flex;align-items:center;justify-content:center;gap:10px;background:#000;border:1px solid var(--hair-strong);color:var(--ink-2);font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:1.6px;padding:13px 10px;cursor:pointer;transition:color .18s ease,box-shadow .18s ease}
 .btn-auth:hover{color:var(--key);box-shadow:0 0 12px rgba(139,92,246,.22)}
 .btn-auth svg{flex:none}
 .gg{flex:none;width:18px;height:18px;display:grid;place-items:center;border:1px solid var(--hair-strong);font-family:var(--mono);font-size:10px;font-weight:700;color:var(--ink)}
@@ -998,7 +998,6 @@ is what lets this page know whether there is a session at all.
       }
 
       item("ACCOUNT & BILLING","account.html");
-      item("SIGN-IN & SECURITY","account.html#security");
       var openApp=item("OPEN NEWSBERRI",APP,null,true);
       handoff(openApp);
       item("LOG OUT",null,function(){

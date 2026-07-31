@@ -915,6 +915,30 @@ html.js .exdrawer.open{display:flex}
 .acctmenu .sep{border-top:1px solid var(--hair)}
 @media (max-width:760px){ .acctmenu{right:auto;left:0} }
 </style>
+<style id="nlcss">
+/* ---- newsletter ---- */
+.nlband{border-top:1px solid var(--hair-strong);background:var(--panel);padding:56px 0}
+.nlwrap{max-width:720px;margin:0 auto;text-align:center}
+.nlband h2{font-family:var(--display);font-weight:800;font-size:clamp(28px,3.2vw,40px);
+  line-height:1.02;letter-spacing:.5px;text-transform:uppercase;margin:0 0 10px}
+.nlband .nlsub{color:var(--ink-2);font-size:17px;margin:0 auto 26px;max-width:52ch}
+.nlform{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.nlform input[type=email]{flex:1 1 320px;max-width:380px;background:var(--well);
+  border:1px solid var(--hair-strong);color:var(--ink);font-family:var(--mono);
+  font-size:13px;padding:14px 16px}
+.nlform input[type=email]:focus{outline:none;border-color:var(--key);box-shadow:var(--key-glow)}
+.nlform input[type=email]::placeholder{color:var(--ink-faint)}
+.nlconsent{display:flex;align-items:flex-start;gap:9px;justify-content:center;
+  margin:16px auto 0;max-width:52ch;text-align:left}
+.nlconsent input{margin-top:3px;accent-color:var(--key);width:15px;height:15px;flex:none}
+.nlconsent label{color:var(--ink-3);font-size:13px;line-height:1.5}
+.nlconsent a{color:var(--ink-2);text-decoration:underline;text-underline-offset:2px}
+.nlconsent a:hover{color:var(--key)}
+.nlmsg{font-family:var(--mono);font-size:11.5px;letter-spacing:.4px;color:var(--ink-2);
+  margin:14px 0 0;min-height:1em}
+.nlmsg.err{color:var(--bear)}
+@media (max-width:760px){ .nlband{padding:44px 0} .nlform input[type=email]{flex-basis:100%} }
+</style>
 </head>
 <body>
 <script>document.documentElement.classList.add("js");</script>
@@ -1348,6 +1372,36 @@ html.js .exdrawer.open{display:flex}
 </section>
 </main>
 
+
+
+<!-- ======== NEWSLETTER =======================================================
+Bottom-of-home email capture. Consent is an explicit checkbox rather than implied
+by submitting: the address is stored with a consented_at timestamp, and a list
+whose consent cannot be evidenced later is a liability.
+
+Posts to /api/newsletter, which nginx proxies to the app box. The endpoint stores
+the address and sends nothing - wiring it to a mail provider carries its own
+compliance surface (unsubscribe, sender identity) and is a separate decision.
+======================================================================== -->
+<section class="nlband" aria-labelledby="nl-h">
+  <div class="wrap nlwrap">
+    <h2 id="nl-h">The week, <span class="grad-text">read for you</span></h2>
+    <p class="nlsub">One email a week: what moved, which contracts it touched, and what
+      the tape did next. Informational only — no trade calls.</p>
+    <form class="nlform" id="nlForm" novalidate>
+      <input type="email" id="nlEmail" name="email" autocomplete="email"
+             placeholder="you@example.com" aria-label="Email address" required>
+      <button type="submit" class="btn-key" id="nlGo">JOIN THE LIST</button>
+    </form>
+    <div class="nlconsent">
+      <input type="checkbox" id="nlAgree">
+      <label for="nlAgree">I agree to receive emails from NewsBerri and accept the
+        <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.
+        You can unsubscribe at any time.</label>
+    </div>
+    <p class="nlmsg" id="nlMsg" role="status"></p>
+  </div>
+</section>
 
 <!-- ======== CHROME: footer (copy verbatim on every page) ======== -->
 <footer class="colophon">
@@ -1822,7 +1876,6 @@ is what lets this page know whether there is a session at all.
       }
 
       item("ACCOUNT & BILLING","account.html");
-      item("SIGN-IN & SECURITY","account.html#security");
       var openApp=item("OPEN NEWSBERRI",APP,null,true);
       handoff(openApp);
       item("LOG OUT",null,function(){
@@ -1905,6 +1958,46 @@ is what lets this page know whether there is a session at all.
   }
 
   try{ refresh(); }catch(e){}
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+  var f=document.getElementById("nlForm");
+  if(!f) return;
+  var em=document.getElementById("nlEmail"),
+      ag=document.getElementById("nlAgree"),
+      go=document.getElementById("nlGo"),
+      ms=document.getElementById("nlMsg"),
+      busy=false;
+
+  function say(t,isErr){ ms.textContent=t||""; ms.className="nlmsg"+(isErr?" err":""); }
+
+  f.addEventListener("submit",function(ev){
+    ev.preventDefault();
+    if(busy) return;
+    /* Consent is checked here AND stored server-side. The box is not pre-ticked and
+       submitting without it is refused - implied consent is not consent. */
+    if(!ag.checked){ say("Tick the box to confirm you want these emails.",true); return; }
+    var v=(em.value||"").trim();
+    if(!v || v.indexOf("@")<1){ say("That email does not look right.",true); return; }
+    busy=true; go.disabled=true; say("Adding you…",false);
+    fetch("/api/newsletter",{method:"POST",cache:"no-store",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({email:v,source:"home"})})
+      .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
+      .then(function(x){
+        if(x.ok && x.d && x.d.ok){
+          f.hidden=true; document.querySelector(".nlconsent").hidden=true;
+          say(x.d.message||"You're on the list.",false);
+        }else{
+          say((x.d&&x.d.message)||"That did not go through. Try again shortly.",true);
+        }
+      })
+      .catch(function(){ say("That did not go through. Try again shortly.",true); })
+      .finally(function(){ busy=false; go.disabled=false; });
+  });
 })();
 </script>
 </body>
