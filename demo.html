@@ -268,7 +268,13 @@ a.btn{text-decoration:none}
 /* ===== tour ===== */
 #tour{position:fixed;inset:0;z-index:80}
 #tour[hidden]{display:none}
-.tour-scrim{position:absolute;inset:0;background:rgba(0,0,0,.68)}
+/* Transparent on purpose. This used to be rgba(0,0,0,.68) over the whole viewport,
+   which dimmed the target too - so the ring's cutout dimmed everything ELSE a second
+   time and the focused feature was still 68% dark. Nothing looked highlighted. The
+   dimming now comes only from .tour-ring's 9999px shadow spread, which by definition
+   stops at the ring, leaving the target at full brightness. The layer stays for
+   click-to-dismiss. */
+.tour-scrim{position:absolute;inset:0;background:transparent}
 .tour-card{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:16px;padding:12px 16px;
   box-shadow:0 10px 40px rgba(0,0,0,.7)}
 .tour-card .t{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:2.5px;white-space:nowrap}
@@ -349,8 +355,9 @@ a.btn{text-decoration:none}
 .st-row .sm3{display:block;margin-top:2px;font-family:var(--mono);font-size:8px;
   letter-spacing:1.1px;color:var(--ink-faint)}
 /* ---- stepped coach tour (replaces the five simultaneous callouts) ---- */
-.tour-ring{position:absolute;border:1px solid var(--key);border-radius:3px;
-  box-shadow:0 0 0 9999px rgba(0,0,0,.72),0 0 18px rgba(255,255,255,.35);
+.tour-ring{position:absolute;border:2px solid var(--key);border-radius:4px;
+  box-shadow:0 0 0 9999px rgba(0,0,0,.78),0 0 0 3px rgba(232,51,110,.55),
+    0 0 26px 4px rgba(255,255,255,.42),inset 0 0 22px rgba(255,255,255,.10);
   pointer-events:none;transition:top .18s ease,left .18s ease,width .18s ease,height .18s ease}
 .coach{position:absolute;width:296px;max-width:calc(100vw - 24px);padding:13px 14px;
   display:flex;flex-direction:column;gap:8px;z-index:2}
@@ -1013,10 +1020,15 @@ addEventListener("DOMContentLoaded", function(){
     ring.style.left=(r.left-4)+"px"; ring.style.top=(r.top-4)+"px";
     ring.style.width=(r.width+8)+"px"; ring.style.height=(r.height+8)+"px";
     const cw=coach.offsetWidth||296, ch=coach.offsetHeight||190, gap=14;
-    let left = r.right+gap+cw<innerWidth-8 ? r.right+gap
-             : r.left-gap-cw>8            ? r.left-gap-cw
-             : Math.max(8,Math.min(innerWidth-cw-8, r.left));
-    let top = Math.max(8, Math.min(innerHeight-ch-8, r.top-6));
+    /* Beside the target if either flank has room; otherwise BELOW it, or above if the
+       bottom is short. The old fallback clamped horizontally and could land the box on
+       top of the very thing it was pointing at - which defeats the highlight. */
+    let left, top;
+    if(r.right+gap+cw < innerWidth-8){        left=r.right+gap;  top=r.top-6; }
+    else if(r.left-gap-cw > 8){               left=r.left-gap-cw; top=r.top-6; }
+    else if(r.bottom+gap+ch < innerHeight-8){ left=Math.max(8,Math.min(innerWidth-cw-8,r.left)); top=r.bottom+gap; }
+    else {                                    left=Math.max(8,Math.min(innerWidth-cw-8,r.left)); top=Math.max(8,r.top-gap-ch); }
+    top = Math.max(8, Math.min(innerHeight-ch-8, top));
     coach.style.left=Math.round(left)+"px"; coach.style.top=Math.round(top)+"px";
     return true;
   }
