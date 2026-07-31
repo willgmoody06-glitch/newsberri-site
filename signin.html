@@ -80,7 +80,7 @@ button.btn-key{cursor:pointer}
 .newsnav .mcta,.newsnav .mnav{display:none}
 /* Google Identity Services renders its own iframe/button here. Fixed min-height so the
    row does not reflow when it lands, and the container is hidden until it does. */
-.gsiwrap{min-height:44px}
+
 .gsiwrap.ready{display:block}
 /* ============ AUTH SPLIT — one crafted screen ============ */
 .auth-sec{position:relative;padding:60px 0 76px}
@@ -392,7 +392,7 @@ button.btn-key{cursor:pointer}
    blocked anyway), we stack the two in ONE grid cell: our .btn-auth anchor is what you
    see, Google's real button sits transparently on top, so a genuine user click still
    lands on Google's iframe and the actual auth flow is untouched. */
-.altrow{grid-auto-rows:minmax(44px,auto)}
+
 
 
 #gsiBtn.ready + #gsiFallback,
@@ -403,9 +403,9 @@ button.btn-key{cursor:pointer}
    margins go, and what remains is Google's own hairline, which is inside their iframe and
    unreachable. Rather than fight it, our passkey button ADOPTS it: same 40px height, same
    4px radius, a matching pale hairline. The pair then reads as deliberate. */
-.gsiwrap{max-width:400px;height:40px;overflow:hidden;position:relative;
+.gsiwrap{max-width:400px;height:40px;min-height:40px;overflow:hidden;position:relative;
   background:transparent;color-scheme:dark;opacity:1;z-index:1;grid-area:auto}
-.gsiwrap iframe{margin:-2px -10px!important}
+.gsiwrap iframe{margin:0!important;display:block}
 #gsiFallback{display:none!important}          /* Google's real button is the visible one */
 .gsiwrap:not(.ready) ~ #gsiFallback{display:flex!important}  /* unless GSI never rendered */
 .btn-auth{height:40px;min-height:40px;padding:0 14px;border-radius:4px;
