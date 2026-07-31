@@ -1016,12 +1016,32 @@ is what lets this page know whether there is a session at all.
     mountAvatar(me);
   }
 
-  try{
-    fetch("/api/me",{credentials:"include",cache:"no-store"})
+  var mounted=false;
+  function refresh(){
+    return fetch("/api/me",{credentials:"include",cache:"no-store"})
       .then(function(r){ return r.ok?r.json():null; })
-      .then(function(me){ if(me && me.email) apply(me); })
-      .catch(function(){});
-  }catch(e){}
+      .then(function(me){
+        if(me && me.email && !mounted){ mounted=true; apply(me); }
+        return me;
+      })
+      .catch(function(){ return null; });
+  }
+  /* Exposed so a page that signs somebody in WITHOUT navigating can say so. */
+  window.nbAccount={refresh:refresh};
+
+  /* On the sign-in pages the session is created after this script has already asked
+     /api/me and been told 401, so the nav would keep saying SIGN IN until the next
+     navigation. Both success paths (Google and passkey) reveal #pkOkView, so watching
+     that one element catches them without editing either handler - and catches any
+     future method that reuses the same panel. */
+  var okView=document.getElementById("pkOkView");
+  if(okView && window.MutationObserver){
+    new MutationObserver(function(){
+      if(!okView.hidden) refresh();
+    }).observe(okView,{attributes:true,attributeFilter:["hidden"]});
+  }
+
+  try{ refresh(); }catch(e){}
 })();
 </script>
 </body>
