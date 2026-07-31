@@ -286,7 +286,7 @@ html.js .plist-h{display:none}
 .arow:last-of-type{border-bottom:0}
 .alab{font-family:var(--mono);font-size:10.5px;letter-spacing:1.6px;color:var(--ink-3);text-transform:uppercase}
 .aval{font-family:var(--mono);font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums;text-align:right}
-.aval.good{color:var(--bull)} .aval.warn{color:var(--amber)}
+.aval.good{color:var(--bull)} .aval.warn{color:var(--amber)} .aval.bad{color:var(--bear)}
 .abtns{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
 .btn-danger{display:inline-block;background:transparent;color:var(--bear);font-family:var(--mono);
   font-size:12px;font-weight:700;letter-spacing:2px;padding:13px 22px;border:1px solid var(--bear);cursor:pointer}
@@ -379,7 +379,8 @@ html.js .plist-h{display:none}
 
       <div class="abtns">
         <a class="btn-key" id="acApp" href="https://app.newsberri.com">OPEN NEWSBERRI</a>
-        <a class="btn-quiet" id="acChange" href="pricing.html" hidden>CHANGE PLAN</a>
+        <button type="button" class="btn-quiet" id="acChange" hidden>CHANGE PLAN</button>
+        <button type="button" class="btn-danger" id="acFix" hidden>FIX PAYMENT METHOD</button>
         <button type="button" class="btn-danger" id="acCancel" hidden>CANCEL SUBSCRIPTION</button>
         <button type="button" class="btn-quiet" id="acResume" hidden>KEEP MY SUBSCRIPTION</button>
         <button type="button" class="btn-quiet" id="acLogout">LOG OUT</button>
@@ -436,15 +437,15 @@ html.js .plist-h{display:none}
         <a href="how-it-works.html">HOW IT WORKS</a>
         <a href="pricing.html">PRICING</a>
         <a href="demo.html">DEMO</a>
-        <a href="#">TERMS</a>
-        <a href="#">PRIVACY</a>
-        <a href="#">REFUNDS</a>
-        <a href="#">MARKET-DATA DISCLAIMER</a>
+        <a href="terms.html">TERMS</a>
+        <a href="privacy.html">PRIVACY</a>
+        <a href="refunds.html">REFUNDS</a>
+        <a href="disclaimer.html">MARKET-DATA DISCLAIMER</a>
       </span>
       <a href="mailto:support@newsberri.com">SUPPORT@NEWSBERRI.COM</a>
     </div>
     <div class="colo-bot">
-      <span>© 2026 NEWSBERRI · ALL PAGES MOCK DATA</span>
+      <span>© 2026 NEWSBERRI</span>
       <span class="roundtag">CHECKOUT · SECURED BY STRIPE</span>
     </div>
   </div>
@@ -504,19 +505,31 @@ until Stripe ends it and the webhook applies that.
     $("#acPlan").textContent=tier?(tier+" \u00b7 "+money(s.amount,s.currency)+" "+term(s)):"\u2014";
 
     var st=$("#acStatus");
-    if(s.cancel_at_period_end){
+    /* past_due and incomplete are FAILURES wearing an ordinary status. Painting them
+       "good" under a "Renews" label showed a customer whose card had been declined a
+       green line and a future date, with nothing to act on - Stripe retries a few times
+       and then gives up, and the first they would know is losing access. */
+    var broken = (s.status==="past_due"||s.status==="incomplete"||s.status==="unpaid");
+    if(broken){
+      st.textContent="Payment failed"; st.className="aval bad";
+    }else if(s.cancel_at_period_end){
       st.textContent="Cancels at period end"; st.className="aval warn";
     }else if(s.status==="trialing"){
       st.textContent="Trial"; st.className="aval good";
     }else{
       st.textContent=(s.status||"").replace(/_/g," "); st.className="aval good";
     }
+    $("#acFix").hidden=!broken;
 
     var when=s.status==="trialing"&&s.trial_end ? s.trial_end : s.current_period_end;
     $("#acWhenLab").textContent = s.cancel_at_period_end ? "Access until"
                                 : (s.status==="trialing" ? "First charge" : "Renews");
     $("#acWhen").textContent=fmt(when);
 
+    /* Sending an existing subscriber to pricing.html funnels them into checkout.html,
+       which creates a SECOND subscription on the same Customer - two charges, one
+       account, and the newer one is what /api/me reflects. The portal changes the
+       subscription they already have. */
     $("#acChange").hidden=false;
     $("#acCancel").hidden=!!s.cancel_at_period_end;
     $("#acResume").hidden=!s.cancel_at_period_end;
@@ -557,6 +570,23 @@ until Stripe ends it and the webhook applies that.
   $("#acConfirmNo").addEventListener("click",function(){ $("#acConfirm").hidden=true; });
   $("#acConfirmYes").addEventListener("click",function(){ setCancel(false); });
   $("#acResume").addEventListener("click",function(){ setCancel(true); });
+  /* Card updates and plan switches go to Stripe's portal on purpose. Both mean handling
+     card entry or proration ourselves otherwise, and both are rare. Everything a customer
+     sees routinely - plan, price, renewal, cancel - stays on this page. */
+  function portal(){
+    if(busy)return; busy=true;
+    msg("Opening billing\u2026",false);
+    fetch("/api/billing/portal",{method:"POST",credentials:"include",cache:"no-store"})
+      .then(function(r){ return r.ok?r.json():Promise.reject(r.status); })
+      .then(function(d){
+        if(d&&d.url){ location.href=d.url; return; }
+        msg("Billing is unavailable just now. Nothing was changed.",true);
+      })
+      .catch(function(){ msg("Billing is unavailable just now. Nothing was changed.",true); })
+      .finally(function(){ busy=false; });
+  }
+  $("#acChange").addEventListener("click",portal);
+  $("#acFix").addEventListener("click",portal);
   $("#acLogout").addEventListener("click",logout);
   $("#acLogout2").addEventListener("click",logout);
 
