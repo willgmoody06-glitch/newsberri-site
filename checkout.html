@@ -519,6 +519,8 @@ button asks the app box for a Checkout session and mounts Stripe's form.
           <span class="dl">DUE TODAY</span>
           <b id="dueAmt">$0.00</b>
         </div>
+        <p class="trialrule" id="trialRule">One free trial per customer, and per card. If this card has already been used for a trial, the subscription starts and bills today instead.</p>
+        <p class="trialused" id="trialUsed" hidden></p>
         <button type="button" class="cta-go" id="goStripe">CONTINUE TO SECURE CHECKOUT</button>
         <p class="stripeline">Card details are handled by Stripe, inside their own frame — they never touch our servers.</p>
         <!-- live region ships EMPTY: screen readers announce content CHANGES, not
@@ -739,6 +741,11 @@ the session cookie readable and lets the whole purchase stay on this domain.
   #paySubmit{margin-top:18px}
   #paySubmit[disabled]{opacity:.55;cursor:not-allowed}
 /* ---- consent gate ---- */
+.trialrule{margin:10px 0 0;font-family:var(--mono);font-size:9.5px;letter-spacing:1.1px;
+  line-height:1.7;color:var(--ink-faint);text-transform:uppercase}
+.trialused{margin:12px 0 0;padding:11px 13px;border:1px solid var(--amber);
+  background:rgba(255,145,0,.09);color:#ffc266;font-size:13.5px;line-height:1.5}
+.trialused[hidden]{display:none}
 .payagree{display:flex;gap:10px;align-items:flex-start;margin:0 0 18px;
   padding:13px 14px;border:1px solid var(--hair-strong);background:var(--well)}
 .payagree input{flex:none;width:17px;height:17px;margin-top:2px;accent-color:var(--key);
@@ -921,6 +928,34 @@ the session cookie readable and lets the whole purchase stay on this domain.
   window.startCheckout=startCheckout;
 
   /* Confirm. Client-side with elements - there is no redirect to Stripe at any point. */
+  /* ---- trial eligibility ------------------------------------------------------
+     Fails OPEN on any error: with the guard off the endpoint always answers eligible,
+     and telling somebody they are being charged when they are not is the worse mistake. */
+  (function(){
+    fetch("/api/billing/trial-eligibility",{credentials:"include",cache:"no-store"})
+      .then(function(r){ return r.ok?r.json():null; })
+      .then(function(d){
+        if(!d || d.eligible !== false) return;
+        var box=document.getElementById("trialUsed");
+        if(box){
+          box.textContent="You've already used your free trial, so this subscription starts "
+            +"today and your card is charged now. Everything else about the plan is the same.";
+          box.hidden=false;
+        }
+        var due=document.getElementById("dueAmt");
+        var price=document.querySelector("[data-price-now]");
+        if(due) due.textContent=(price&&price.getAttribute("data-price-now"))||due.textContent;
+        var btn=document.getElementById("paySubmit");
+        if(btn) btn.textContent="SUBSCRIBE AND PAY NOW";
+        var go=document.getElementById("goStripe");
+        if(go) go.textContent="CONTINUE TO SECURE CHECKOUT";
+        document.querySelectorAll(".tl-day,.timeline").forEach(function(el){
+          el.setAttribute("data-trial-used","1");
+        });
+      })
+      .catch(function(){});
+  })();
+
   /* ---- consent gate --------------------------------------------------------
      agreed() is the single source of truth; every payment path asks it. */
   var agreeBox=$("#payAgree");
@@ -1143,7 +1178,7 @@ is what lets this page know whether there is a session at all.
     });
   }
 
-  function apply(me){
+  function apply(me, trialOk){
     var paid = me.tier && me.tier !== "none";
 
     /* Trial and plan CTAs. The account control owns the sign-in slot, so these only
@@ -1156,6 +1191,7 @@ is what lets this page know whether there is a session at all.
         handoff(a);
       }else if(plan){
         a.setAttribute("href","checkout.html?plan="+plan+"&bill="+cycle());
+        if(!trialOk && /trial/i.test(a.textContent)) a.textContent="SUBSCRIBE";
       }else{
         a.setAttribute("href","pricing.html");
         if(/trial/i.test(a.textContent)) a.textContent="CHOOSE A PLAN";
@@ -1178,7 +1214,15 @@ is what lets this page know whether there is a session at all.
     return fetch("/api/me",{credentials:"include",cache:"no-store"})
       .then(function(r){ return r.ok?r.json():null; })
       .then(function(me){
-        if(me && me.email && !mounted){ mounted=true; apply(me); }
+        if(me && me.email && !mounted){
+          mounted=true;
+          /* Ask whether the free trial is still available before painting any CTA that
+             offers one. Fails OPEN - an unreachable endpoint leaves the copy as authored. */
+          fetch("/api/billing/trial-eligibility",{credentials:"include",cache:"no-store"})
+            .then(function(r){ return r.ok?r.json():null; })
+            .then(function(d){ apply(me, !d || d.eligible !== false); })
+            .catch(function(){ apply(me, true); });
+        }
         return me;
       })
       .catch(function(){ return null; });

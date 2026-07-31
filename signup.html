@@ -1071,7 +1071,7 @@ is what lets this page know whether there is a session at all.
     });
   }
 
-  function apply(me){
+  function apply(me, trialOk){
     var paid = me.tier && me.tier !== "none";
 
     /* Trial and plan CTAs. The account control owns the sign-in slot, so these only
@@ -1084,6 +1084,7 @@ is what lets this page know whether there is a session at all.
         handoff(a);
       }else if(plan){
         a.setAttribute("href","checkout.html?plan="+plan+"&bill="+cycle());
+        if(!trialOk && /trial/i.test(a.textContent)) a.textContent="SUBSCRIBE";
       }else{
         a.setAttribute("href","pricing.html");
         if(/trial/i.test(a.textContent)) a.textContent="CHOOSE A PLAN";
@@ -1106,7 +1107,15 @@ is what lets this page know whether there is a session at all.
     return fetch("/api/me",{credentials:"include",cache:"no-store"})
       .then(function(r){ return r.ok?r.json():null; })
       .then(function(me){
-        if(me && me.email && !mounted){ mounted=true; apply(me); }
+        if(me && me.email && !mounted){
+          mounted=true;
+          /* Ask whether the free trial is still available before painting any CTA that
+             offers one. Fails OPEN - an unreachable endpoint leaves the copy as authored. */
+          fetch("/api/billing/trial-eligibility",{credentials:"include",cache:"no-store"})
+            .then(function(r){ return r.ok?r.json():null; })
+            .then(function(d){ apply(me, !d || d.eligible !== false); })
+            .catch(function(){ apply(me, true); });
+        }
         return me;
       })
       .catch(function(){ return null; });
