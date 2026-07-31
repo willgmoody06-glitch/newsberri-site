@@ -48,7 +48,7 @@ img,svg{max-width:100%}
 .rule{border:0;border-top:1px solid var(--hair);margin:0 auto}
 .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 /* buttons */
-.btn-key{display:inline-block;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:2px;padding:13px 24px;box-shadow:var(--key-glow);border:1px solid var(--silver);border-radius:var(--btn-r);transition:box-shadow .18s ease}
+.btn-key{display:inline-block;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:2px;padding:13px 24px;box-shadow:var(--key-glow);border:1px solid var(--key);transition:box-shadow .18s ease}
 .btn-key:hover{box-shadow:0 0 14px rgba(232,51,110,.4),0 0 26px rgba(139,92,246,.35)}
 .btn-brk{display:inline-block;color:var(--ink-2);font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:2px;padding:13px 10px}
 .btn-brk::before{content:"[ ";color:var(--ink-faint)}
@@ -71,7 +71,7 @@ img,svg{max-width:100%}
 .newsnav .actions{margin-left:auto;display:flex;align-items:center;gap:14px}
 .newsnav .signin{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;color:var(--ink-3)}
 .newsnav .signin:hover{color:var(--key)}
-.newsnav .btn-key{border-radius:8px;padding:9px 18px;font-size:11px}
+.newsnav .btn-key{border:1px solid var(--silver);border-radius:10px;padding:9px 18px;font-size:11px}
 .newsnav .btn-brk{padding:9px 4px;font-size:11px}
 /* mobile-only chrome controls (short CTA + hamburger) — shown only in the ≤760px block */
 .newsnav .mcta,.newsnav .mnav{display:none}
@@ -144,8 +144,8 @@ html.js .plist-h{display:none}
 .duerow{display:flex;justify-content:space-between;align-items:baseline;gap:14px;border-top:1px solid var(--hair-strong);margin-top:4px;padding:16px 0 18px}
 .duerow .dl{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2.2px;color:var(--ink-3)}
 .duerow b{font-family:var(--mono);font-size:clamp(30px,3vw,40px);font-weight:700;font-variant-numeric:tabular-nums;text-shadow:0 0 12px rgba(255,255,255,.25)}
-.cta-go{display:block;width:100%;position:relative;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:2.5px;padding:19px 24px;border:1px solid var(--silver);border-radius:var(--btn-r);cursor:pointer;isolation:isolate;box-shadow:var(--key-glow);text-align:center;transition:box-shadow .18s ease}
-.cta-go::before{border-radius:14px;content:"";position:absolute;inset:-6px;background:var(--grad);filter:blur(14px);opacity:.45;z-index:-1}
+.cta-go{display:block;width:100%;position:relative;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:2.5px;padding:19px 24px;border:1px solid var(--key);cursor:pointer;isolation:isolate;box-shadow:var(--key-glow);text-align:center;transition:box-shadow .18s ease}
+.cta-go::before{content:"";position:absolute;inset:-6px;background:var(--grad);filter:blur(14px);opacity:.45;z-index:-1}
 .cta-go:hover{box-shadow:0 0 16px rgba(232,51,110,.5),0 0 34px rgba(139,92,246,.5)}
 .cta-go:hover::before{opacity:.7}
 .stripeline{font-size:13px;color:var(--ink-3);margin:12px 0 0;text-align:center}
@@ -214,7 +214,7 @@ html.js .plist-h{display:none}
   .newsnav .brand svg{width:18px;height:18px}
   .newsnav .brand .wordmark{font-size:17px}
   .newsnav .links,.newsnav .actions{display:none}
-  .newsnav .mcta{border-radius:8px;display:inline-flex;align-items:center;min-height:44px;margin-left:auto;font-size:11px;padding:10px 14px;letter-spacing:1.5px}
+  .newsnav .mcta{border:1px solid var(--silver);border-radius:10px;display:inline-flex;align-items:center;min-height:44px;margin-left:auto;font-size:11px;padding:10px 14px;letter-spacing:1.5px}
   .newsnav .mnav{display:block}
   .mnav summary{list-style:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;cursor:pointer;border:1px solid var(--hair-strong);color:var(--ink-2);font-size:17px;line-height:1;user-select:none}
   .mnav summary::-webkit-details-marker{display:none}
@@ -492,8 +492,18 @@ button asks the app box for a Checkout session and mounts Stripe's form.
         <div class="mockstate" id="mockState" role="status" hidden></div>
         <!-- The Payment Element mounts into #payMount. Both stay hidden until the
              button is pressed, so the page is unchanged for anyone just reading it. -->
-        <div class="payside" id="payside" hidden>
+        <div class="payside needsagree" id="payside" hidden>
           <p class="cardh">PAYMENT DETAILS</p>
+
+          <!-- The gate is above both payment paths, not just above the button, because the
+               wallet sheet confirms without ever touching #paySubmit. -->
+          <div class="payagree">
+            <input type="checkbox" id="payAgree">
+            <label for="payAgree">I agree to the <a href="terms.html">Terms of Service</a>,
+              the <a href="privacy.html">Privacy Policy</a> and the
+              <a href="refunds.html">Refund Policy</a>, and I understand my card is charged
+              when the trial ends unless I cancel before then.</label>
+          </div>
           <!-- Apple Pay / Google Pay live HERE, not in the Payment Element. Stripe puts
                wallets in the Express Checkout Element and suppresses them in the Payment
                Element to avoid showing the same method twice. Both stay hidden until
@@ -684,6 +694,18 @@ the session cookie readable and lets the whole purchase stay on this domain.
   .payside .cardh{margin-bottom:14px}
   #paySubmit{margin-top:18px}
   #paySubmit[disabled]{opacity:.55;cursor:not-allowed}
+/* ---- consent gate ---- */
+.payagree{display:flex;gap:10px;align-items:flex-start;margin:0 0 18px;
+  padding:13px 14px;border:1px solid var(--hair-strong);background:var(--well)}
+.payagree input{flex:none;width:17px;height:17px;margin-top:2px;accent-color:var(--key);
+  cursor:pointer}
+.payagree label{font-size:13.5px;line-height:1.5;color:var(--ink-2);cursor:pointer}
+.payagree label a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.payagree.miss{border-color:var(--bear);background:rgba(255,23,68,.06)}
+/* Until the box is ticked the wallet element is inert. pointer-events cannot fail open,
+   which a Stripe click handler that forgets event.resolve() very much can. */
+.payside.needsagree #expMount{pointer-events:none;opacity:.4}
+.payside.needsagree #paySep{opacity:.4}
   .payerr{font-family:var(--mono);font-size:11.5px;letter-spacing:.4px;color:var(--bear);
           margin:12px 0 0;min-height:1em}
   #expMount:empty{display:none}
@@ -811,6 +833,13 @@ the session cookie readable and lets the whole purchase stay on this domain.
            what it looked like. Only one path runs per checkout: wallet OR the card
            button below, never both. */
         ex.on("confirm", async function(event){
+          /* Unreachable while #expMount is pointer-events:none, which is the real gate.
+             Kept because "unreachable" is a claim about CSS, and this is a payment. */
+          if(!agreed()){
+            nudge();
+            try{ if(event && event.paymentFailed) event.paymentFailed({reason:"fail"}); }catch(e){}
+            return;
+          }
           try{
             var result=await checkout.loadActions();
             if(result&&result.type==="error"){
@@ -848,8 +877,35 @@ the session cookie readable and lets the whole purchase stay on this domain.
   window.startCheckout=startCheckout;
 
   /* Confirm. Client-side with elements - there is no redirect to Stripe at any point. */
+  /* ---- consent gate --------------------------------------------------------
+     agreed() is the single source of truth; every payment path asks it. */
+  var agreeBox=$("#payAgree");
+  function agreed(){ return !!(agreeBox && agreeBox.checked); }
+  function nudge(){
+    var w=document.querySelector(".payagree");
+    if(w){ w.classList.add("miss"); }
+    fieldErr("Tick the box to accept the terms before paying.");
+    if(agreeBox) agreeBox.focus();
+  }
+  if(agreeBox){
+    agreeBox.addEventListener("change", function(){
+      var side=$("#payside");
+      if(side) side.classList.toggle("needsagree", !agreeBox.checked);
+      var w=document.querySelector(".payagree");
+      if(w && agreeBox.checked) w.classList.remove("miss");
+      var b=$("#paySubmit");
+      if(b) b.disabled=!agreeBox.checked;
+      if(agreeBox.checked) fieldErr("");
+    });
+    /* Not pre-ticked, and a browser that restored the last state on reload does not count
+       as consent either - force it off and re-derive everything from that. */
+    agreeBox.checked=false;
+  }
+
   var submit=$("#paySubmit");
+  if(submit) submit.disabled=true;
   if(submit) submit.addEventListener("click", async function(){
+    if(!agreed()){ nudge(); return; }
     if(!checkout||busy)return; busy=true;
     submit.disabled=true; fieldErr("");
     var label=submit.textContent; submit.textContent="CONFIRMING\u2026";
