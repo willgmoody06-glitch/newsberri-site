@@ -321,6 +321,20 @@ html.js .plist-h{display:none}
 .amsg{font-family:var(--mono);font-size:11.5px;letter-spacing:.4px;margin:16px 0 0;min-height:1em;color:var(--ink-2)}
 .amsg.err{color:var(--bear)}
 .confirmbox{border:1px solid var(--bear);background:rgba(255,23,68,.06);padding:18px;margin-top:18px}
+.planpick,.cardbox{border:1px solid var(--hair-strong);background:var(--panel);
+  padding:18px;margin-top:18px}
+.planpick[hidden],.cardbox[hidden]{display:none}
+.picknote{margin:0 0 14px;color:var(--ink-2);font-size:14px;line-height:1.5;max-width:60ch}
+.pickrow{display:flex;gap:10px;flex-wrap:wrap}
+.pickrow button{flex:1 1 150px;min-height:64px;display:flex;flex-direction:column;
+  align-items:flex-start;justify-content:center;gap:3px;padding:12px 14px;
+  background:var(--well);border:1px solid var(--hair-strong);color:var(--ink);cursor:pointer}
+.pickrow button:hover:not([disabled]){border-color:var(--key)}
+.pickrow button[disabled]{opacity:.5;cursor:default}
+.pickrow .pn{font-family:var(--mono);font-size:11px;letter-spacing:1.6px}
+.pickrow .pp{font-family:var(--mono);font-size:10px;color:var(--ink-3)}
+.pickacts{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+#acCardMount{margin:6px 0 10px}
 .confirmbox p{margin:0 0 14px;color:var(--ink-2);font-size:15px}
 /* ---- security ---- */
 .secblock{padding:16px 0;border-bottom:1px solid var(--hair)}
@@ -376,6 +390,7 @@ addEventListener("DOMContentLoaded", function(){
   else window.scrollTo(0, 0);
 });
 </script>
+<script src="https://js.stripe.com/clover/stripe.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -458,6 +473,28 @@ addEventListener("DOMContentLoaded", function(){
         <a class="btn-key" id="acApp" href="https://app.newsberri.com">OPEN NEWSBERRI</a>
         <button type="button" class="btn-quiet" id="acChange" hidden>CHANGE PLAN</button>
         <button type="button" class="btn-danger" id="acFix" hidden>FIX PAYMENT METHOD</button>
+
+      <!-- In-house plan switch. Prices come from the served page, not hard-coded here. -->
+      <div class="planpick" id="acPlanPick" hidden>
+        <p class="cardh">CHANGE PLAN</p>
+        <p class="picknote">You are charged the difference today, and your billing date moves
+          to today. Your new plan starts immediately.</p>
+        <div class="pickrow" id="acPickRow"></div>
+        <div class="pickacts">
+          <button type="button" class="btn-quiet" id="acPickCancel">NEVER MIND</button>
+        </div>
+      </div>
+
+      <!-- In-house card update. Same Payment Element and appearance as checkout. -->
+      <div class="cardbox" id="acCardBox" hidden>
+        <p class="cardh">REPLACE YOUR CARD</p>
+        <div id="acCardMount"></div>
+        <p class="payerr" id="acCardErr" role="alert"></p>
+        <div class="pickacts">
+          <button type="button" class="cta-go" id="acCardSave">SAVE THIS CARD</button>
+          <button type="button" class="btn-quiet" id="acCardCancel">NEVER MIND</button>
+        </div>
+      </div>
         <button type="button" class="btn-danger" id="acCancel" hidden>CANCEL SUBSCRIPTION</button>
         <button type="button" class="btn-quiet" id="acResume" hidden>KEEP MY SUBSCRIPTION</button>
         <button type="button" class="btn-quiet" id="acLogout">LOG OUT</button>
@@ -692,6 +729,117 @@ until Stripe ends it and the webhook applies that.
   /* Card updates and plan switches go to Stripe's portal on purpose. Both mean handling
      card entry or proration ourselves otherwise, and both are rare. Everything a customer
      sees routinely - plan, price, renewal, cancel - stays on this page. */
+  /* ---- in-house plan change --------------------------------------------------
+     No Stripe UI: the server does one subscription update. Prices are read from the
+     page so this never drifts from what pricing.html advertises. */
+  var PLANS=[["core","CORE","$19/MO"],["pro","PRO","$39/MO"],["desk","DESK","$69/MO"]];
+  function showPlans(){
+    var row=$("#acPickRow"); if(!row) return;
+    row.textContent="";
+    var current=(window.__nbTier||"").toLowerCase();
+    PLANS.forEach(function(p){
+      var b=document.createElement("button"); b.type="button";
+      var on=p[0]===current;
+      b.innerHTML='<span class="pn">'+p[1]+(on?" \u00B7 CURRENT":"")+'</span>'
+                 +'<span class="pp">'+p[2]+'</span>';
+      if(on){ b.disabled=true; }
+      else b.addEventListener("click",function(){ doChange(p[0],p[1]); });
+      row.appendChild(b);
+    });
+    $("#acPlanPick").hidden=false;
+    $("#acCardBox").hidden=true;
+  }
+  function doChange(plan,label){
+    if(busy)return; busy=true;
+    msg("Switching to "+label+"\u2026",false);
+    fetch("/api/billing/change-plan",{method:"POST",credentials:"include",cache:"no-store",
+      headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:plan})})
+      .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
+      .then(function(x){
+        if(!x.ok){ msg((x.d&&x.d.error)||"That change could not be completed.",true); return; }
+        msg((x.d&&x.d.message)||"Plan changed.",false);
+        $("#acPlanPick").hidden=true;
+        load();
+      })
+      .catch(function(){ msg("That change could not be completed. Nothing was charged.",true); })
+      .finally(function(){ busy=false; });
+  }
+
+  /* ---- in-house card replacement ---------------------------------------------
+     SetupIntent + Payment Element, same appearance object as checkout, so the form
+     matches the site. Card data is iframed by Elements and never reaches our server. */
+  var APPEARANCE={
+      theme:"night",
+      variables:{
+        colorPrimary:"#ffffff",
+        colorBackground:"#0d1013",
+        colorText:"#f2f6f8",
+        colorTextSecondary:"#b8c7d1",
+        colorTextPlaceholder:"#5d6d78",
+        colorDanger:"#ff1744",
+        colorSuccess:"#00e676",
+        borderRadius:"0px",
+        spacingUnit:"4px",
+        fontSizeBase:"16px",
+        fontFamily:'"Barlow Semi Condensed",system-ui,-apple-system,sans-serif'
+      },
+      rules:{
+        ".Input":{backgroundColor:"#05080b",border:"1px solid #262d35",boxShadow:"none"},
+        ".Input:focus":{border:"1px solid #ffffff",boxShadow:"0 0 0 1px #ffffff"},
+        ".Label":{fontFamily:'"Martian Mono",ui-monospace,monospace',fontSize:"10.5px",
+                  letterSpacing:"1.5px",textTransform:"uppercase",color:"#8496a2"},
+        ".Tab":{backgroundColor:"#05080b",border:"1px solid #262d35"},
+        ".Tab--selected":{backgroundColor:"#14181d",border:"1px solid #ffffff"},
+        ".Block":{backgroundColor:"#05080b",border:"1px solid #262d35"}
+      }
+    };
+  var cardEl=null, cardStripe=null, cardPk="";
+  /* The publishable key is served by /api/health, the same source checkout reads. Never
+     hard-coded here: a key pasted into a published page is a key that outlives its rotation. */
+  fetch("/api/health",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;})
+    .then(function(h){ cardPk=(h&&h.stripe_pk)||""; }).catch(function(){});
+  function showCard(){
+    if(busy)return; busy=true;
+    $("#acCardErr").textContent="";
+    fetch("/api/billing/card-setup",{method:"POST",credentials:"include",cache:"no-store"})
+      .then(function(r){ return r.ok?r.json():Promise.reject(r.status); })
+      .then(function(d){
+        if(!d||!d.client_secret) throw 0;
+        if(!window.Stripe||!cardPk) throw 0;
+        cardStripe=window.Stripe(cardPk);
+        var els=cardStripe.elements({clientSecret:d.client_secret,
+                                     appearance:APPEARANCE});
+        cardEl=els.create("payment");
+        $("#acCardMount").textContent="";
+        cardEl.mount("#acCardMount");
+        window.__nbCardElements=els;
+        $("#acCardBox").hidden=false;
+        $("#acPlanPick").hidden=true;
+      })
+      .catch(function(){ msg("The card form could not be opened.",true); })
+      .finally(function(){ busy=false; });
+  }
+  function saveCard(){
+    if(busy||!cardStripe||!window.__nbCardElements)return; busy=true;
+    $("#acCardErr").textContent="";
+    cardStripe.confirmSetup({elements:window.__nbCardElements, redirect:"if_required"})
+      .then(function(res){
+        if(res.error){ $("#acCardErr").textContent=res.error.message||"That card was refused."; return; }
+        var pm=res.setupIntent&&res.setupIntent.payment_method;
+        return fetch("/api/billing/card-default",{method:"POST",credentials:"include",
+          cache:"no-store",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({payment_method:pm})})
+          .then(function(r){ return r.json(); })
+          .then(function(d){
+            $("#acCardBox").hidden=true;
+            msg((d&&d.message)||"Card updated.",false);
+            load();
+          });
+      })
+      .catch(function(){ $("#acCardErr").textContent="That card could not be saved."; })
+      .finally(function(){ busy=false; });
+  }
+
   function portal(){
     if(busy)return; busy=true;
     msg("Opening billing\u2026",false);
@@ -704,8 +852,8 @@ until Stripe ends it and the webhook applies that.
       .catch(function(){ msg("Billing is unavailable just now. Nothing was changed.",true); })
       .finally(function(){ busy=false; });
   }
-  $("#acChange").addEventListener("click",portal);
-  $("#acFix").addEventListener("click",portal);
+  $("#acChange").addEventListener("click",showPlans);
+  $("#acFix").addEventListener("click",showCard);
   $("#acLogout").addEventListener("click",logout);
   $("#acLogout2").addEventListener("click",logout);
 
