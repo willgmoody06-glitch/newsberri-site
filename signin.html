@@ -380,6 +380,11 @@ button.btn-key{cursor:pointer}
    changes nothing there. */
 .altrow{max-width:400px;margin-left:auto;margin-right:auto}
 .altrow > *{width:100%;min-width:0}
+/* Google's iframe carries ~20px of its own chrome (10px each side) around the button it
+   renders, so a width:400 request produced a 420px iframe sitting 10px left of the mount -
+   wider than the passkey button and misaligned with it. Ask for 20px less, and nudge the
+   mount right by the same 10px so the two left edges line up. */
+.gsiwrap{margin-left:10px}
 </style>
 <style id="navacct-css">
 /* nav account control */
@@ -913,7 +918,7 @@ column's terminal snippet is the app's true skin (no gradients inside).
            passkey button. Measured from the mount so it tracks the grid. */
         renderButton(box,{ type:"standard",theme:"filled_black",size:"large",
           text:"continue_with",shape:"square",logo_alignment:"left",
-          width:Math.max(200,Math.min(400,Math.round(box.clientWidth||300)))});
+          width:Math.max(180,Math.min(380,Math.round((box.clientWidth||300)-20)))});
         box.classList.add("ready");
         if(fb)fb.hidden=true;                  /* only now is the fallback redundant */
       }).catch(function(){/* health unreachable: fallback link stays */});
