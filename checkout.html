@@ -957,6 +957,24 @@ the session cookie readable and lets the whole purchase stay on this domain.
           +"period today, and your billing date moves to today. Your card on file is used - "
           +"there is nothing to re-enter.";
         document.getElementById("changeBox").hidden=false;
+        /* DUE TODAY is authored as $0.00 for a trial signup. In change mode that is wrong
+           and alarming in the other direction - quote what Stripe will actually charge,
+           computed with the same proration params the change itself uses. */
+        fetch("/api/billing/change-preview",{method:"POST",credentials:"include",
+          cache:"no-store",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({plan:plan,bill:bill})})
+          .then(function(r){ return r.ok?r.json():null; })
+          .then(function(q){
+            var due=document.getElementById("dueAmt");
+            if(!q||typeof q.amount_due!=="number"){ if(due) due.textContent="—"; return; }
+            var amt=(q.amount_due/100).toFixed(2);
+            if(due) due.textContent="$"+amt;
+            var btn=document.getElementById("changeGo");
+            if(btn) btn.textContent = q.amount_due>0
+              ? ("CONFIRM AND PAY $"+amt+" NOW") : "CONFIRM THIS CHANGE";
+          })
+          .catch(function(){ var due=document.getElementById("dueAmt");
+                             if(due) due.textContent="—"; });
         var side=document.getElementById("payside"); if(side) side.hidden=true;
         var go=document.getElementById("goStripe"); if(go) go.hidden=true;
         document.getElementById("changeGo").addEventListener("click",function(){
@@ -1240,6 +1258,18 @@ is what lets this page know whether there is a session at all.
 
     /* Trial and plan CTAs. The account control owns the sign-in slot, so these only
        touch the buy-side buttons. */
+    /* The nav button is positional, not href-based. account.html and checkout.html
+       author it as COMPARE TIERS -> pricing.html, so an href^="signup.html" rule skipped
+       them and those two screens kept saying something different from every other page.
+       Signed in, the top-right control is OPEN NEWSBERRI everywhere, full stop. */
+    if(paid){
+      document.querySelectorAll(".newsnav .actions .btn-key, .newsnav .mcta")
+        .forEach(function(b){
+          b.setAttribute("href",APP);
+          b.textContent = b.classList.contains("mcta") ? "OPEN" : "OPEN NEWSBERRI";
+          handoff(b);
+        });
+    }
     document.querySelectorAll('a[href^="signup.html"]').forEach(function(a){
       var plan=planOf(a.getAttribute("href"));
       if(paid){

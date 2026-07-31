@@ -1466,6 +1466,18 @@ is what lets this page know whether there is a session at all.
        touch the buy-side buttons. */
     /* Plan-card CTAs are excluded: the generic rewrite would turn all three into
        OPEN NEWSBERRI, losing which plan is which. planCards() handles them instead. */
+    /* The nav button is positional, not href-based. account.html and checkout.html
+       author it as COMPARE TIERS -> pricing.html, so an href^="signup.html" rule skipped
+       them and those two screens kept saying something different from every other page.
+       Signed in, the top-right control is OPEN NEWSBERRI everywhere, full stop. */
+    if(paid){
+      document.querySelectorAll(".newsnav .actions .btn-key, .newsnav .mcta")
+        .forEach(function(b){
+          b.setAttribute("href",APP);
+          b.textContent = b.classList.contains("mcta") ? "OPEN" : "OPEN NEWSBERRI";
+          handoff(b);
+        });
+    }
     document.querySelectorAll('a[href^="signup.html"]:not(.plan .cta)').forEach(function(a){
       var plan=planOf(a.getAttribute("href"));
       if(paid){

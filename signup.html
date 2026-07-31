@@ -1076,6 +1076,18 @@ is what lets this page know whether there is a session at all.
 
     /* Trial and plan CTAs. The account control owns the sign-in slot, so these only
        touch the buy-side buttons. */
+    /* The nav button is positional, not href-based. account.html and checkout.html
+       author it as COMPARE TIERS -> pricing.html, so an href^="signup.html" rule skipped
+       them and those two screens kept saying something different from every other page.
+       Signed in, the top-right control is OPEN NEWSBERRI everywhere, full stop. */
+    if(paid){
+      document.querySelectorAll(".newsnav .actions .btn-key, .newsnav .mcta")
+        .forEach(function(b){
+          b.setAttribute("href",APP);
+          b.textContent = b.classList.contains("mcta") ? "OPEN" : "OPEN NEWSBERRI";
+          handoff(b);
+        });
+    }
     document.querySelectorAll('a[href^="signup.html"]').forEach(function(a){
       var plan=planOf(a.getAttribute("href"));
       if(paid){
