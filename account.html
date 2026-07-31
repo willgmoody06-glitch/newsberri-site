@@ -298,6 +298,22 @@ html.js .plist-h{display:none}
 .amsg.err{color:var(--bear)}
 .confirmbox{border:1px solid var(--bear);background:rgba(255,23,68,.06);padding:18px;margin-top:18px}
 .confirmbox p{margin:0 0 14px;color:var(--ink-2);font-size:15px}
+/* ---- security ---- */
+.secblock{padding:16px 0;border-bottom:1px solid var(--hair)}
+.secblock:last-of-type{border-bottom:0}
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.btn-quiet.sm{padding:8px 14px;font-size:10.5px;letter-spacing:1.5px}
+.secnote{margin:8px 0 12px;color:var(--ink-3);font-size:14px;max-width:62ch}
+.seclist{list-style:none;margin:0;padding:0}
+.seclist li{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:11px 13px;border:1px solid var(--hair);background:var(--well);margin-bottom:8px}
+.seclist .sk{font-family:var(--mono);font-size:12px;color:var(--ink)}
+.seclist .sm2{font-family:var(--mono);font-size:10.5px;letter-spacing:1.2px;color:var(--ink-faint);margin-top:3px}
+.seclist .here{color:var(--bull)}
+.linkdel{background:none;border:0;color:var(--ink-faint);font-family:var(--mono);
+  font-size:10.5px;letter-spacing:1.4px;cursor:pointer;padding:6px}
+.linkdel:hover{color:var(--bear)}
+.secempty{color:var(--ink-faint);font-family:var(--mono);font-size:11.5px;margin:0}
 </style>
 </head>
 <body>
@@ -396,6 +412,37 @@ html.js .plist-h{display:none}
       </div>
 
       <p class="amsg" id="acMsg" role="status"></p>
+    </div>
+
+    <!-- Sign-in is passwordless here - magic link, Google, or passkey - so there is no
+         password to change. What belongs in Security is the credential list and the
+         session list. Filled from GET /api/auth/security. -->
+    <div class="acard" id="acSec" hidden>
+      <p class="cardh">SIGN-IN &amp; SECURITY</p>
+
+      <div class="secblock">
+        <div class="sechead">
+          <span class="alab">Passkeys</span>
+          <button type="button" class="btn-quiet sm" id="acAddKey">ADD A PASSKEY</button>
+        </div>
+        <p class="secnote">Face ID, Touch ID, Windows Hello or a security key. A passkey
+          added here works on the terminal too. You can always sign in with an emailed
+          link, so removing every passkey will not lock you out.</p>
+        <ul class="seclist" id="acKeys"></ul>
+        <p class="secempty" id="acKeysEmpty" hidden>No passkeys yet.</p>
+      </div>
+
+      <div class="secblock">
+        <div class="sechead">
+          <span class="alab">Where you are signed in</span>
+          <button type="button" class="btn-quiet sm" id="acRevoke">SIGN OUT EVERYWHERE ELSE</button>
+        </div>
+        <p class="secnote">Ends every other session, including the terminal, and keeps
+          this one. Use it if you have signed in on a device you no longer have.</p>
+        <ul class="seclist" id="acSess"></ul>
+      </div>
+
+      <p class="amsg" id="acSecMsg" role="status"></p>
     </div>
 
     <div class="acard" id="acNone" hidden>
@@ -602,7 +649,147 @@ until Stripe ends it and the webhook applies that.
       .catch(function(){location.href=back;});
   });
 
+  /* ---- security ------------------------------------------------------------ */
+  function secMsg(t,isErr){
+    var m=$("#acSecMsg"); if(!m)return;
+    m.textContent=t||""; m.className="amsg"+(isErr?" err":"");
+  }
+  function when(ts){
+    if(!ts)return "";
+    try{ return new Date(ts*1000).toLocaleDateString(undefined,
+      {year:"numeric",month:"short",day:"numeric"}); }catch(e){ return ""; }
+  }
+  /* A user agent is not a device name, but it is what we store, and a trimmed UA is more
+     use than "Unknown device" when you are deciding whether a session is yours. */
+  function device(label){
+    var l=(label||"").trim();
+    if(!l) return "Unknown device";
+    var via=""; var m=/^([a-z]+)\s*\u00b7\s*/i.exec(l);
+    if(m){ via=m[1]+" \u00b7 "; l=l.slice(m[0].length); }
+    var os=/iPhone|iPad|Android|Macintosh|Windows|Linux/i.exec(l);
+    var br=/Edg|Chrome|Firefox|Safari/i.exec(l);
+    if(os||br) return via+[os?os[0]:"", br?br[0]:""].filter(Boolean).join(" \u00b7 ");
+    return via+l.slice(0,40);
+  }
+
+  function renderSecurity(d){
+    var ul=$("#acKeys"); ul.textContent="";
+    (d.passkeys||[]).forEach(function(k){
+      var li=document.createElement("li");
+      var box=document.createElement("div");
+      var t=document.createElement("div"); t.className="sk";
+      t.textContent=k.label||"Passkey";
+      var sub=document.createElement("div"); sub.className="sm2";
+      sub.textContent="ADDED "+(when(k.created_at)||"\u2014").toUpperCase();
+      box.appendChild(t); box.appendChild(sub);
+      var del=document.createElement("button");
+      del.type="button"; del.className="linkdel"; del.textContent="REMOVE";
+      del.addEventListener("click",function(){ removeKey(k.id); });
+      li.appendChild(box); li.appendChild(del);
+      ul.appendChild(li);
+    });
+    $("#acKeysEmpty").hidden = (d.passkeys||[]).length > 0;
+
+    var sl=$("#acSess"); sl.textContent="";
+    (d.sessions||[]).forEach(function(x){
+      var li=document.createElement("li");
+      var box=document.createElement("div");
+      var t=document.createElement("div"); t.className="sk"+(x.current?" here":"");
+      t.textContent=device(x.label)+(x.current?"  \u2014 this device":"");
+      var sub=document.createElement("div"); sub.className="sm2";
+      sub.textContent="LAST ACTIVE "+(when(x.last_seen||x.created_at)||"\u2014").toUpperCase();
+      box.appendChild(t); box.appendChild(sub);
+      li.appendChild(box);
+      sl.appendChild(li);
+    });
+    $("#acSec").hidden=false;
+  }
+
+  function loadSecurity(){
+    fetch("/api/auth/security",{credentials:"include",cache:"no-store"})
+      .then(function(r){ return r.ok?r.json():null; })
+      .then(function(d){ if(d) renderSecurity(d); })
+      .catch(function(){});
+  }
+
+  function removeKey(id){
+    if(busy)return; busy=true; secMsg("Removing\u2026",false);
+    fetch("/api/auth/passkey/remove",{method:"POST",credentials:"include",cache:"no-store",
+      headers:{"Content-Type":"application/json"},body:JSON.stringify({id:id})})
+      .then(function(r){ return r.ok?r.json():Promise.reject(r.status); })
+      .then(function(d){ renderSecurity({passkeys:d.passkeys,sessions:null}); loadSecurity();
+                         secMsg("Passkey removed.",false); })
+      .catch(function(){ secMsg("That did not go through. Nothing was removed.",true); })
+      .finally(function(){ busy=false; });
+  }
+
+  /* WebAuthn registration. The browser needs the challenge as ArrayBuffers, and the
+     server speaks base64url, so both directions are converted here. */
+  function b64uToBuf(v){
+    var s=String(v).replace(/-/g,"+").replace(/_/g,"/");
+    while(s.length%4) s+="=";
+    var bin=atob(s), out=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) out[i]=bin.charCodeAt(i);
+    return out.buffer;
+  }
+  function bufToB64u(b){
+    var bytes=new Uint8Array(b), str="";
+    for(var i=0;i<bytes.length;i++) str+=String.fromCharCode(bytes[i]);
+    return btoa(str).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  }
+
+  $("#acAddKey").addEventListener("click", async function(){
+    if(busy)return;
+    if(!window.PublicKeyCredential){
+      secMsg("This browser does not support passkeys.",true); return;
+    }
+    busy=true; secMsg("Follow your browser's prompt\u2026",false);
+    try{
+      var o=await (await fetch("/api/auth/passkey/register-options",
+        {method:"POST",credentials:"include",cache:"no-store"})).json();
+      var pk=o.publicKey||o;
+      pk.challenge=b64uToBuf(pk.challenge);
+      pk.user.id=b64uToBuf(pk.user.id);
+      (pk.excludeCredentials||[]).forEach(function(c){ c.id=b64uToBuf(c.id); });
+      var cred=await navigator.credentials.create({publicKey:pk});
+      var body={
+        id:cred.id, type:cred.type,
+        rawId:bufToB64u(cred.rawId),
+        response:{
+          clientDataJSON:bufToB64u(cred.response.clientDataJSON),
+          attestationObject:bufToB64u(cred.response.attestationObject)
+        }
+      };
+      var r=await fetch("/api/auth/passkey/register",{method:"POST",credentials:"include",
+        cache:"no-store",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({credential:body,label:device(navigator.userAgent)})});
+      if(!r.ok) throw 0;
+      secMsg("Passkey added.",false);
+      loadSecurity();
+    }catch(e){
+      /* An abort is the customer dismissing the prompt, which is not a failure. */
+      secMsg((e&&e.name==="NotAllowedError")
+        ? "Cancelled." : "That passkey could not be added.",
+        !(e&&e.name==="NotAllowedError"));
+    }finally{ busy=false; }
+  });
+
+  $("#acRevoke").addEventListener("click", function(){
+    if(busy)return; busy=true; secMsg("Signing out other devices\u2026",false);
+    fetch("/api/auth/sessions/revoke-others",{method:"POST",credentials:"include",
+      cache:"no-store"})
+      .then(function(r){ return r.ok?r.json():Promise.reject(r.status); })
+      .then(function(d){
+        renderSecurity({passkeys:null,sessions:d.sessions}); loadSecurity();
+        secMsg(d.revoked ? ("Signed out "+d.revoked+" other session"+(d.revoked===1?"":"s")+".")
+                         : "There were no other sessions.",false);
+      })
+      .catch(function(){ secMsg("That did not go through. Nothing was changed.",true); })
+      .finally(function(){ busy=false; });
+  });
+
   load();
+  loadSecurity();
 })();
 </script>
 </body>
