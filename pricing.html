@@ -1444,7 +1444,13 @@ is what lets this page know whether there is a session at all.
         card.insertBefore(tag, card.firstElementChild.nextSibling);
       }else{
         cta.textContent="CHANGE PLAN";
-        cta.setAttribute("href","account.html");
+        /* A payment page for the plan they picked - NOT account settings, and NOT the
+           new-subscription flow. change=1 makes checkout.html confirm a switch against
+           the card on file instead of creating a SECOND subscription. */
+        var bill=(document.querySelector(".bt-opt.is-on")||{}).getAttribute
+          ? ((document.querySelector(".bt-opt.is-on").getAttribute("data-annual")==="true")?"six":"monthly")
+          : "monthly";
+        cta.setAttribute("href","checkout.html?plan="+plan+"&bill="+bill+"&change=1");
       }
       var note=card.querySelector(".cta-note");
       if(note) note.textContent = plan===tier

@@ -753,7 +753,7 @@ until Stripe ends it and the webhook applies that.
     if(busy)return; busy=true;
     msg("Switching to "+label+"\u2026",false);
     fetch("/api/billing/change-plan",{method:"POST",credentials:"include",cache:"no-store",
-      headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:plan})})
+      headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:plan,bill:""})   /* "" = keep the cycle they are on */})
       .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
       .then(function(x){
         if(!x.ok){ msg((x.d&&x.d.error)||"That change could not be completed.",true); return; }
