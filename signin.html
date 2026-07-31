@@ -374,6 +374,12 @@ button.btn-key{cursor:pointer}
 .gsiwrap > div,
 .gsiwrap iframe{background:transparent!important;color-scheme:dark}
 .gsiwrap > div{width:100%!important}
+/* Google caps its rendered button at 400px, so when .altrow collapses to one column the
+   646px passkey button towered over a 420px Google button. Cap BOTH to the same measure and
+   centre the row: at the two-up desktop width each column is already under 400px, so this
+   changes nothing there. */
+.altrow{max-width:400px;margin-left:auto;margin-right:auto}
+.altrow > *{width:100%;min-width:0}
 </style>
 <style id="navacct-css">
 /* nav account control */
