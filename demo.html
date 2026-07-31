@@ -349,7 +349,7 @@ a.btn{text-decoration:none}
 .st-row{display:grid;grid-template-columns:26px 1fr;gap:8px;padding:7px 2px;
   border-bottom:1px solid var(--hair);font-size:11.5px;line-height:1.35}
 .st-row:last-child{border-bottom:0}
-.st-row .sr{font-family:var(--mono);font-size:10px;font-variant-numeric:tabular-nums;
+.st-row .st-rank{font-family:var(--mono);font-size:10px;font-variant-numeric:tabular-nums;
   text-align:right;color:var(--ink-faint)}
 .st-row .sh{color:var(--ink-2)}
 .st-row .sm3{display:block;margin-top:2px;font-family:var(--mono);font-size:8px;
@@ -974,7 +974,7 @@ addEventListener("DOMContentLoaded", function(){
     const tb=$("#storyBody");
     if(tb) STORIES.forEach(([h,meta],i)=>{
       const row=document.createElement("div");row.className="st-row";
-      row.innerHTML=`<span class="sr">${i+1}</span>`
+      row.innerHTML=`<span class="st-rank">${i+1}</span>`
         +`<span class="sh">${h}<span class="sm3">${meta}</span></span>`;
       tb.appendChild(row);
     });
