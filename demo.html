@@ -378,6 +378,10 @@ a.btn{text-decoration:none}
   background:var(--panel);border:1px solid var(--hair-strong);color:var(--ink-faint);
   font-family:var(--mono);font-size:9px;line-height:1;transition:color .16s,border-color .16s}
 .seenmark:hover{color:var(--key);border-color:var(--key)}
+/* The markers exist for after the tour. While it is running they clutter the one
+   thing being highlighted - and on a small target such as #lcdIdx (73px wide) the
+   marker sits directly on top of it. */
+body.touring .seenmark{display:none}
 @media (max-width:900px){
   .coach{width:auto;left:10px!important;right:10px!important}
   .coach-a .btn{min-height:44px}
@@ -1046,6 +1050,7 @@ addEventListener("DOMContentLoaded", function(){
 
   function open(i,solo){
     step=i; single=!!solo; tour.hidden=false;
+    document.body.classList.add("touring");
     render(); $("#coachNext").focus();
   }
   function next(){
@@ -1055,6 +1060,7 @@ addEventListener("DOMContentLoaded", function(){
   function end(){
     if(tour.hidden) return;
     tour.hidden=true; single=false;
+    document.body.classList.remove("touring");
     try{ sessionStorage.setItem("nbDemoTour","1"); }catch(e){}
     marks();
   }
