@@ -21,6 +21,9 @@
    ============================================================================ */
 /* —— locked brand tokens (verbatim) —— */
 :root{
+  --silver:#a8b2bf;
+  --btn-r:10px;
+
   --mono:"Martian Mono",ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
   --grot:"Barlow Semi Condensed",system-ui,-apple-system,sans-serif;
   --display:"Big Shoulders Display","Barlow Semi Condensed",system-ui,sans-serif;
@@ -60,7 +63,7 @@ a{color:inherit} button{font-family:inherit;color:inherit;cursor:pointer}
   font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:2.6px;color:var(--ink-2)}
 .ph .led{width:7px;height:7px;background:var(--key);box-shadow:0 0 8px rgba(255,255,255,.55)}
 .ph .ph-r{margin-left:auto;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:1px;font-weight:400;color:var(--ink-faint);text-transform:uppercase}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:transparent;
+.btn{border-radius:var(--btn-r);display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:transparent;
   border:1px solid var(--key-line);border-radius:0;
   font-family:var(--grot);font-weight:600;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--key-mute)}
 .btn:hover{color:var(--key);border-color:var(--key)}
@@ -89,7 +92,7 @@ a.btn{text-decoration:none}
 .db-back::after{content:" ]";color:var(--ink-faint)}
 .db-back:hover{color:var(--key)}
 .db-back:hover::before,.db-back:hover::after{color:#C74497}
-.db-key{display:inline-flex;align-items:center;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:2px;padding:8px 16px;border:1px solid var(--key);box-shadow:var(--key-glow);text-decoration:none;white-space:nowrap;transition:box-shadow .18s ease}
+.db-key{display:inline-flex;align-items:center;background:var(--key);color:var(--key-ink);font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:2px;padding:8px 16px;border:1px solid var(--silver);border-radius:var(--btn-r);box-shadow:var(--key-glow);text-decoration:none;white-space:nowrap;transition:box-shadow .18s ease}
 .db-key:hover{box-shadow:0 0 14px rgba(232,51,110,.4),0 0 26px rgba(139,92,246,.35)}
 .db-key .db-short{display:none}
 #demobar .mnav{display:none}
