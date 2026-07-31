@@ -393,10 +393,25 @@ button.btn-key{cursor:pointer}
    see, Google's real button sits transparently on top, so a genuine user click still
    lands on Google's iframe and the actual auth flow is untouched. */
 .altrow{grid-auto-rows:minmax(44px,auto)}
-#gsiBtn{grid-area:1/1;opacity:0;z-index:2;position:relative;min-height:44px}
-#gsiFallback{grid-area:1/1;z-index:1}
+
+
 #gsiBtn.ready + #gsiFallback,
 #gsiBtn.ready ~ #gsiFallback{display:flex}
+/* ---- OPTION A: Google's official button sets the tone for this row ----
+   Google draws a 400x40 button inside a 420x44 iframe and applies margin:-2px -10px to
+   bleed its chrome, expecting the parent to clip. We do exactly that - so the wide white
+   margins go, and what remains is Google's own hairline, which is inside their iframe and
+   unreachable. Rather than fight it, our passkey button ADOPTS it: same 40px height, same
+   4px radius, a matching pale hairline. The pair then reads as deliberate. */
+.gsiwrap{max-width:400px;height:40px;overflow:hidden;position:relative;
+  background:transparent;color-scheme:dark;opacity:1;z-index:1;grid-area:auto}
+.gsiwrap iframe{margin:-2px -10px!important}
+#gsiFallback{display:none!important}          /* Google's real button is the visible one */
+.gsiwrap:not(.ready) ~ #gsiFallback{display:flex!important}  /* unless GSI never rendered */
+.btn-auth{height:40px;min-height:40px;padding:0 14px;border-radius:4px;
+  border-color:#5f6368;font-size:11px}
+.altrow{max-width:400px;margin-left:auto;margin-right:auto;row-gap:12px}
+.altrow > *{width:100%;min-width:0}
 </style>
 <style id="navacct-css">
 /* nav account control */
@@ -917,10 +932,9 @@ column's terminal snippet is the app's true skin (no gradients inside).
            passkey button. Measured from the mount so it tracks the grid. */
         renderButton(box,{ type:"standard",theme:"filled_black",size:"large",
           text:"continue_with",shape:"square",logo_alignment:"left",
-          width:Math.max(200,Math.min(400,Math.round(box.clientWidth||300)))});
+          width:Math.max(180,Math.min(380,Math.round((box.clientWidth||400)-20)))});
         box.classList.add("ready");
-        /* fallback stays visible: it IS the visible button now, with
-           Google's real one transparent on top of it */                  /* only now is the fallback redundant */
+        if(fb)fb.hidden=true;                  /* only now is the fallback redundant */
       }).catch(function(){/* health unreachable: fallback link stays */});
     }
     attempt();
