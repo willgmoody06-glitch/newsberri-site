@@ -269,12 +269,6 @@ a.btn{text-decoration:none}
 #tour{position:fixed;inset:0;z-index:80}
 #tour[hidden]{display:none}
 .tour-scrim{position:absolute;inset:0;background:rgba(0,0,0,.68)}
-.hs{position:absolute;display:flex;align-items:flex-start;gap:8px}
-.hs .hs-n{flex:0 0 auto;width:26px;height:26px;display:flex;align-items:center;justify-content:center;
-  background:var(--key);color:var(--key-ink);font-family:var(--mono);font-weight:700;font-size:12px;box-shadow:var(--key-glow-hi)}
-.hs .hs-l{max-width:240px;background:var(--panel);border:1px solid var(--hair-strong);padding:6px 9px;
-  font-size:11.5px;line-height:1.4;color:var(--ink-2);box-shadow:0 6px 24px rgba(0,0,0,.55)}
-.hs.flip{flex-direction:row-reverse}
 .tour-card{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:16px;padding:12px 16px;
   box-shadow:0 10px 40px rgba(0,0,0,.7)}
 .tour-card .t{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:2.5px;white-space:nowrap}
@@ -327,9 +321,6 @@ a.btn{text-decoration:none}
   .tour-card .t{font-size:16px;white-space:normal}
   .tour-card .s{max-width:none}
   .tour-card .btn{align-self:flex-start;min-height:44px}
-  .hs{gap:6px}
-  .hs .hs-n{width:24px;height:24px}
-  .hs .hs-l{max-width:210px;font-size:11px}
 }
 /* The overhaul CSS block is deliberately NOT pasted here.
    This page is the demo terminal: a fixed-height app shell (body{overflow:hidden}),
@@ -338,6 +329,52 @@ a.btn{text-decoration:none}
    the nav link set and #demobar, not the band system. See website/UI_RULES.md 8. */
 @keyframes slidein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+/* ---- demo parity with the running app (PULSE / SECTORS / TOP STORIES) ---- */
+#main{grid-template-rows:repeat(3,minmax(196px,1fr))}
+#p-trend{grid-column:1/3}
+.pl-acts{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:2px}
+.sec-row{display:grid;grid-template-columns:1fr 46px 54px;align-items:center;gap:8px;
+  padding:6px 2px;border-bottom:1px solid var(--hair);font-size:11px}
+.sec-row:last-child{border-bottom:0}
+.sec-row .sn{font-family:var(--mono);font-size:9.5px;letter-spacing:1.2px;color:var(--ink-2)}
+.sec-row .sv{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11px;text-align:right}
+.sec-row .sb{height:5px;background:var(--well);border:1px solid var(--well-line);position:relative}
+.sec-row .sb i{position:absolute;top:0;bottom:0;left:50%;display:block}
+.st-row{display:grid;grid-template-columns:26px 1fr;gap:8px;padding:7px 2px;
+  border-bottom:1px solid var(--hair);font-size:11.5px;line-height:1.35}
+.st-row:last-child{border-bottom:0}
+.st-row .sr{font-family:var(--mono);font-size:10px;font-variant-numeric:tabular-nums;
+  text-align:right;color:var(--ink-faint)}
+.st-row .sh{color:var(--ink-2)}
+.st-row .sm3{display:block;margin-top:2px;font-family:var(--mono);font-size:8px;
+  letter-spacing:1.1px;color:var(--ink-faint)}
+/* ---- stepped coach tour (replaces the five simultaneous callouts) ---- */
+.tour-ring{position:absolute;border:1px solid var(--key);border-radius:3px;
+  box-shadow:0 0 0 9999px rgba(0,0,0,.72),0 0 18px rgba(255,255,255,.35);
+  pointer-events:none;transition:top .18s ease,left .18s ease,width .18s ease,height .18s ease}
+.coach{position:absolute;width:296px;max-width:calc(100vw - 24px);padding:13px 14px;
+  display:flex;flex-direction:column;gap:8px;z-index:2}
+.coach-h{display:flex;align-items:baseline;gap:10px}
+.coach-t{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:1.6px;
+  text-transform:uppercase;line-height:1}
+.coach-n{margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:1.4px;
+  color:var(--ink-faint);white-space:nowrap}
+.coach-b{margin:0;font-size:12px;line-height:1.5;color:var(--ink-2)}
+.coach-eg{border-left:2px solid var(--hair-strong);padding-left:9px;font-size:11.5px;
+  line-height:1.45;color:var(--ink-3)}
+.coach-eg .klab{display:block;margin-bottom:2px}
+.coach-a{display:flex;gap:8px;align-items:center;margin-top:2px}
+.coach-a #coachNext{margin-left:auto}
+/* the marker left behind on a feature you have already been shown */
+.seenmark{position:absolute;width:17px;height:17px;border-radius:50%;z-index:60;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
+  background:var(--panel);border:1px solid var(--hair-strong);color:var(--ink-faint);
+  font-family:var(--mono);font-size:9px;line-height:1;transition:color .16s,border-color .16s}
+.seenmark:hover{color:var(--key);border-color:var(--key)}
+@media (max-width:900px){
+  .coach{width:auto;left:10px!important;right:10px!important}
+  .coach-a .btn{min-height:44px}
+}
 </style>
 <style id="navacct-css">
 /* nav account control */
@@ -464,28 +501,27 @@ addEventListener("DOMContentLoaded", function(){
     </div>
   </div>
 
-  <aside id="rail" class="plate" aria-label="Contracts">
-    <div class="ph"><span class="led"></span>CONTRACTS<span class="ph-r">6 OF 42 · DEMO</span></div>
+  <aside id="rail" class="plate" aria-label="All contracts">
+    <div class="ph"><span class="led"></span>ALL CONTRACTS<span class="ph-r">6 OF 42 · DEMO</span></div>
     <div class="list" id="railList"></div>
     <div class="rail-note">DEMO SLICE — THE PRODUCT TRACKS 42 CONTRACTS ACROSS 7 ASSET CLASSES. CLICK A ROW.</div>
   </aside>
 
   <div id="main">
-    <section class="panel plate" id="p-feed" aria-label="Live feed">
-      <div class="ph"><span class="led" style="background:var(--bull);box-shadow:0 0 7px 1px color-mix(in srgb,var(--bull),transparent 30%)"></span>LIVE FEED<span class="ph-r" id="feedNote"></span></div>
+    <section class="panel plate" id="p-feed" aria-label="Live incoming feed">
+      <div class="ph"><span class="led" style="background:var(--bull);box-shadow:0 0 7px 1px color-mix(in srgb,var(--bull),transparent 30%)"></span>LIVE INCOMING<span class="ph-r" id="feedNote"></span></div>
       <div class="pbody" style="gap:0" id="feedBody"></div>
     </section>
 
-    <section class="panel plate" id="p-risk" aria-label="Risk and volatility">
-      <div class="ph"><span class="led"></span>RISK &amp; VOLATILITY</div>
+    <section class="panel plate" id="p-risk" aria-label="Gauges">
+      <div class="ph"><span class="led"></span>GAUGES</div>
       <div class="pbody">
         <div class="gaugebay">
           <div class="gauge"><svg id="riskGauge" viewBox="0 0 120 70" aria-hidden="true"></svg><span class="gv" id="riskVal">68</span><span class="gl">RISK</span><span class="gd" id="riskD"></span></div>
           <div class="gauge"><svg id="volGauge" viewBox="0 0 120 70" aria-hidden="true"></svg><span class="gv" id="volVal">74</span><span class="gl">VOLATILITY</span><span class="gd" id="volD"></span></div>
         </div>
-        <div class="chiprow" id="chipRow"></div>
-        <div class="meter"><span class="k" style="width:56px">SWING</span><div class="track"><i id="mSwing" style="background:var(--key);color:var(--key)"></i></div><b class="mono" style="font-size:10px" id="mSwingV"></b></div>
         <div class="meter"><span class="k" style="width:56px">EVT RISK</span><div class="track"><i id="mEvt" style="background:var(--key);color:var(--key)"></i></div><b class="mono" style="font-size:10px" id="mEvtV"></b></div>
+        <div class="meter"><span class="k" style="width:56px">CONF</span><div class="track"><i style="width:58%;background:var(--bull);color:var(--bull)"></i></div><b class="mono" style="font-size:10px">58%</b></div>
       </div>
     </section>
 
@@ -501,11 +537,36 @@ addEventListener("DOMContentLoaded", function(){
       </div>
     </section>
 
-    <section class="panel plate" id="p-trend" aria-label="Sentiment trend">
-      <div class="ph"><span class="led"></span>SENTIMENT TREND — <span id="trendSym">NQ</span>
+    <section class="panel plate" id="p-trend" aria-label="Trend">
+      <div class="ph"><span class="led"></span>TREND — <span id="trendSym">NQ</span>
         <span class="ph-r" id="tfKeys"><button class="btn sm" data-tf="1H" aria-pressed="false">1H</button><button class="btn sm pressed" data-tf="4H" aria-pressed="true">4H</button><button class="btn sm" data-tf="24H" aria-pressed="false">24H</button></span></div>
       <div class="pbody"><div class="spark-wrap"><svg id="spark" preserveAspectRatio="none" aria-hidden="true"></svg></div>
         <div class="spark-meta"><span>START <b class="mono" id="tOpen"></b></span><span>TROUGH <b class="mono" id="tLow"></b></span><span>PEAK <b class="mono" id="tHigh"></b></span><span style="margin-left:auto">NOW <b class="mono" id="tNow"></b></span></div></div>
+    </section>
+
+    <section class="panel plate" id="p-pulse" aria-label="Pulse">
+      <div class="ph"><span class="led"></span>PULSE<span class="ph-r">SIMULATED</span></div>
+      <div class="pbody">
+        <div class="meter"><span class="k" style="width:56px">FRESH</span><div class="track"><i style="width:88%;background:var(--bull);color:var(--bull)"></i></div><b class="mono" style="font-size:10px">14s</b></div>
+        <div class="meter"><span class="k" style="width:56px">FLOW</span><div class="track"><i style="width:62%;background:var(--key);color:var(--key)"></i></div><b class="mono" style="font-size:10px">31 / 30M</b></div>
+        <div class="meter"><span class="k" style="width:56px">SWING</span><div class="track"><i id="mSwing" style="background:var(--key);color:var(--key)"></i></div><b class="mono" style="font-size:10px" id="mSwingV"></b></div>
+        <div class="meter"><span class="k" style="width:56px">STORIES</span><div class="track"><i style="width:47%;background:var(--key);color:var(--key)"></i></div><b class="mono" style="font-size:10px">1,204</b></div>
+        <div class="chiprow" id="chipRow"></div>
+        <div class="pl-acts">
+          <button class="btn sm" id="askBtn"><span class="glyph">✦</span>ASK</button>
+          <span class="d-note" style="margin:0">CANNED. IN THE PRODUCT, ASK ANSWERS FROM YOUR SCORED TAPE.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel plate" id="p-sectors" aria-label="Sectors">
+      <div class="ph"><span class="led"></span>SECTORS<span class="ph-r">7 CLASSES · DEMO</span></div>
+      <div class="pbody" id="secBody"></div>
+    </section>
+
+    <section class="panel plate" id="p-stories" aria-label="Top stories">
+      <div class="ph"><span class="led"></span>TOP STORIES — <span id="stSym">NQ</span><span class="ph-r">SIMULATED</span></div>
+      <div class="pbody" id="storyBody"></div>
     </section>
 
     <section class="panel plate" id="p-cal" aria-label="Economic calendar">
@@ -543,10 +604,18 @@ addEventListener("DOMContentLoaded", function(){
 <!-- ===== FIRST-LOAD TOUR ===== -->
 <div id="tour" hidden>
   <div class="tour-scrim" id="tourScrim"></div>
-  <div class="tour-card plate">
-    <span class="t">FIVE THINGS TO TRY</span>
-    <span class="s">Everything here is simulated — click around freely. Reopen anytime with the TOUR key in the top band.</span>
-    <button class="btn pressed" id="tourGo">Got it</button>
+  <div class="tour-ring" id="tourRing" aria-hidden="true"></div>
+  <div class="coach plate" id="coach" role="dialog" aria-modal="false" aria-labelledby="coachT">
+    <div class="coach-h">
+      <span class="coach-t" id="coachT"></span>
+      <span class="coach-n" id="coachN"></span>
+    </div>
+    <p class="coach-b" id="coachB"></p>
+    <div class="coach-eg"><span class="klab">EXAMPLE</span><span id="coachE"></span></div>
+    <div class="coach-a">
+      <button class="btn sm" id="coachSkip">SKIP TOUR</button>
+      <button class="btn sm pressed" id="coachNext">NEXT</button>
+    </div>
   </div>
 </div>
 
@@ -870,35 +939,144 @@ addEventListener("DOMContentLoaded", function(){
     renderSpark();});
   document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawer();hideTour();}});
 
-  /* ---------- tour ---------- */
-  const tour=$("#tour");
-  const HOTS=[
-    {n:1,t:"#p-feed .ph",l:"The live tape. Every headline gets a score for each contract it touches — click any story and ✦ EXPLAIN tells you why."},
-    {n:2,t:"#lcdIdx",l:"The big number is sentiment for this contract, −100 to +100, with its call beside it. It’s never a price."},
-    {n:3,t:"#chipGuard",l:"The Guardrail. ARMED means a release is 30 minutes out — you get a heads-up at 30, 10 and 2 minutes."},
-    {n:4,t:"#calBody .cal-row",l:"The calendar. Click a release and you’ll see the beat, in-line and miss outcomes — already written before it happens."},
-    {n:5,t:"#sqBtn",l:"The squawk. Press it and you’ll hear the top headline read out loud, even with your eyes on your trading platform."}
+
+  /* ---------- parity panels: SECTORS + TOP STORIES ----------
+     Static, like everything else on this page. The app fills these from /api/sectors and
+     the scored tape; the demo must never look like it is showing live data. */
+  const SECTORS=[["INDICES",-34],["ENERGY",21],["METALS",-8],["RATES",-22],
+                 ["FX",6],["AGS",12],["CRYPTO",-3]];
+  const STORIES=[["Nvidia server-rack supplier lead times stretch to 40 weeks","WEB · 40S · NQ −12"],
+                 ["BLS detail: core services ex-shelter +0.42% m/m","FEED · 9M · NQ −18"],
+                 ["Fed governor: June print \u201Ca bump, not a trend\u201D","OFFICIAL · 2H · NQ +7"],
+                 ["EIA: crude inventories draw 2.1M bbl vs 1.4M consensus","OFFICIAL · 3H · CL +21"]];
+  (function fillParity(){
+    const sb=$("#secBody");
+    if(sb) SECTORS.forEach(([name,v])=>{
+      const row=document.createElement("div");row.className="sec-row";
+      const w=Math.min(50,Math.abs(v)/2);
+      row.innerHTML=`<span class="sn">${name}</span>`
+        +`<span class="sb"><i style="${v<0?`right:50%;left:auto;`:``}width:${w}%;`
+        +`background:${v<0?"var(--bear)":"var(--bull)"}"></i></span>`
+        +`<span class="sv" style="color:${idxColor(v)}">${sgn(v)}</span>`;
+      sb.appendChild(row);
+    });
+    const tb=$("#storyBody");
+    if(tb) STORIES.forEach(([h,meta],i)=>{
+      const row=document.createElement("div");row.className="st-row";
+      row.innerHTML=`<span class="sr">${i+1}</span>`
+        +`<span class="sh">${h}<span class="sm3">${meta}</span></span>`;
+      tb.appendChild(row);
+    });
+  })();
+
+  /* ---------- stepped tour ----------
+     One box at a time, anchored to the feature it describes. Every step that gets SHOWN
+     leaves a marker on its target afterwards, so a specific explanation can be reopened
+     without replaying the whole thing. */
+  const tour=$("#tour"), ring=$("#tourRing"), coach=$("#coach");
+  const STEPS=[
+    {t:"#railList .crow", h:"ALL CONTRACTS",
+     b:"Every contract you follow, with its live sentiment index beside it. Click one and the whole board follows it.",
+     e:"NQ sits at \u221234 \u2014 stories on the tape are leaning bearish for the Nasdaq future right now."},
+    {t:"#p-feed .ph", h:"LIVE INCOMING",
+     b:"The tape. Every headline is scored once on our servers against each contract it touches, then fanned out to everyone.",
+     e:"Click any row and \u2726 EXPLAIN shows which contracts moved and why that story mattered."},
+    {t:"#lcdIdx", h:"THE INDEX",
+     b:"Sentiment for the selected contract on a \u2212100 to +100 scale, with the call beside it. It is never a price and never a target.",
+     e:"\u221234 reads STRONG BEAR. At \u22125 it would read NEUTRAL and you would ignore it."},
+    {t:"#p-risk .ph", h:"GAUGES",
+     b:"Composite risk and news-volatility for what is on the tape, plus event risk and how well calibrated the read is.",
+     e:"EVT RISK climbing before a release is the board telling you the next print is the thing that matters."},
+    {t:"#p-pulse .ph", h:"PULSE",
+     b:"How alive the tape is: how recent the newest scored story is, how much is landing, and how far sentiment has swung.",
+     e:"FRESH 14s and FLOW 31/30M means news is arriving steadily \u2014 a quiet tape reads very differently."},
+    {t:"#p-sectors .ph", h:"SECTORS",
+     b:"The same read rolled up per asset class, so you can see whether a move is one contract or the whole complex.",
+     e:"Indices \u221234 while energy is +21 \u2014 that is rotation, not a market-wide risk-off."},
+    {t:"#p-stories .ph", h:"TOP STORIES",
+     b:"The stories carrying the most weight for the contract you have selected, ranked, so you can see what is driving the number.",
+     e:"The supplier lead-time story is ranked first because it moved NQ hardest, not because it is newest."},
+    {t:"#calBody .cal-row", h:"ECON CALENDAR",
+     b:"Scheduled releases with the beat, in-line and miss outcomes written before the print lands.",
+     e:"Click CPI and you will see what each of the three outcomes would mean, ahead of 08:30."},
+    {t:"#sqBtn", h:"THE SQUAWK",
+     b:"Reads the top headline out loud so you can keep your eyes on your trading platform.",
+     e:"Press it once here and the demo speaks the current top story."}
   ];
-  function placeHots(){
-    tour.querySelectorAll(".hs").forEach(el=>el.remove());
-    HOTS.forEach(h=>{
-      const tgt=document.querySelector(h.t);if(!tgt)return;
+  const SEEN_KEY="nbDemoSeen";
+  let seen=new Set(), step=0, single=false;
+  try{ seen=new Set(JSON.parse(localStorage.getItem(SEEN_KEY)||"[]")); }catch(e){}
+  function persist(){ try{ localStorage.setItem(SEEN_KEY,JSON.stringify([...seen])); }catch(e){} }
+
+  function targetOf(i){ return document.querySelector(STEPS[i].t); }
+
+  function place(i){
+    const tgt=targetOf(i); if(!tgt) return false;
+    const r=tgt.getBoundingClientRect();
+    ring.style.left=(r.left-4)+"px"; ring.style.top=(r.top-4)+"px";
+    ring.style.width=(r.width+8)+"px"; ring.style.height=(r.height+8)+"px";
+    const cw=coach.offsetWidth||296, ch=coach.offsetHeight||190, gap=14;
+    let left = r.right+gap+cw<innerWidth-8 ? r.right+gap
+             : r.left-gap-cw>8            ? r.left-gap-cw
+             : Math.max(8,Math.min(innerWidth-cw-8, r.left));
+    let top = Math.max(8, Math.min(innerHeight-ch-8, r.top-6));
+    coach.style.left=Math.round(left)+"px"; coach.style.top=Math.round(top)+"px";
+    return true;
+  }
+
+  function render(){
+    const s=STEPS[step];
+    $("#coachT").textContent=s.h;
+    $("#coachN").textContent=single?"REOPENED":((step+1)+" / "+STEPS.length);
+    $("#coachB").textContent=s.b;
+    $("#coachE").textContent=s.e;
+    $("#coachNext").textContent=single?"CLOSE":(step===STEPS.length-1?"DONE":"NEXT");
+    $("#coachSkip").hidden=single;
+    seen.add(s.h); persist();
+    if(!place(step)) next();
+  }
+
+  function open(i,solo){
+    step=i; single=!!solo; tour.hidden=false;
+    render(); $("#coachNext").focus();
+  }
+  function next(){
+    if(single) return end();
+    if(step<STEPS.length-1){ step++; render(); } else end();
+  }
+  function end(){
+    if(tour.hidden) return;
+    tour.hidden=true; single=false;
+    try{ sessionStorage.setItem("nbDemoTour","1"); }catch(e){}
+    marks();
+  }
+
+  /* markers: one per SEEN step, pinned to its target, reopening that step alone */
+  function marks(){
+    document.querySelectorAll(".seenmark").forEach(el=>el.remove());
+    STEPS.forEach((s,i)=>{
+      if(!seen.has(s.h)) return;
+      const tgt=targetOf(i); if(!tgt) return;
       const r=tgt.getBoundingClientRect();
-      const el=document.createElement("div");el.className="hs"+(r.left>innerWidth*.55?" flip":"");
-      el.innerHTML=`<span class="hs-n">${h.n}</span><span class="hs-l">${h.l}</span>`;
-      el.style.left=Math.max(6,Math.min(innerWidth-280,r.left-13+(el.classList.contains("flip")?-230:0)))+"px";
-      el.style.top=Math.max(6,r.top-13)+"px";
-      tour.appendChild(el);
+      const b=document.createElement("button");
+      b.type="button"; b.className="seenmark"; b.textContent="?";
+      b.setAttribute("aria-label","Reopen the explanation for "+s.h);
+      b.title="What is "+s.h+"?";
+      b.style.left=Math.round(Math.min(innerWidth-24, r.right-19))+"px";
+      b.style.top=Math.round(Math.max(4, r.top+3))+"px";
+      b.addEventListener("click",ev=>{ev.stopPropagation();open(i,true);});
+      document.body.appendChild(b);
     });
   }
-  function showTour(){tour.hidden=false;placeHots();$("#tourGo").focus();}
-  function hideTour(){if(tour.hidden)return;tour.hidden=true;
-    try{sessionStorage.setItem("nbDemoTour","1");}catch(e){}}
-  $("#tourGo").addEventListener("click",hideTour);
-  $("#tourScrim").addEventListener("click",hideTour);
-  $("#tourBtn").addEventListener("click",showTour);
-  addEventListener("resize",()=>{if(!tour.hidden)placeHots();renderSpark();});
-  $("#boardwrap").addEventListener("scroll",()=>{if(!tour.hidden)placeHots();});
+
+  $("#coachNext").addEventListener("click",next);
+  $("#coachSkip").addEventListener("click",end);
+  $("#tourScrim").addEventListener("click",end);
+  $("#tourBtn").addEventListener("click",()=>open(0,false));
+  function reflow(){ if(!tour.hidden) place(step); if(tour.hidden) marks(); }
+  addEventListener("resize",()=>{reflow();renderSpark();});
+  $("#boardwrap").addEventListener("scroll",reflow);
+  function hideTour(){ end(); }
 
   /* ---------- init ---------- */
   select("NQ");
