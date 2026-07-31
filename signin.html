@@ -384,7 +384,7 @@ button.btn-key{cursor:pointer}
    renders, so a width:400 request produced a 420px iframe sitting 10px left of the mount -
    wider than the passkey button and misaligned with it. Ask for 20px less, and nudge the
    mount right by the same 10px so the two left edges line up. */
-.gsiwrap{margin-left:10px}
+/* nudge removed: the overlay must sit exactly on our button now */
 /* ---- Google: our styling, Google's click ----
    Google's rendered button carries iframe chrome we cannot style, which is the light rim.
    Rather than replace the flow (a custom button on this origin would need it listed under
@@ -930,7 +930,7 @@ column's terminal snippet is the app's true skin (no gradients inside).
            passkey button. Measured from the mount so it tracks the grid. */
         renderButton(box,{ type:"standard",theme:"filled_black",size:"large",
           text:"continue_with",shape:"square",logo_alignment:"left",
-          width:Math.max(180,Math.min(380,Math.round((box.clientWidth||300)-20)))});
+          width:Math.max(200,Math.min(400,Math.round(box.clientWidth||300)))});
         box.classList.add("ready");
         /* fallback stays visible: it IS the visible button now, with
            Google's real one transparent on top of it */                  /* only now is the fallback redundant */
