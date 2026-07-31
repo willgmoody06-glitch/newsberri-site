@@ -53,6 +53,11 @@ footer .wrap{max-width:1180px;display:flex;flex-direction:column;gap:16px}
 .colo-bot{display:flex;justify-content:space-between;gap:16px;color:var(--ink-faint);font-family:var(--mono);font-size:10px;letter-spacing:1.3px;border-top:1px solid var(--hair);padding-top:14px}
 @media(max-width:640px){.nav .links{gap:13px}.colo-mid a{margin-right:9px}}
 
+
+/* The four legal pages set .wrap{max-width:820px} for a readable legal column.
+   .newsnav .wrap inherited it and the header was crammed into 820px while every
+   other page laid it out at 1320px. Scope the header back to the site measure. */
+.newsnav .wrap{max-width:1320px}
 /* ---- site header, ported from index.html 2026-07-31 ----
    These four pages were still on the pre-redesign .nav, so clicking a footer
    link visibly changed the header. The old .nav rules above are now dead but
@@ -342,7 +347,13 @@ is what lets this page know whether there is a session at all.
       var plan=planOf(a.getAttribute("href"));
       if(paid){
         a.setAttribute("href",APP);
-        if(/trial|start/i.test(a.textContent)) a.textContent="OPEN NEWSBERRI";
+        /* Unconditional. The old test only relabelled text matching /trial|start/, so
+           "Create one →" on signin.html kept its wording while its href silently
+           became the app - the same control saying different things on different pages.
+           Inline links keep a short label; buttons get the full one. */
+        a.textContent = a.classList.contains("btn-key") || a.classList.contains("cta-big")
+                        || a.classList.contains("cta-go") || a.classList.contains("mcta")
+                      ? "OPEN NEWSBERRI" : "Open Newsberri";
         handoff(a);
       }else if(plan){
         a.setAttribute("href","checkout.html?plan="+plan+"&bill="+cycle());

@@ -966,7 +966,13 @@ is what lets this page know whether there is a session at all.
       var plan=planOf(a.getAttribute("href"));
       if(paid){
         a.setAttribute("href",APP);
-        if(/trial|start/i.test(a.textContent)) a.textContent="OPEN NEWSBERRI";
+        /* Unconditional. The old test only relabelled text matching /trial|start/, so
+           "Create one →" on signin.html kept its wording while its href silently
+           became the app - the same control saying different things on different pages.
+           Inline links keep a short label; buttons get the full one. */
+        a.textContent = a.classList.contains("btn-key") || a.classList.contains("cta-big")
+                        || a.classList.contains("cta-go") || a.classList.contains("mcta")
+                      ? "OPEN NEWSBERRI" : "Open Newsberri";
         handoff(a);
       }else if(plan){
         a.setAttribute("href","checkout.html?plan="+plan+"&bill="+cycle());

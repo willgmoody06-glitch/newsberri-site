@@ -115,6 +115,13 @@ img,svg{max-width:100%}
 .pagehead h1{font-family:var(--display);font-weight:800;font-size:clamp(42px,4.6vw,66px);line-height:.98;letter-spacing:.5px;text-transform:uppercase;margin:0 0 16px;max-width:900px}
 /* ============ TIER CARDS ============ */
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch;margin-top:36px}
+/* ---- the plan you already have ---- */
+.plan.owned{opacity:.62;filter:saturate(.55)}
+.plan.owned .cta{pointer-events:none;background:var(--raise);color:var(--ink-3);
+  border-color:var(--hair-strong);box-shadow:none;cursor:default}
+.plan.owned .yourplan{display:block}
+.yourplan{display:none;margin:0 0 10px;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:1.6px;color:var(--bull);text-transform:uppercase}
 .plan{position:relative;border:1px solid var(--hair-strong);background:var(--panel);padding:28px 26px 24px;display:flex;flex-direction:column;min-width:0}
 .plan .tiername{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:2.5px;color:var(--ink-3);margin:0 0 14px}
 .plan .price{font-family:var(--display);font-weight:800;font-size:54px;line-height:1;letter-spacing:1px;margin:0}
@@ -1415,16 +1422,55 @@ is what lets this page know whether there is a session at all.
     });
   }
 
+  /* Grey out the plan they are on; offer the others as a change rather than a new
+     purchase. CHANGE PLAN goes to account.html, never to checkout - checkout would create
+     a SECOND subscription on the same customer (see the billing trap in the runbook). */
+  function planCards(me){
+    var tier=(me && me.tier || "none").toLowerCase();
+    if(tier==="none") return;
+    document.querySelectorAll("article.plan").forEach(function(card){
+      var cta=card.querySelector(".cta");
+      if(!cta) return;
+      var m=/[?&]plan=([a-z]+)/.exec(cta.getAttribute("href")||"");
+      var plan=m?m[1]:"";
+      if(!plan) return;
+      if(plan===tier){
+        card.classList.add("owned");
+        cta.textContent="YOUR CURRENT PLAN";
+        cta.setAttribute("aria-disabled","true");
+        cta.removeAttribute("href");
+        var tag=document.createElement("p");
+        tag.className="yourplan"; tag.textContent="● YOU ARE ON THIS PLAN";
+        card.insertBefore(tag, card.firstElementChild.nextSibling);
+      }else{
+        cta.textContent="CHANGE PLAN";
+        cta.setAttribute("href","account.html");
+      }
+      var note=card.querySelector(".cta-note");
+      if(note) note.textContent = plan===tier
+        ? "MANAGE OR CANCEL FROM YOUR ACCOUNT"
+        : "SWITCHES YOUR EXISTING SUBSCRIPTION · NO SECOND CHARGE";
+    });
+  }
+
   function apply(me, trialOk){
     var paid = me.tier && me.tier !== "none";
 
     /* Trial and plan CTAs. The account control owns the sign-in slot, so these only
        touch the buy-side buttons. */
-    document.querySelectorAll('a[href^="signup.html"]').forEach(function(a){
+    /* Plan-card CTAs are excluded: the generic rewrite would turn all three into
+       OPEN NEWSBERRI, losing which plan is which. planCards() handles them instead. */
+    document.querySelectorAll('a[href^="signup.html"]:not(.plan .cta)').forEach(function(a){
       var plan=planOf(a.getAttribute("href"));
       if(paid){
         a.setAttribute("href",APP);
-        if(/trial|start/i.test(a.textContent)) a.textContent="OPEN NEWSBERRI";
+        /* Unconditional. The old test only relabelled text matching /trial|start/, so
+           "Create one →" on signin.html kept its wording while its href silently
+           became the app - the same control saying different things on different pages.
+           Inline links keep a short label; buttons get the full one. */
+        a.textContent = a.classList.contains("btn-key") || a.classList.contains("cta-big")
+                        || a.classList.contains("cta-go") || a.classList.contains("mcta")
+                      ? "OPEN NEWSBERRI" : "Open Newsberri";
         handoff(a);
       }else if(plan){
         a.setAttribute("href","checkout.html?plan="+plan+"&bill="+cycle());
@@ -1443,6 +1489,7 @@ is what lets this page know whether there is a session at all.
       });
     });
 
+    planCards(me);
     mountAvatar(me);
   }
 
