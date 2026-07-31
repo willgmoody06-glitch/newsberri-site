@@ -364,6 +364,15 @@ button.btn-key{cursor:pointer}
 @media (min-width:1280px){
   .vizkick{font-size:50px}
 }
+/* ---- Google button: kill the white surround ----
+   theme:"filled_black" makes GOOGLE'S button dark, but GSI injects its own wrapper div and
+   an iframe around it, and those default to a light surface - that is the white box, not
+   the button. We cannot reach inside Google's shadow DOM, so we neutralise everything we
+   DO own: the mount, the injected wrapper, and the iframe, plus color-scheme:dark so the
+   UA stops painting a light default behind it. */
+.gsiwrap{background:transparent;color-scheme:dark;overflow:hidden;border-radius:2px}
+.gsiwrap > div,
+.gsiwrap iframe{background:transparent!important;color-scheme:dark;border-radius:2px}
 </style>
 <style id="navacct-css">
 /* nav account control */
