@@ -2280,6 +2280,20 @@ is what lets this page know whether there is a session at all.
     });
   }
 
+  /* The nav CTA is authored for a signed-OUT visitor, and /api/me is async - so a
+     subscriber saw "START 7-DAY TRIAL" for a frame before it corrected. Paint from the
+     last known answer immediately; /api/me still runs and reconciles if it is stale. */
+  (function(){
+    var was=null;
+    try{ was=localStorage.getItem("nbPaid"); }catch(e){}
+    if(was!=="1") return;
+    document.querySelectorAll(".newsnav .actions .btn-key, .newsnav .mcta")
+      .forEach(function(b){
+        b.setAttribute("href",APP);
+        b.textContent = b.classList.contains("mcta") ? "OPEN" : "OPEN NEWSBERRI";
+      });
+  })();
+
   function apply(me, trialOk){
     var paid = me.tier && me.tier !== "none";
 
@@ -2289,6 +2303,7 @@ is what lets this page know whether there is a session at all.
        author it as COMPARE TIERS -> pricing.html, so an href^="signup.html" rule skipped
        them and those two screens kept saying something different from every other page.
        Signed in, the top-right control is OPEN NEWSBERRI everywhere, full stop. */
+    try{ localStorage.setItem("nbPaid", paid?"1":"0"); }catch(e){}
     if(paid){
       document.querySelectorAll(".newsnav .actions .btn-key, .newsnav .mcta")
         .forEach(function(b){
