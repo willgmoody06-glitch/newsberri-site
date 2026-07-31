@@ -386,6 +386,7 @@ button asks the app box for a Checkout session and mounts Stripe's form.
     </a>
     <div class="links">
       <a href="index.html">HOME</a>
+      <a href="app.html">THE APP</a>
       <a href="how-it-works.html">HOW IT WORKS</a>
       <a href="pricing.html">PRICING</a>
     </div>
@@ -399,6 +400,7 @@ button asks the app box for a Checkout session and mounts Stripe's form.
       <summary aria-label="Menu"><span aria-hidden="true">☰</span></summary>
       <div class="mnav-panel">
         <a href="index.html">HOME</a>
+        <a href="app.html">THE APP</a>
         <a href="how-it-works.html">HOW IT WORKS</a>
         <a href="pricing.html">PRICING</a>
         <a href="demo.html">TRY THE DEMO</a>
@@ -407,6 +409,19 @@ button asks the app box for a Checkout session and mounts Stripe's form.
     </details>
   </div>
 </nav>
+<script>
+/* Runs HERE, immediately after the nav markup and before the browser paints it. The same
+   logic lower down executed ~900 lines later, so a subscriber saw the signed-out label for
+   a frame every single load. /api/me still runs afterwards and corrects a stale cache. */
+(function(){
+  try{ if(localStorage.getItem("nbPaid")!=="1") return; }catch(e){ return; }
+  document.querySelectorAll(".newsnav .actions .btn-key, .newsnav .mcta")
+    .forEach(function(b){
+      b.setAttribute("href","https://app.newsberri.com");
+      b.textContent = b.classList.contains("mcta") ? "OPEN" : "OPEN NEWSBERRI";
+    });
+})();
+</script>
 <script>
 /* mnav close (progressive enhancement only — with JS off, summary still toggles) */
 (function(){
@@ -1266,20 +1281,6 @@ is what lets this page know whether there is a session at all.
       old.parentNode.replaceChild(wrap,old);
     });
   }
-
-  /* The nav CTA is authored for a signed-OUT visitor, and /api/me is async - so a
-     subscriber saw "START 7-DAY TRIAL" for a frame before it corrected. Paint from the
-     last known answer immediately; /api/me still runs and reconciles if it is stale. */
-  (function(){
-    var was=null;
-    try{ was=localStorage.getItem("nbPaid"); }catch(e){}
-    if(was!=="1") return;
-    document.querySelectorAll(".newsnav .actions .btn-key, .newsnav .mcta")
-      .forEach(function(b){
-        b.setAttribute("href",APP);
-        b.textContent = b.classList.contains("mcta") ? "OPEN" : "OPEN NEWSBERRI";
-      });
-  })();
 
   function apply(me, trialOk){
     var paid = me.tier && me.tier !== "none";
