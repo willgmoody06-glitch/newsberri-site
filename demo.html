@@ -1003,10 +1003,7 @@ addEventListener("DOMContentLoaded", function(){
      b:"Reads the top headline out loud so you can keep your eyes on your trading platform.",
      e:"Press it once here and the demo speaks the current top story."}
   ];
-  const SEEN_KEY="nbDemoSeen";
-  let seen=new Set(), step=0, single=false;
-  try{ seen=new Set(JSON.parse(localStorage.getItem(SEEN_KEY)||"[]")); }catch(e){}
-  function persist(){ try{ localStorage.setItem(SEEN_KEY,JSON.stringify([...seen])); }catch(e){} }
+  let step=0, single=false;
 
   function targetOf(i){ return document.querySelector(STEPS[i].t); }
 
@@ -1032,7 +1029,6 @@ addEventListener("DOMContentLoaded", function(){
     $("#coachE").textContent=s.e;
     $("#coachNext").textContent=single?"CLOSE":(step===STEPS.length-1?"DONE":"NEXT");
     $("#coachSkip").hidden=single;
-    seen.add(s.h); persist();
     if(!place(step)) next();
   }
 
@@ -1055,12 +1051,11 @@ addEventListener("DOMContentLoaded", function(){
   function marks(){
     document.querySelectorAll(".seenmark").forEach(el=>el.remove());
     STEPS.forEach((s,i)=>{
-      if(!seen.has(s.h)) return;
       const tgt=targetOf(i); if(!tgt) return;
       const r=tgt.getBoundingClientRect();
       const b=document.createElement("button");
       b.type="button"; b.className="seenmark"; b.textContent="?";
-      b.setAttribute("aria-label","Reopen the explanation for "+s.h);
+      b.setAttribute("aria-label","Open the explanation for "+s.h);
       b.title="What is "+s.h+"?";
       b.style.left=Math.round(Math.min(innerWidth-24, r.right-19))+"px";
       b.style.top=Math.round(Math.max(4, r.top+3))+"px";
@@ -1085,7 +1080,10 @@ addEventListener("DOMContentLoaded", function(){
   let showIt=true;
   try{if(sessionStorage.getItem("nbDemoTour"))showIt=false;}catch(e){}
   if(/\bnotour\b/.test(location.search))showIt=false;
-  if(showIt)setTimeout(showTour,350);
+  /* Auto-open. This called showTour() until 2026-07-31, which the stepped-tour rewrite
+     had deleted - it threw at 350ms and the tour silently never opened. */
+  marks();                       /* the ? markers are there from first paint */
+  if(showIt)setTimeout(()=>open(0,false),350);
 })();
 </script>
 

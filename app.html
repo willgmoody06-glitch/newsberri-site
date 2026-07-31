@@ -970,6 +970,10 @@ main{overflow-x:clip}
    18 type sizes differently. Nothing below 1280px is affected.
    Each value below is the maximum of that property's own existing clamp(). ---- */
 @media (min-width:1280px){
+  /* second pass 2026-07-31: vh inside clamp(), which the first pass's
+     vw-only matcher could not see. Each value is that property's own maximum. */
+  .hero>div:first-child{min-height:572px}   /* was 44vh */
+  .ovhero[data-bg="terminal"] .ovhero-in{padding-top:150px}   /* was clamp(70px,12vh,150px) */
   /* Hero height: fixed above 1280px, not viewport-relative. A cap alone does not
      standardise it - two monitors can share a width and differ in viewport HEIGHT (browser
      chrome, bookmarks bar, OS scaling), and min(86vh,760px) only binds once the viewport is
