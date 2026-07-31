@@ -361,6 +361,21 @@ a.btn{text-decoration:none}
 .acctmenu .sep{border-top:1px solid var(--hair)}
 @media (max-width:760px){ .acctmenu{right:auto;left:0} }
 </style>
+<script>
+/* Scroll restoration. The default ("auto") re-applies the previous offset on reload, and
+   does it before late layout has settled - measured on this page: a reload from y=6100
+   landed at y=1563. "manual" makes a refresh start where a fresh visit starts. The hash
+   is still honoured; account.html#security is a link we hand out. Trade-off: Back no
+   longer restores position either. Must run in <head> - setting it after the browser has
+   already restored does nothing. */
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+addEventListener("DOMContentLoaded", function(){
+  var h = location.hash && location.hash.length > 1 ? location.hash.slice(1) : "";
+  var t = h ? document.getElementById(h) : null;
+  if (t) t.scrollIntoView();
+  else window.scrollTo(0, 0);
+});
+</script>
 </head>
 <body>
 <h1 class="sr">NewsBerri interactive demo — a simulated news terminal. No live data, no market prices.</h1>
