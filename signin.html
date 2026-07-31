@@ -370,9 +370,10 @@ button.btn-key{cursor:pointer}
    the button. We cannot reach inside Google's shadow DOM, so we neutralise everything we
    DO own: the mount, the injected wrapper, and the iframe, plus color-scheme:dark so the
    UA stops painting a light default behind it. */
-.gsiwrap{background:transparent;color-scheme:dark;overflow:hidden;border-radius:2px}
+.gsiwrap{background:transparent;color-scheme:dark;min-height:44px;display:flex;align-items:center}
 .gsiwrap > div,
-.gsiwrap iframe{background:transparent!important;color-scheme:dark;border-radius:2px}
+.gsiwrap iframe{background:transparent!important;color-scheme:dark}
+.gsiwrap > div{width:100%!important}
 </style>
 <style id="navacct-css">
 /* nav account control */
@@ -901,9 +902,12 @@ column's terminal snippet is the app's true skin (no gradients inside).
         var cid=h&&h.google_client_id;
         if(!cid)return;                        /* not configured server-side: keep fallback */
         google.accounts.id.initialize({client_id:cid,callback:onGoogleCredential});
-        google.accounts.id.renderButton(box,{
-          type:"standard",theme:"filled_black",size:"large",
-          text:"continue_with",shape:"square",logo_alignment:"left"});
+        google.accounts.id./* width must be passed explicitly: GSI renders a fixed-width button otherwise,
+           which left a 229px control inside a 646px slot next to a full-width
+           passkey button. Measured from the mount so it tracks the grid. */
+        renderButton(box,{ type:"standard",theme:"filled_black",size:"large",
+          text:"continue_with",shape:"square",logo_alignment:"left",
+          width:Math.max(200,Math.min(400,Math.round(box.clientWidth||300)))});
         box.classList.add("ready");
         if(fb)fb.hidden=true;                  /* only now is the fallback redundant */
       }).catch(function(){/* health unreachable: fallback link stays */});
