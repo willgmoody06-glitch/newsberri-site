@@ -706,7 +706,7 @@ img,svg{max-width:100%}
   .m-tape .c2,.m-tape .c3,.m-tape .c4{display:none}
   /* terminal is the shipped hero, so a phone gets a real dash that fits, not a
      190vw slab bleeding off both edges. One column: the feed and the ranked cut. */
-  .ovhero[data-bg="terminal"]{min-height:86vh;padding-bottom:0}
+  .ovhero[data-bg="terminal"]{min-height:min(86vh,960px);padding-bottom:0}
   .ovhero[data-bg="terminal"] .ovhero-in{padding-top:8px}
   .m-term{width:98%;opacity:1;bottom:12px}
   .m-term .termplane{transform:rotateX(8deg) scale(.98)}
@@ -754,6 +754,38 @@ img,svg{max-width:100%}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
   html{scroll-behavior:auto}
+}
+/* ---- desktop standardisation ----
+   Above 1280px the layout stops changing (.wrap is capped at 1180px), so the type
+   stops changing too. Without this, two monitors of the same physical size but
+   different resolution land at different points on the same vw ramp and render
+   15 type sizes differently. Nothing below 1280px is affected.
+   Each value below is the maximum of that property's own existing clamp(). ---- */
+@media (min-width:1280px){
+  /* Hero height: fixed above 1280px, not viewport-relative. A cap alone does not
+     standardise it - two monitors can share a width and differ in viewport HEIGHT (browser
+     chrome, bookmarks bar, OS scaling), and min(86vh,760px) only binds once the viewport is
+     884px tall. Below 1280px wide the vh behaviour stays, because there a hero taller than
+     the screen is the worse failure. */
+  .ovhero{min-height:760px}
+  .ovhero[data-bg="terminal"]{min-height:760px}
+  .ovhero-app{min-height:760px}
+
+  .masthead .nameplate .wordmark{font-size:100px}
+  .masthead .mark-lg svg{width:88px}
+  .sectitle{font-size:48px}
+  .lead h1{font-size:70px}
+  .tryband h2{font-size:54px}
+  .sectitle-xl{font-size:68px}
+  .ovhero h1{font-size:104px}
+  .ovhero .lede{font-size:21px}
+  .band-pricing .sectitle-xl{font-size:88px}
+  .ovplan .pprice{font-size:96px}
+  .ovplan.ghost .pprice{font-size:54px}
+  .band-why .sectitle-xl{font-size:108px}
+  .whycell h3{font-size:34px}
+  .band-why .vtotal b{font-size:46px}
+  .band-why .voffer{font-size:58px}
 }
 </style>
 <style id="navacct-css">

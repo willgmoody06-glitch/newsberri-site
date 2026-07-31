@@ -355,6 +355,15 @@ button.btn-key{cursor:pointer}
   *{animation:none !important;transition:none !important}
   html{scroll-behavior:auto}
 }
+/* ---- desktop standardisation ----
+   Above 1280px the layout stops changing (.wrap is capped at 1180px), so the type
+   stops changing too. Without this, two monitors of the same physical size but
+   different resolution land at different points on the same vw ramp and render
+   1 type sizes differently. Nothing below 1280px is affected.
+   Each value below is the maximum of that property's own existing clamp(). ---- */
+@media (min-width:1280px){
+  .vizkick{font-size:50px}
+}
 </style>
 <style id="navacct-css">
 /* nav account control */

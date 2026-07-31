@@ -291,6 +291,16 @@ html.js .plist-h{display:none}
   *{animation:none !important;transition:none !important}
   html{scroll-behavior:auto}
 }
+/* ---- desktop standardisation ----
+   Above 1280px the layout stops changing (.wrap is capped at 1180px), so the type
+   stops changing too. Without this, two monitors of the same physical size but
+   different resolution land at different points on the same vw ramp and render
+   2 type sizes differently. Nothing below 1280px is affected.
+   Each value below is the maximum of that property's own existing clamp(). ---- */
+@media (min-width:1280px){
+  .cohead h1{font-size:62px}
+  .duerow b{font-size:40px}
+}
 </style>
 <style id="navacct-css">
 /* nav account control */
