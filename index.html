@@ -909,9 +909,17 @@ html.js .exdrawer.open{display:flex}
 /* ===== MOBILE — one tier card at a time, with a left/right selector =====
    Desktop (>=761px) is untouched: still the three-up grid. ===== */
 @media (max-width:760px){
-  .ovplans{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+  /* Peek: the scroller carries (--peek + --pgap) of padding on each side, and a
+     card at flex-basis:100% measures the CONTENT box, so each card is exactly
+     that much narrower than the scrollport. The neighbours sit in the padding and
+     show --peek of themselves. Because the padding equals (scrollport - card)/2,
+     the first and last card can still reach dead centre. DOM order is unchanged;
+     which card the scroller opens on is set in the carousel script. */
+  .ovplans{--peek:22px;--pgap:12px;
+    display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
     -webkit-overflow-scrolling:touch;scrollbar-width:none;
-    gap:0;grid-template-columns:none;padding:0}
+    gap:var(--pgap);grid-template-columns:none;
+    padding:0 calc(var(--peek) + var(--pgap))}
   .ovplans::-webkit-scrollbar{display:none}
   .ovplan{flex:0 0 100%;scroll-snap-align:center;margin:0}
   .planpager{display:flex;align-items:center;justify-content:center;gap:18px;margin:22px 0 0}
@@ -1498,6 +1506,7 @@ compliance surface (unsubscribe, sender identity) and is a separate decision.
         <a href="how-it-works.html">HOW IT WORKS</a>
         <a href="pricing.html">PRICING</a>
         <a href="demo.html">DEMO</a>
+        <a href="https://app.newsberri.com/status">STATUS</a>
         <a href="terms.html">TERMS</a>
         <a href="privacy.html">PRIVACY</a>
         <a href="refunds.html">REFUNDS</a>
@@ -1873,9 +1882,13 @@ reads perfectly — the ambient wash is pure CSS and the scrim is static.
     if(label) label.textContent=names[idx]||'';
     prev.disabled = idx===0; next.disabled = idx===cards.length-1;
   }
+  /* where the scroller sits when card k is centred. The peek padding on .ovplans
+     means flush-left is no longer the same position as centred. */
+  function pos(k){return cards[k].offsetLeft-wrap.offsetLeft
+    -(wrap.clientWidth-cards[k].offsetWidth)/2;}
   function go(k){
     idx=Math.max(0,Math.min(cards.length-1,k));
-    wrap.scrollTo({left:cards[idx].offsetLeft-wrap.offsetLeft,
+    wrap.scrollTo({left:pos(idx),
       behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
     paint();
   }
@@ -1889,6 +1902,13 @@ reads perfectly — the ambient wash is pure CSS and the scrim is static.
       if(best!==idx){idx=best;paint();}
     },90);
   },{passive:true});
+  /* Mobile opens on the middle card — PRO — with Core and Desk peeking either
+     side. Set once, no animation, before the pager is painted. Every scroll
+     after this one belongs to the reader. Desktop is a grid and is skipped. */
+  if(cards.length>1&&matchMedia('(max-width:760px)').matches){
+    idx=Math.floor(cards.length/2);
+    wrap.scrollLeft=pos(idx);
+  }
   paint();
 })();
 </script>
