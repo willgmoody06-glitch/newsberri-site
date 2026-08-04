@@ -979,29 +979,62 @@ the session cookie readable and lets the whole purchase stay on this domain.
           .then(function(r){ return r.ok?r.json():null; })
           .then(function(q){
             var due=document.getElementById("dueAmt");
-            if(!q||typeof q.amount_due!=="number"){ if(due) due.textContent="—"; return; }
-            var amt=(q.amount_due/100).toFixed(2);
-            if(due) due.textContent="$"+amt;
             var btn=document.getElementById("changeGo");
             var note=document.getElementById("changeNote");
+            /* No quote means no confirm. change-plan charges the REAL difference whether
+               or not the page could show it, so an unquoted confirm is a charge the
+               customer never saw. Disable it instead of leaving a bare dash. */
+            if(!q||typeof q.amount_due!=="number"){
+              if(due) due.textContent="—";
+              if(btn){ btn.disabled=true; btn.textContent="PRICING UNAVAILABLE"; }
+              if(note) note.textContent="We could not price this switch just now, so "
+                +"confirming is disabled. Nothing was charged. Refresh to try again.";
+              return;
+            }
+            var amt=(q.amount_due/100).toFixed(2);
+            if(due) due.textContent="$"+amt;
             /* A zero here is usually CORRECT, not a failure: during a trial nothing has been
                paid, so there is no difference to prorate and no cycle to restart. Saying
                "$0.00" without saying why reads like the page is broken. */
             if(q.trialing){
-              var when="";
-              if(q.trial_end){ try{ when=new Date(q.trial_end*1000)
-                .toLocaleDateString(undefined,{month:"short",day:"numeric"}); }catch(e){} }
+              var when="", days=null;
+              if(q.trial_end){
+                try{ when=new Date(q.trial_end*1000)
+                  .toLocaleDateString(undefined,{month:"short",day:"numeric"}); }catch(e){}
+                days=Math.max(0,Math.ceil((q.trial_end*1000-Date.now())/86400000));
+              }
+              /* The right-hand panel is authored for a fresh signup. Mid-trial the
+                 truthful version of "your first seven days" is how much of it is left
+                 and when the new price starts billing. */
+              if(days!==null){
+                var oh=document.getElementById("order-h");
+                if(oh) oh.textContent="Your trial — "+days+" of 7 days left";
+                var fc=document.getElementById("firstCharge");
+                if(fc) fc.textContent="First charge"+(when?(": "+when):"")+" — at your new plan's price";
+                var fn=document.getElementById("fcNote");
+                if(fn) fn.textContent="Switching now does not move this date.";
+              }
               if(note) note.textContent="You are still in your trial, so switching costs "
                 +"nothing today and your trial end date does not move"
                 +(when?(" — your first payment on "+when+" will be at the new price."):".");
               if(btn) btn.textContent="CONFIRM THIS CHANGE";
             }else{
+              if(note) note.textContent="Switching to "+pretty+". You pay the difference "
+                +"for the rest of this period today — $"+amt+" — and your billing date "
+                +"moves to today.";
               if(btn) btn.textContent = q.amount_due>0
                 ? ("CONFIRM AND PAY $"+amt+" NOW") : "CONFIRM THIS CHANGE";
             }
           })
-          .catch(function(){ var due=document.getElementById("dueAmt");
-                             if(due) due.textContent="—"; });
+          .catch(function(){
+            var due=document.getElementById("dueAmt");
+            var btn=document.getElementById("changeGo");
+            var note=document.getElementById("changeNote");
+            if(due) due.textContent="—";
+            if(btn){ btn.disabled=true; btn.textContent="PRICING UNAVAILABLE"; }
+            if(note) note.textContent="We could not price this switch just now, so "
+              +"confirming is disabled. Nothing was charged. Refresh to try again.";
+          });
         var side=document.getElementById("payside"); if(side) side.hidden=true;
         var go=document.getElementById("goStripe"); if(go) go.hidden=true;
         document.getElementById("changeGo").addEventListener("click",function(){
