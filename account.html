@@ -766,19 +766,12 @@ until Stripe ends it and the webhook applies that.
     $("#acCardBox").hidden=true;
   }
   function doChange(plan,label){
-    if(busy)return; busy=true;
-    msg("Switching to "+label+"\u2026",false);
-    fetch("/api/billing/change-plan",{method:"POST",credentials:"include",cache:"no-store",
-      headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:plan,bill:""})   /* "" = keep the cycle they are on */})
-      .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
-      .then(function(x){
-        if(!x.ok){ msg((x.d&&x.d.error)||"That change could not be completed.",true); return; }
-        msg((x.d&&x.d.message)||"Plan changed.",false);
-        $("#acPlanPick").hidden=true;
-        load();
-      })
-      .catch(function(){ msg("That change could not be completed. Nothing was charged.",true); })
-      .finally(function(){ busy=false; });
+    /* This used to POST /api/billing/change-plan directly: one click on a tile charged
+       the real prorated difference with no quote and no confirm step (2026-08-04 audit,
+       finding 1). Every plan change now goes through checkout.html?change=1, which shows
+       the Stripe-computed amount - or the trial state - and requires an explicit confirm
+       over that number before anything is charged. */
+    location.href="checkout.html?change=1&plan="+encodeURIComponent(plan);
   }
 
   /* ---- in-house card replacement ---------------------------------------------
